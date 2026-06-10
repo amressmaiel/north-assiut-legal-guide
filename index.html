@@ -170,40 +170,24 @@ body {
     position: fixed; bottom: 25px; left: 25px; z-index: 2000; direction: rtl;
 }
 
+/* ====================================================================
+   🤖 [التعديل التلقائي]: إظهار صورة الأفاتار المرفوعة مباشرة وإلغاء الرسم البرمجي
+   ==================================================================== */
 .bot-trigger-avatar {
-    width: 85px; height: 85px; border-radius: 50%;
-    background: linear-gradient(135deg, #111b2c, #050911);
+    width: 85px; 
+    height: 85px; 
+    border-radius: 50%;
+    /* استدعاء ملف الصورة المرفوع بجانب الملف تلقائياً وجعله متناسق الأبعاد */
+    background: #050911 url('avatar-3d.png') no-repeat center center;
+    background-size: cover; 
     box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
-    cursor: pointer; position: relative;
-    border: 3px solid #d4af37; overflow: hidden;
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    cursor: pointer; 
+    position: relative;
+    border: 3px solid #d4af37; 
+    transition: transform 0.3s ease;
 }
 
-/* رسم الرأس بدقة فخمة ثلاثية الأبعاد */
-.bot-trigger-avatar .avatar-3d-head {
-    width: 24px; height: 24px; background: radial-gradient(circle at 30% 30%, #e2e8f0, #475569);
-    border-radius: 50%; position: absolute; top: 15px; z-index: 4;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-}
-/* رسم البدلة والجاكيت الوقور */
-.bot-trigger-avatar .avatar-3d-suit {
-    width: 65px; height: 42px; background: linear-gradient(180deg, #1e293b, #0f172a);
-    border-top-left-radius: 14px; border-top-right-radius: 14px; z-index: 2; position: relative;
-}
-/* رسم الوشاح الرسمي الفاخر ذو اللونين الأحمر والأخضر والنسر والثلاث نجوم */
-.bot-trigger-avatar .avatar-3d-sash {
-    position: absolute; top: 0; left: 12px; width: 22px; height: 42px;
-    background: linear-gradient(to left, var(--prosecution-red) 45%, var(--prosecution-green) 45%);
-    transform: rotate(-10deg); z-index: 3;
-    border-left: 1.5px solid var(--accent-gold); border-right: 1.5px solid var(--accent-gold);
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 2px;
-}
-/* النجوم التوجيهية المصغرة */
-.avatar-3d-sash .stars-row { font-size: 5px; color: var(--accent-gold); line-height: 1; margin-bottom: 2px; letter-spacing: 0.5px; }
-/* النسر القضائي الذهبي المصغر */
-.avatar-3d-sash .eagle-mark { font-size: 9px; color: var(--accent-gold); line-height: 1; font-weight: bold; }
-
-/* هالات المدار المستقرة - تم منع تكرار الوميض المزعج والاختفاء */
+/* هالات المدار الذهبية المحيطة بالصورة المرفوعة */
 .bot-trigger-avatar::before,
 .bot-trigger-avatar::after {
     content: ''; position: absolute; top: -12px; left: -12px; right: -12px; bottom: -12px;
@@ -218,7 +202,7 @@ body {
 @keyframes goldOrbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes goldOrbitReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
 
-.bot-trigger-avatar:hover { transform: scale(1.08); }
+.bot-trigger-avatar:hover { transform: scale(1.08); } }
 
 /* نافذة المحادثة الزجاجية الفاخرة */
 .ai-chat-window {
@@ -375,14 +359,7 @@ body {
 
 <div id="chatBotContainer">
     <div class="bot-trigger-avatar" onclick="toggleAiChatWindow()" title="المساعد القضائي الرقمي لنيابة شمال أسيوط">
-         <div class="avatar-3d-head"></div>
-         <div class="avatar-3d-suit">
-              <div class="avatar-3d-sash">
-                   <div class="stars-row">★★★</div>
-                   <div class="eagle-mark">🦅</div>
-              </div>
          </div>
-    </div>
     <div class="ai-chat-window" id="aiChatWindow">
         <div class="chat-window-header">
             <div class="chat-header-title">
