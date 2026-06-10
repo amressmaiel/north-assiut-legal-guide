@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>المنصة الرقمية القضائية - الدليل القانوني الشامل</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* المظهر الداكن الفاخر (الافتراضي القطعي والملكي) */
+  --primary-dark: #050a14;
+  --primary-light: #0b1220;
+  --accent-gold: #d4af37;
+  --accent-gold-glow: rgba(212, 175, 55, 0.25);
+  --bg-main: #020408;
+  --bg-surface: #050a14;
+  --text-main: #e2e8f0;
+  --text-muted: #8892b0;
+  --border-color: #111d35;
+  --success-green: #10b981;
+  --prosecution-green: #118844; /* الأخضر الرسمي لوشاح النيابة العامة المصرية */
+  --prosecution-red: #cc1111;   /* الأحمر الرسمي لوشاح النيابة */
+  --shadow-lg: 0 25px 60px rgba(0,0,0,0.6);
+}
+
+.light-theme {
+  --primary-dark: #0c1524;
+  --primary-light: #16253d;
+  --bg-main: #f4f6f9;
+  --bg-surface: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; font-family: 'Cairo', sans-serif;
+  background-color: var(--bg-main); color: var(--text-main);
+  direction: rtl; overflow-x: hidden; transition: background-color 0.3s, color 0.3s;
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+
+.app-container { display: grid; grid-template-columns: 340px 1fr; flex: 1; }
+
+/* القائمة الجانبية */
+.sidebar {
+  background: linear-gradient(180deg, #03060c, #010205);
+  color: #fff; border-left: 1px solid var(--border-color);
+  display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 40;
+}
+.sidebar-header { padding: 30px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); text-align: center; }
+.sidebar-logo-container {
+  width: 75px; height: 75px; margin: 0 auto 12px; border-radius: 50%;
+  background: rgba(212, 175, 55, 0.03); border: 1px solid var(--accent-gold);
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--accent-gold-glow);
+}
+.sidebar-logo-container span { font-size: 35px; color: var(--accent-gold); }
+.sidebar-header h1 { font-size: 14.5px; margin: 0; font-weight: 700; color: #fff; }
+.sidebar-header p { font-size: 11px; color: var(--accent-gold); margin: 4px 0 0 0; font-weight: 600; }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 15px; }
+.nav-group-title {
+  font-size: 11px; color: var(--accent-gold); margin: 15px 5px 5px; font-weight: 700;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15); padding-bottom: 4px;
+}
+.nav-link {
+  display: flex; align-items: center; padding: 10px 12px; color: #94a3b8;
+  text-decoration: none; border-radius: 6px; font-size: 12.5px; margin-bottom: 3px; cursor: pointer;
+}
+.nav-link:hover, .nav-link.active {
+  background: rgba(212, 175, 55, 0.1); color: #fff; font-weight: 600; border-right: 3px solid var(--accent-gold);
+}
+
+/* منطقة العمل الرئيسية */
+.main-content { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.top-navbar {
+  height: 70px; background-color: var(--bg-surface); border-bottom: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+  position: sticky; top: 0; z-index: 30; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+.search-box-container { position: relative; width: 420px; }
+.search-box-container input {
+  width: 100%; padding: 10px 40px 10px 15px; border-radius: 20px;
+  border: 1px solid var(--border-color); background-color: var(--bg-main);
+  color: var(--text-main); font-size: 13px; outline: none; transition: all 0.3s;
+}
+.search-box-container input:focus { border-color: var(--accent-gold); box-shadow: 0 0 10px var(--accent-gold-glow); }
+.search-icon-inside { position: absolute; right: 15px; top: 11px; color: var(--text-muted); }
+
+.action-toolbar { display: flex; align-items: center; gap: 8px; }
+.action-btn {
+  background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main);
+  padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12.5px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.action-btn:hover { background-color: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
+.action-btn.speaking { background-color: #ef4444; color: white; border-color: #ef4444; animation: pulse 1.5s infinite; }
+
+/* الواجهة الترحيبية */
+.hero-wrapper { padding: 40px; display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 120px); }
+.hero-card {
+  background: linear-gradient(145deg, #0a1324, #03070f);
+  color: white; border-radius: 24px; padding: 65px; box-shadow: var(--shadow-lg);
+  position: relative; width: 100%; max-width: 1150px; text-align: center;
+  border: 1px solid rgba(212, 175, 55, 0.2); overflow: hidden;
+  animation: cardEntrance 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-card::before {
+  content: ""; position: absolute; top: -30%; left: -20%; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.09) 0%, transparent 70%);
+  border-radius: 50%; animation: floatGlow 10s ease-in-out infinite alternate;
+}
+.hero-main-logo {
+  width: 120px; height: 120px; margin: 0 auto 25px;
+  border: 2px solid var(--accent-gold); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+  font-size: 55px; color: var(--accent-gold);
+}
+
+.hero-badge {
+  background-color: rgba(212, 175, 55, 0.08); border: 1px solid var(--accent-gold);
+  color: var(--accent-gold); padding: 6px 20px; border-radius: 30px;
+  font-size: 12.5px; font-weight: 700; display: inline-block; margin-bottom: 25px;
+}
+.hero-card h2 { font-size: 34px; font-weight: 900; margin: 10px 0; line-height: 1.5; text-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+.hero-card .subtitle { font-size: 19px; color: var(--accent-gold-hover); margin-bottom: 45px; font-weight: 600; }
+
+.judicial-credits-board { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 40px 0; position: relative; z-index: 2; }
+.credit-box {
+  background: linear-gradient(135deg, rgba(255,255,255,0.01), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; text-align: center;
+}
+.credit-box.supervisor { border-top: 4px solid var(--accent-gold); }
+.credit-box.author { border-top: 4px solid #cbd5e1; }
+.credit-box .role-label { font-size: 12.5px; color: #94a3b8; font-weight: 700; margin-bottom: 12px; }
+.credit-box .name-title { font-family: 'Amiri', serif; font-size: 28px; font-weight: 700; color: var(--accent-gold); margin: 0 0 6px 0; }
+.credit-box .sub-name { font-size: 14.5px; color: #cbd5e1; }
+
+.hero-action-zone { margin-top: 20px; }
+.primary-trigger-btn {
+  background: linear-gradient(135deg, var(--accent-gold), #b3922e);
+  color: #040811 !important; font-weight: 800; font-size: 15.5px; padding: 16px 45px;
+  border-radius: 30px; border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+}
+
+@keyframes cardEntrance { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes floatGlow { from { transform: translate(0, 0); } to { transform: translate(-40px, 30px); } }
+
+/* مساحة عرض المحقق وقراءة البيانات */
+.workspace-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; padding: 25px; }
+.document-view-card { background-color: var(--bg-surface); border-radius: 12px; padding: 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid var(--border-color); }
+.filter-tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+.filter-tab { background: none; border: none; color: var(--text-muted); padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 600; border-radius: 4px; }
+.filter-tab.active { background-color: rgba(212, 175, 55, 0.12); color: var(--accent-gold); }
+
+.legal-section-block { margin-bottom: 25px; }
+.legal-box { background: linear-gradient(180deg, var(--bg-surface), var(--bg-main)); border-right: 4px solid var(--accent-gold); padding: 20px; border-radius: 8px; margin: 15px 0; }
+
+.smart-sidebar { display: flex; flex-direction: column; gap: 15px; }
+.smart-card { background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; }
+.smart-card h3 { font-size: 13px; margin: 0 0 12px 0; border-bottom: 2px solid var(--accent-gold); padding-bottom: 5px; color: var(--accent-gold); }
+.notes-area textarea { width: 100%; height: 90px; background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; padding: 8px; font-size: 12px; resize: none; outline: none; }
+
+/* ====================================================================
+   🤖 [تم التصحيح والتحسين هنا]: رسم الأفاتار ثلاثي الأبعاد بالـ CSS الخالص ليظهر فوراً
+   ==================================================================== */
+#chatBotContainer {
+    position: fixed; bottom: 25px; left: 25px; z-index: 2000; direction: rtl;
+}
+
+.bot-trigger-avatar {
+    width: 85px; height: 85px; border-radius: 50%;
+    background: linear-gradient(135deg, #111b2c, #050911);
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+    cursor: pointer; position: relative;
+    border: 3px solid #d4af37; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+}
+
+/* رسم الرأس بدقة فخمة ثلاثية الأبعاد */
+.bot-trigger-avatar .avatar-3d-head {
+    width: 24px; height: 24px; background: radial-gradient(circle at 30% 30%, #e2e8f0, #475569);
+    border-radius: 50%; position: absolute; top: 15px; z-index: 4;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+/* رسم البدلة والجاكيت الوقور */
+.bot-trigger-avatar .avatar-3d-suit {
+    width: 65px; height: 42px; background: linear-gradient(180deg, #1e293b, #0f172a);
+    border-top-left-radius: 14px; border-top-right-radius: 14px; z-index: 2; position: relative;
+}
+/* رسم الوشاح الرسمي الفاخر ذو اللونين الأحمر والأخضر والنسر والثلاث نجوم */
+.bot-trigger-avatar .avatar-3d-sash {
+    position: absolute; top: 0; left: 12px; width: 22px; height: 42px;
+    background: linear-gradient(to left, var(--prosecution-red) 45%, var(--prosecution-green) 45%);
+    transform: rotate(-10deg); z-index: 3;
+    border-left: 1.5px solid var(--accent-gold); border-right: 1.5px solid var(--accent-gold);
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 2px;
+}
+/* النجوم التوجيهية المصغرة */
+.avatar-3d-sash .stars-row { font-size: 5px; color: var(--accent-gold); line-height: 1; margin-bottom: 2px; letter-spacing: 0.5px; }
+/* النسر القضائي الذهبي المصغر */
+.avatar-3d-sash .eagle-mark { font-size: 9px; color: var(--accent-gold); line-height: 1; font-weight: bold; }
+
+/* هالات المدار المستقرة - تم منع تكرار الوميض المزعج والاختفاء */
+.bot-trigger-avatar::before,
+.bot-trigger-avatar::after {
+    content: ''; position: absolute; top: -12px; left: -12px; right: -12px; bottom: -12px;
+    border: 2px solid rgba(212, 175, 55, 0.4); border-radius: 50%;
+    animation: goldOrbit 5s linear infinite; pointer-events: none; z-index: -1;
+}
+.bot-trigger-avatar::after {
+    top: -6px; left: -6px; right: -6px; bottom: -6px;
+    border: 1px dashed rgba(212, 175, 55, 0.6); animation: goldOrbitReverse 7s linear infinite;
+}
+
+@keyframes goldOrbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes goldOrbitReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+
+.bot-trigger-avatar:hover { transform: scale(1.08); }
+
+/* نافذة المحادثة الزجاجية الفاخرة */
+.ai-chat-window {
+    position: absolute; bottom: 100px; left: 0; width: 390px; height: 530px;
+    background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 16px;
+    box-shadow: var(--shadow-lg), inset 0 0 20px rgba(212,175,55,0.05);
+    display: none; flex-direction: column; overflow: hidden;
+    animation: windowSlideUp 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes windowSlideUp { from { opacity: 0; transform: translateY(25px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.chat-window-header {
+    background: linear-gradient(135deg, #0d1627, #050912); padding: 15px 20px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25); display: flex; justify-content: space-between; align-items: center;
+}
+.chat-header-title { display: flex; align-items: center; gap: 10px; }
+.chat-header-title h3 { margin: 0; font-size: 13.5px; color: #e6c667; font-weight: 600; }
+.chat-close-btn { background: none; border: none; color: #a0a5a8; cursor: pointer; font-size: 18px; }
+.chat-close-btn:hover { color: #cc1111; }
+
+.chat-messages-container {
+    flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+    background: radial-gradient(circle at bottom, rgba(212,175,55,0.02), transparent);
+}
+.chat-bubble.ai-style {
+    background: rgba(255, 255, 255, 0.03); border-right: 4px solid var(--prosecution-green);
+    border-left: 1px solid rgba(212, 175, 55, 0.15); border-top: 1px solid rgba(255,255,255,0.02);
+    padding: 14px; border-radius: 4px 12px 12px 4px; color: #e2e8f0; font-size: 13px; line-height: 1.7;
+}
+.chat-bubble.user-style {
+    background: linear-gradient(135deg, #d4af37, #b3922e); color: #050a14;
+    padding: 12px 16px; border-radius: 14px 4px 14px 14px; align-self: flex-end;
+    font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(212,175,55,0.1); max-width: 85%;
+}
+
+.chat-input-area { padding: 15px; background: #070d19; border-top: 1px solid rgba(255, 255, 255, 0.04); display: flex; gap: 8px; }
+.chat-input-field {
+    flex: 1; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 8px; padding: 11px 15px; color: #ffffff; font-size: 13px; font-family: 'Cairo', sans-serif;
+}
+.chat-input-field:focus { outline: none; border-color: #d4af37; box-shadow: 0 0 10px rgba(212, 175, 55, 0.15); }
+.chat-send-btn { background: var(--prosecution-green); border: none; color: white; padding: 0 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
+.chat-send-btn:hover { background: #0e6e36; }
+
+/* 👑 تذييل توثيق البرمجة لسيادتكم بأسفل الشاشة */
+.app-footer {
+    background-color: #03060c; color: #57657a; text-align: center; padding: 15px;
+    font-size: 12.5px; border-top: 1px solid #111d35; font-family: 'monospace', sans-serif; letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo-container">
+        <span>⚖</span>
+      </div>
+      <h1>الدليل القانوني الشامل</h1>
+      <p>منصة نيابة شمال أسيوط الكلية</p>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-link active" id="homeNavLink" onclick="setView('home')">🏠 الشاشة الرئيسية للدليل</div>
+      <div id="dynamicNavItems"></div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-navbar">
+      <div class="search-box-container">
+        <span class="search-icon-inside">🔍</span>
+        <input type="text" id="globalSearch" placeholder="ابحث برقم المادة أو الكلمة في كامل الدليل..." oninput="executeLiveSearch(this.value)">
+      </div>
+      <div class="action-toolbar">
+        <button class="action-btn" id="voiceBtn" onclick="toggleSpeechEngine()">🔊 قراءة صوتية</button>
+        <button class="action-btn" onclick="toggleTheme()">◐ المظهر</button>
+        <button class="action-btn" onclick="window.print()">🖨️ طباعة</button>
+      </div>
+    </header>
+
+    <div id="homeView" class="hero-wrapper">
+      <div class="hero-card">
+        <div class="hero-badge">⚖️ تم تفعيل المساعد القضائي الذكي التفاعلي أونلاين (انقر على أيقونة الوشاح أسفل الشاشة لمحاورته)</div>
+        
+        <div class="hero-main-logo">⚖</div>
+
+        <h2>أهم ملامح الاختلاف بين قانوني الإجراءات الجنائية الحالي والجديد</h2>
+        <div class="subtitle">رصد دقيق للتنظيم الإجرائي الحالي والأثر التطبيقي للعمل بالتنظيم الجديد</div>
+        
+        <div class="judicial-credits-board">
+          <div class="credit-box supervisor">
+            <div class="role-label">تحت توجيه وإشراف معالي المستشار الجليل</div>
+            <div class="name-title">المحامي العام</div>
+            <div class="sub-name">لنيابة شمال أسيوط الكلية</div>
+          </div>
+          
+          <div class="credit-box author">
+            <div class="role-label">إعداد </div>
+            <div class="name-title">أحمد علي عبد العال</div>
+            <div class="sub-name">رئيس النيابة بنيابة شمال أسيوط الكلية</div>
+          </div>
+        </div>
+        
+        <div class="hero-action-zone">
+          <button class="primary-trigger-btn" onclick="startBrowsing()">
+            <span>⚙️ ابدأ التصفح والتحليل الفوري للأبواب</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="readerView" class="workspace-layout" style="display: none;">
+      <div class="document-view-card">
+        <div class="filter-tabs">
+          <button class="filter-tab active" id="tab-all" onclick="filterDisplay('all')">المحتوى كاملاً</button>
+          <button class="filter-tab" id="tab-law" onclick="filterDisplay('law')">النص القانوني</button>
+          <button class="filter-tab" id="tab-analysis" onclick="filterDisplay('analysis')">الشرح والتحليل</button>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <h2 id="viewTitle" style="color:var(--accent-gold); margin:0 0 5px 0; font-size:22px;"></h2>
+          <p id="viewSubtitle" style="color:var(--text-muted); margin:0; font-size:13.5px;"></p>
+        </div>
+
+        <div id="legalReaderBody" style="font-size:16.5px; line-height:1.8;"></div>
+      </div>
+
+      <div class="smart-sidebar">
+        <div class="smart-card">
+          <h3>🛡️ تحصين قرارات النيابة العامة</h3>
+          <div id="aiOutputSim" style="font-size:12.5px; background:var(--bg-main); padding:12px; border-radius:6px; border-right:3px solid var(--success-green); line-height:1.6; color: var(--text-main);"></div>
+        </div>
+        <div class="smart-card">
+          <h3>🎨 أدوات تظليل المواد والمدد</h3>
+          <div style="display: flex; gap: 6px;">
+            <button onclick="activeColor='yellow'" style="background-color:#fef08a; width:25px; height:25px; border-radius:50%; border:none; cursor:pointer;"></button>
+            <button onclick="activeColor='red'" style="background-color:#fecaca; width:25px; height:25px; border-radius:50%; border:none; cursor:pointer;" title="مدد مواعيد حتمية"></button>
+            <button onclick="activeColor='green'" style="background-color:#bbf7d0; width:25px; height:25px; border-radius:50%; border:none; cursor:pointer;" title="تحصين إجرائي"></button>
+          </div>
+        </div>
+        <div class="smart-card">
+          <h3>📝 مفكرة عضو النيابة الكلية</h3>
+          <div class="notes-area">
+            <textarea id="judicialNotes" placeholder="اكتب تعليقاتك القانونية وتوجيهاتك القضائية هنا..." oninput="saveCurrentPageNote()"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="chatBotContainer">
+    <div class="bot-trigger-avatar" onclick="toggleAiChatWindow()" title="المساعد القضائي الرقمي لنيابة شمال أسيوط">
+         <div class="avatar-3d-head"></div>
+         <div class="avatar-3d-suit">
+              <div class="avatar-3d-sash">
+                   <div class="stars-row">★★★</div>
+                   <div class="eagle-mark">🦅</div>
+              </div>
+         </div>
+    </div>
+    <div class="ai-chat-window" id="aiChatWindow">
+        <div class="chat-window-header">
+            <div class="chat-header-title">
+                <div class="mini-prosecution-sash"></div>
+                <h3>المنصة الذكية لنيابة شمال أسيوط الكلية</h3>
+            </div>
+            <button class="chat-close-btn" onclick="toggleAiChatWindow()">✕</button>
+        </div>
+        <div class="chat-messages-container" id="chatBox">
+            <div class="chat-bubble ai-style">
+                مرحباً بسيادتكم معالي المستشار الجليل. ⚖️<br><br>
+                أنا مساعدكم القضائي الذكي المطور أونلاين. تفضلوا بطرح استفساراتكم النيابية، وسأقوم بفحص ومطابقة كامل البيانات المتوفرة بملف قاعدة البيانات <b>db-data.js</b> فوراً مدعوماً بالموسوعات الفقهية لـ Gemini.
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input-field" placeholder="اكتب سؤالكم الإجرائي هنا يا فندم..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button class="chat-send-btn" onclick="sendChatMessage()">إرسال</button>
+        </div>
+    </div>
+</div>
+
+<footer class="app-footer">
+    Programming and Development: Amr essmaiel - Manfalut Partial Prosecution 2026
+</footer>
+
+<script src="db-data.js"></script>
+<script src="ai-brain.js"></script>
+
+<script>
+let activeColor = 'yellow';
+let currentIndex = 0;
+let isSpeaking = false;
+let currentUtterance = null;
+
+// [تم التحسين الجوهري هنا]: بناء المنظومة وقراءة الفهرس بالكامل من ملف db-data.js مباشرة بنسبة 100%
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof LEGAL_DATABASE !== 'undefined') {
+    buildSidebarMenu();
+    setupHighlighter();
+  } else {
+    alert("تنبيه حرج: ملف البيانات db-data.js غير موجود بجانب هذا الملف، يرجى التحقق من رفعه.");
+  }
+});
+
+function buildSidebarMenu() {
+  const container = document.getElementById("dynamicNavItems");
+  container.innerHTML = "";
+  let lastChapter = "";
+
+  LEGAL_DATABASE.forEach((item, idx) => {
+    if (item.chapter !== lastChapter) {
+      lastChapter = item.chapter;
+      const title = document.createElement("div");
+      title.className = "nav-group-title";
+      title.innerText = lastChapter;
+      container.appendChild(title);
+    }
+    const link = document.createElement("div");
+    link.className = "nav-link";
+    link.id = "nav_item_" + item.id;
+    link.innerText = `📄 ${item.title}`;
+    link.onclick = () => loadTargetItem(idx);
+    container.appendChild(link);
+  });
+}
+
+function startBrowsing() { if(LEGAL_DATABASE.length > 0) loadTargetItem(0); }
+
+function loadTargetItem(index) {
+  if(isSpeaking) stopSpeech();
+
+  currentIndex = index;
+  document.getElementById("homeView").style.display = "none";
+  document.getElementById("readerView").style.display = "grid";
+  document.getElementById("homeNavLink").classList.remove("active");
+
+  const data = LEGAL_DATABASE[index];
+  document.getElementById("viewTitle").innerText = data.title;
+  document.getElementById("viewSubtitle").innerText = data.chapter;
+  
+  // تصفح النصوص المقارنة والشروحات المكتوبة بملف db-data.js
+  document.getElementById("legalReaderBody").innerHTML = `
+    <div class="legal-section-block" id="block-law"><div class="legal-box"><b>⚖️ النص الحاكم والمقارن:</b><br><p style="white-space: pre-line;">${data.lawText}</p></div></div>
+    <div class="legal-section-block" id="block-analysis"><b>📌 الشرح والتحليل والأثر القضائي للنيابة العامة:</b><br><p style="white-space: pre-line;">${data.analysis}</p></div>
+  `;
+
+  document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+  const currentLink = document.getElementById("nav_item_" + data.id);
+  if(currentLink) currentLink.classList.add("active");
+
+  document.getElementById("judicialNotes").value = localStorage.getItem("note_" + data.id) || "";
+  document.getElementById("aiOutputSim").innerHTML = data.aiCounter;
+  filterDisplay('all');
+}
+
+function saveCurrentPageNote() {
+  localStorage.setItem("note_" + LEGAL_DATABASE[currentIndex].id, document.getElementById("judicialNotes").value);
+}
+
+function filterDisplay(type) {
+  document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+  const tabBtn = document.getElementById("tab-" + type);
+  if(tabBtn) tabBtn.classList.add("active");
+  
+  const blockLaw = document.getElementById("block-law");
+  const blockAnalysis = document.getElementById("block-analysis");
+  
+  if(blockLaw && blockAnalysis) {
+     blockLaw.style.display = (type === 'all' || type === 'law') ? "block" : "none";
+     blockAnalysis = document.getElementById("block-analysis").style.display = (type === 'all' || type === 'analysis') ? "block" : "none";
+  }
+}
+
+function executeLiveSearch(query) {
+  if(!query || query.length < 2) return;
+  const match = LEGAL_DATABASE.findIndex(d => d.title.includes(query) || d.lawText.includes(query) || d.analysis.includes(query));
+  if(match !== -1 && match !== currentIndex) loadTargetItem(match);
+}
+
+function toggleAiChatWindow() {
+    const windowEl = document.getElementById("aiChatWindow");
+    if (windowEl.style.display === "none" || windowEl.style.display === "") {
+        windowEl.style.display = "flex";
+        document.getElementById("chatInput").focus();
+    } else {
+        windowEl.style.display = "none";
+    }
+}
+
+/* 💬 [تم التصحيح هنا]: تعديل الدالة لتعمل بنظام الـ async/await للانتظار والرد الصحيح من خادم جيرمني أونلاين */
+async function sendChatMessage() {
+  const inputEl = document.getElementById("chatInput");
+  const query = inputEl.value.trim();
+  if (!query) return;
+
+  const chatBox = document.getElementById("chatBox");
+
+  const userBubble = document.createElement("div");
+  userBubble.className = "chat-bubble user-style";
+  userBubble.innerText = query;
+  chatBox.appendChild(userBubble);
+  inputEl.value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  const typingBubble = document.createElement("div");
+  typingBubble.className = "chat-bubble ai-style";
+  typingBubble.id = "typingLoader";
+  typingBubble.innerHTML = `<i>جاري الفحص والربط الفقهي من ملف db-data.js لسيادتكم معالي المستشار...</i>`;
+  chatBox.appendChild(typingBubble);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try {
+      // استدعاء محرك المحادثة أونلاين بملف ai-brain.js
+      const aiResponse = await processHumanIntelligence(query);
+
+      const loader = document.getElementById("typingLoader");
+      if(loader) loader.remove();
+
+      const aiBubble = document.createElement("div");
+      aiBubble.className = "chat-bubble ai-style";
+      aiBubble.innerHTML = aiResponse;
+
+      chatBox.appendChild(aiBubble);
+      chatBox.scrollTop = chatBox.scrollHeight;
+  } catch (err) {
+      const loader = document.getElementById("typingLoader");
+      if(loader) loader.remove();
+      console.error(err);
+  }
+}
+
+function toggleTheme() { document.body.classList.toggle("light-theme"); }
+
+function toggleSpeechEngine() { if (isSpeaking) { stopSpeech(); } else { startSpeech(); } }
+function startSpeech() {
+  const text = document.getElementById("legalReaderBody").innerText;
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    currentUtterance = new SpeechSynthesisUtterance(text);
+    currentUtterance.lang = 'ar-EG'; currentUtterance.rate = 0.85;
+    currentUtterance.onend = () => { stopSpeech(); };
+    currentUtterance.onerror = () => { stopSpeech(); };
+    const btn = document.getElementById("voiceBtn");
+    btn.innerText = "🛑 إيقاف القراءة"; btn.classList.add("speaking"); isSpeaking = true;
+    window.speechSynthesis.speak(currentUtterance);
+  }
+}
+function stopSpeech() {
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  const btn = document.getElementById("voiceBtn");
+  btn.innerText = "🔊 قراءة صوتية"; btn.classList.remove("speaking"); isSpeaking = false;
+}
+
+function setupHighlighter() {
+  document.getElementById("legalReaderBody").addEventListener("mouseup", () => {
+    const selection = window.getSelection();
+    if (selection.toString().length > 0) {
+      const range = selection.getRangeAt(0);
+      const span = document.createElement("span");
+      span.className = `highlight-${activeColor}`;
+      range.surroundContents(span);
+      selection.removeAllRanges();
+    }
+  });
+}
+
+function setView(view) {
+  if(view === 'home') {
+    if(isSpeaking) stopSpeech();
+    document.getElementById("homeView").style.display = "flex";
+    document.getElementById("readerView").style.display = "none";
+    document.getElementById("homeNavLink").classList.add("active");
+    document.querySelectorAll(".nav-link").forEach(l => { if(l.id !== "homeNavLink") l.classList.remove("active"); });
+  }
+}
+</script>
+</body>
+</html>
