@@ -48,8 +48,8 @@ ${dbContextText}
     `;
 
     try {
-        // [تم التصحيح الحاسم هنا]: استخدام الإصدار المستقر v1 وتعديل صياغة الرابط لمنع خطأ 404 نهائياً
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        // [التصحيح الحاسم]: استخدام الامتداد المحدث والموثق لـ جوجل لمنع الـ 404
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
