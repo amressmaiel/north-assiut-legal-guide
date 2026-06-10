@@ -6,10 +6,8 @@
  */
 
 // تقسيم المفتاح السري لجزأين لحمايته من روبوتات الفحص التلقائي لجيت هاب
-const PART_A = "AQ.Ab8RN6IaZ0zpu5AWJcTE9XcJVswPmT_kj";
-const PART_B = "U92SlLsRJgIfSsAjA";
 
-const GEMINI_API_KEY = PART_A + PART_B; 
+
 
 /**
  * 🧠 محرك المساعد القضائي الذكي - Google Gemini API
