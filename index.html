@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>المنصة القضائية الذكية | قانون الإجراءات الجنائية الجديد</title>
+<title>الدليل القضائي الذكي لأعضاء النيابة العامة</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -223,6 +223,121 @@ body.sidebar-expanded .main{margin-right:290px;width:calc(100% - 290px)}
 @media(max-width:820px){body.sidebar-expanded .main{margin-right:0;width:100%}.sand-hero-zone{min-height:310px;width:min(300px,100%);margin-top:4px}.sand-hero-avatar{max-height:300px}.leadership-name{font-size:17px}.leadership-panel{padding:14px}.mobile-menu-btn{display:grid}}
 @media(max-width:430px){.sand-hero-zone{min-height:265px;width:min(255px,100%)}.sand-hero-avatar{max-height:255px}.leadership-name{font-size:15px}.leadership-label{font-size:10px}.leadership-sub{font-size:10px}}
 
+
+/* =========================================================
+   ✨ الهوية الرئيسية المطورة — V3
+   ========================================================= */
+.platform-title-band{
+  position:relative;z-index:3;display:flex;align-items:center;gap:20px;width:100%;
+  margin:0 0 25px;padding:15px 18px;border-radius:22px;
+  background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(255,255,255,.025));
+  border:1px solid rgba(212,175,55,.25);box-shadow:inset 0 0 30px rgba(212,175,55,.035),0 12px 30px rgba(0,0,0,.18);
+  overflow:hidden;animation:titleBandEnter .9s cubic-bezier(.16,1,.3,1) both
+}
+.platform-title-band::after{
+  content:"";position:absolute;top:0;bottom:0;width:120px;right:-160px;
+  background:linear-gradient(90deg,transparent,rgba(255,238,169,.20),transparent);
+  transform:skewX(-18deg);animation:titleBandSweep 5.2s ease-in-out 1.2s infinite
+}
+.platform-logo-shell{position:relative;flex:0 0 100px;width:100px;height:100px;display:grid;place-items:center;isolation:isolate}
+.platform-logo-shell::before{content:"";position:absolute;inset:10px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.25),transparent 70%);filter:blur(8px);animation:logoGlowPulse 3.2s ease-in-out infinite}
+.platform-logo-orbit{position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(240,215,122,.55);animation:logoOrbitClockwise 14s linear infinite}
+.platform-main-logo{position:relative;z-index:2;width:82px;height:82px;object-fit:contain;filter:drop-shadow(0 10px 15px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(212,175,55,.36));animation:platformLogoFloat 4.8s ease-in-out infinite}
+.platform-title-copy{min-width:0;flex:1;text-align:center}
+.platform-title-kicker{display:block;color:#d9c37b;font-size:11px;font-weight:800;letter-spacing:1px;margin-bottom:4px}
+.platform-main-title{
+  margin:0!important;white-space:nowrap;font-family:"Cairo",sans-serif!important;
+  font-size:clamp(24px,3.6vw,52px)!important;line-height:1.25!important;font-weight:900!important;
+  background:linear-gradient(100deg,#f9efc6 0%,#d4af37 23%,#fff6cf 43%,#d4af37 62%,#fff3b3 82%,#d4af37 100%);
+  background-size:240% auto;color:transparent;-webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 3px 15px rgba(212,175,55,.16));animation:titleGoldShimmer 5.4s linear infinite
+}
+.hero-description{margin:0;max-width:880px!important;color:#c3cede!important;font-size:15px!important;line-height:2.05!important}
+
+/* =========================================================
+   👑 تفاوت بصري مقصود في بطاقات القيادات
+   ========================================================= */
+.leadership-panel{padding:20px;border-color:rgba(212,175,55,.36);background:linear-gradient(135deg,rgba(212,175,55,.11),rgba(255,255,255,.028));box-shadow:inset 0 0 34px rgba(212,175,55,.045),0 15px 35px rgba(0,0,0,.18)}
+.leadership-heading{font-size:14px;letter-spacing:.5px;color:#f5dc8b;text-shadow:0 0 15px rgba(212,175,55,.30)}
+.leadership-grid{grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}
+.leadership-card{position:relative;overflow:hidden;isolation:isolate;transition:.35s ease;animation:leadershipCardEnter .8s cubic-bezier(.16,1,.3,1) both}
+.leadership-card::after{content:"";position:absolute;top:-25%;bottom:-25%;width:70px;right:-110px;background:linear-gradient(90deg,transparent,rgba(255,238,169,.17),transparent);transform:skewX(-18deg);animation:leadershipSweep 6s ease-in-out infinite;pointer-events:none}
+.leadership-card:hover{transform:translateY(-5px);border-color:rgba(212,175,55,.52);box-shadow:0 15px 28px rgba(0,0,0,.22)}
+.leadership-card.supervision{grid-column:span 12;padding:20px 22px;border-top:4px solid #f0d77a;background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(2,8,15,.45));animation-delay:.08s}
+.leadership-card.preparation{grid-column:span 7;padding:17px 19px;border-top:3px solid #d8e3ef;background:linear-gradient(135deg,rgba(216,227,239,.07),rgba(2,8,15,.42));animation-delay:.18s}
+.leadership-card.development{grid-column:span 5;padding:15px 17px;border-top:3px solid rgba(212,175,55,.72);background:linear-gradient(135deg,rgba(212,175,55,.07),rgba(2,8,15,.42));animation-delay:.28s}
+.leadership-label{color:#b9c7d8;font-size:11px;letter-spacing:.2px}
+.leadership-name{display:block;background:linear-gradient(100deg,#f9efc6,#d4af37,#fff5bd,#d4af37,#f9efc6);background-size:230% auto;color:transparent;-webkit-background-clip:text;background-clip:text;text-shadow:0 0 18px rgba(212,175,55,.10);animation:titleGoldShimmer 5.8s linear infinite}
+.leadership-card.supervision .leadership-name{font-size:27px;line-height:1.65}
+.leadership-card.preparation .leadership-name{font-size:22px;line-height:1.7}
+.leadership-card.development .leadership-name{font-size:18px;line-height:1.75}
+.leadership-card.supervision .leadership-sub{font-size:12px;color:#e0e7f0}
+.leadership-card.preparation .leadership-sub{font-size:11px}
+.leadership-card.development .leadership-sub{font-size:10.5px}
+
+/* =========================================================
+   🤖 أفاتار سَنَد الصغير — صورة واحدة شفافة مع بروز ثلاثي الأبعاد
+   ========================================================= */
+#chatBotContainer{left:20px;bottom:18px}
+.bot-trigger{
+  width:94px;height:104px;border:0!important;border-radius:0!important;overflow:visible!important;
+  background:transparent!important;box-shadow:none!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;
+  isolation:isolate;transition:transform .28s ease;animation:smallSandStageEnter .9s cubic-bezier(.16,1,.3,1) both
+}
+.bot-trigger:hover{transform:translateY(-5px) scale(1.045)}
+.bot-trigger::before{
+  content:"";position:absolute;z-index:0;bottom:4px;left:9%;width:82%;height:22px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(212,175,55,.38),rgba(0,0,0,.52) 48%,transparent 74%);filter:blur(5px);animation:smallGroundPulse 4.8s ease-in-out infinite
+}
+.bot-trigger::after{
+  content:""!important;position:absolute!important;z-index:1!important;bottom:3px!important;left:7%!important;width:86%!important;height:28px!important;padding:0!important;
+  border-radius:50%!important;border:1px solid rgba(240,215,122,.56)!important;background:transparent!important;box-shadow:0 0 18px rgba(212,175,55,.24)!important;
+  animation:smallRingPulse 3.8s ease-in-out infinite!important
+}
+.bot-trigger img{
+  position:relative;z-index:3;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center bottom!important;
+  border-radius:0!important;filter:drop-shadow(0 18px 12px rgba(0,0,0,.72)) drop-shadow(0 0 15px rgba(212,175,55,.24))!important;
+  animation:smallSandFloat 5.2s ease-in-out infinite
+}
+.bot-trigger.avatar-fallback{background:transparent!important}
+
+/* =========================================================
+   ✨ تذييل أوضح وأكثر حيوية
+   ========================================================= */
+.footer{padding:18px 15px;color:#f0d77a;font-size:13px;font-weight:700;letter-spacing:.55px;text-shadow:0 0 14px rgba(212,175,55,.34);background:linear-gradient(180deg,rgba(212,175,55,.025),rgba(0,0,0,.06));border-top:1px solid rgba(212,175,55,.28)}
+
+@keyframes titleGoldShimmer{to{background-position:240% center}}
+@keyframes titleBandSweep{0%,68%{right:-160px}100%{right:115%}}
+@keyframes leadershipSweep{0%,70%{right:-110px}100%{right:118%}}
+@keyframes leadershipCardEnter{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes platformLogoFloat{50%{transform:translateY(-7px) scale(1.035)}}
+@keyframes smallSandStageEnter{from{opacity:0;transform:translateY(20px) scale(.78)}to{opacity:1;transform:none}}
+@keyframes smallSandFloat{50%{transform:translateY(-7px) scale(1.025)}}
+@keyframes smallGroundPulse{50%{transform:scale(.86);opacity:.66}}
+@keyframes smallRingPulse{50%{transform:scale(1.12);opacity:.38}}
+
+@media(max-width:1100px){
+  .platform-main-title{font-size:clamp(22px,3vw,40px)!important}
+}
+@media(max-width:820px){
+  .platform-title-band{gap:10px;padding:11px 10px;margin-bottom:14px;border-radius:16px}
+  .platform-logo-shell{flex-basis:66px;width:66px;height:66px}
+  .platform-main-logo{width:55px;height:55px}
+  .platform-title-kicker{font-size:8px;letter-spacing:.3px}
+  .platform-main-title{white-space:normal;font-size:clamp(20px,6vw,30px)!important;line-height:1.45!important}
+  .hero-description{font-size:12.5px!important;line-height:1.95!important}
+  .leadership-panel{padding:13px}
+  .leadership-grid{grid-template-columns:1fr;gap:8px}
+  .leadership-card.supervision,.leadership-card.preparation,.leadership-card.development{grid-column:auto;padding:13px 14px}
+  .leadership-card.supervision .leadership-name{font-size:21px}
+  .leadership-card.preparation .leadership-name{font-size:18px}
+  .leadership-card.development .leadership-name{font-size:15px}
+  .leadership-card.supervision .leadership-sub,.leadership-card.preparation .leadership-sub,.leadership-card.development .leadership-sub{font-size:10px}
+  #chatBotContainer{left:8px;bottom:78px}
+  .bot-trigger{width:70px;height:78px}
+  .footer{padding:14px 12px 7px;font-size:10px;line-height:1.8}
+}
+
 </style>
 </head>
 <body>
@@ -279,7 +394,7 @@ body.sidebar-expanded .main{margin-right:290px;width:calc(100% - 290px)}
 
     <div id="appView"></div>
 
-    <footer class="footer">Programming and Development: Amr essmaiel — Manfalut Partial Prosecution 2026</footer>
+    <footer class="footer">Programming and Development: Amr Ismaiel — Manfalut Partial Prosecution 2026</footer>
   </main>
 </div>
 <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
@@ -376,11 +491,20 @@ function goHome(){
   const m=meta();
   page(`
     <section class="hero">
+      <div class="platform-title-band">
+        <div class="platform-logo-shell" aria-label="شعار المنصة">
+          <div class="platform-logo-orbit"></div>
+          <img src="./logo.png" alt="شعار المنصة القضائية الذكية" class="platform-main-logo" onerror="this.style.display='none'; this.parentElement.classList.add('logo-fallback');">
+        </div>
+        <div class="platform-title-copy">
+          <span class="platform-title-kicker">المنصة القضائية الرقمية المتكاملة</span>
+          <h2 class="platform-main-title">الدليل القضائي الذكي لأعضاء النيابة العامة</h2>
+        </div>
+      </div>
       <div class="hero-grid">
         <div>
-          <div class="eyebrow">⚖️ منصة تنفيذية تفاعلية لقانون الإجراءات الجنائية الجديد</div>
-          <h2>الدليل القضائي الذكي<br>لأعضاء النيابة العامة</h2>
-          <p>واجهة موحدة لقراءة المواد، استعراض النصوص الرسمية والتحليلات العملية، الوصول السريع للتصرف الصحيح، والتنبيه إلى الأخطاء التنفيذية الشائعة — مع مساعد قضائي ذكي يربط السؤال بالمادة الأقرب تلقائيًا.</p>
+          <div class="eyebrow">⚖️ منصة قضائية رقمية متكاملة لدعم العمل القانوني والإجرائي لأعضاء النيابة العامة</div>
+          <p class="hero-description">منظومة معرفية تنفيذية قابلة للتطوير المستمر، تجمع الأدلة القانونية والإجرائية في واجهة واحدة، وتسهّل الوصول إلى النصوص والتحليلات العملية والتصرفات الصحيحة والتنبيهات المهمة — مع مساعد قضائي ذكي يربط السؤال بالمعلومة الأقرب تلقائيًا.</p>
           <section class="leadership-panel" aria-label="بيانات التوجيه والإشراف والإعداد">
             <div class="leadership-heading">✦ التوجيه والإشراف والإعداد</div>
             <div class="leadership-grid">
@@ -390,8 +514,8 @@ function goHome(){
                 <span class="leadership-sub">إشراف قضائي على إعداد الدليل التنفيذي والمنصة التفاعلية</span>
               </div>
               <div class="leadership-card preparation">
-                <span class="leadership-label">الإشراف على المحتوى القانونى و التنفيذي</span>
-                <strong class="leadership-name">السيد الاستاذ / أحمد علي عبد العال</strong>
+                <span class="leadership-label">الاشراف على المحتوى القانوني والإشراف التنفيذي</span>
+                <strong class="leadership-name">الأستاذ / أحمد علي عبد العال</strong>
                 <span class="leadership-sub">رئيس النيابة بنيابة شمال أسيوط الكلية</span>
               </div>
               <div class="leadership-card development">
