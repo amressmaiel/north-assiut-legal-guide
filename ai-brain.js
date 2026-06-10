@@ -23,22 +23,21 @@ async function processHumanIntelligence(query) {
         return `<b>💡 تنبيه برمجى لمعالي المستشار:</b><br>يرجى لصق الـ <code>API Key</code> الصحيح الخاص بجوجل داخل ملف <code>ai-brain.js</code> لتفعيل المحادثة الحوارية لـ Gemini.`;
     }
 
-    // تلخيص وتجهيز سياق الدليل بشكل نظيف وموجز لعدم إرباك خوادم المعالجة
+    // تلخيص وتجهيز سياق الدليل بشكل مكثف ليكون متوافقاً مع حجم الـ Payload
     let dbContextText = "";
     LEGAL_DATABASE.forEach((item, idx) => {
-        if(idx < 20) { 
+        if(idx < 25) { 
             dbContextText += `\nالباب: ${item.chapter} | الموضوع: ${item.title}\nالمضمون القضائي: ${item.analysis}\n`;
         }
     });
 
-    // صياغة الأمر الهندسي الموحد والمباشر
     const fullPromptContext = `
 أنت مستشار قضائي رقمي ومساعد ذكي لأعضاء النيابة العامة بمصر. لغتك هي العربية الفصحى الرصينة والوقورة جداً زمالاتياً.
 أجب على سؤال المحقق بناءً على الربط الذكي بين:
 1) الدليل الإجرائي المرفق لك بالأسفل والخاص بقاعدة بيانات "db-data.js" لنيابة شمال أسيوط الكلية.
 2) ملكتك المعرفية العامة بقانون العقوبات المصري، أحكام محكمة النقض، والتعليمات العامة للنيابة.
 
-صغ الرد بأسلوب حواري بشري تفاعلي رصين ومؤدب (ابدأ دائماً بافتتاحية توقيرية مثل: معالي المستشار الجليل، يا فندم، زميلي المستشار الموقر). ناقش وحاور وقدم الحلول الإجرائية والتحصينات القضائية بوضوح تام.
+صغ الرد بأسلوب حواري بشري تفاعلي رصين ومؤدب (ابدأ دائماً بافتتاحية توقيرية مثل: معالي المستشار الجليل، يا فندم، زميلي المستشار الموقر). ناقش وحاور وقدم الحلول الإجرائية والتحصينات القضائية والأخطاء الشائعة بوضوح تام.
 
 قاعدة البيانات القضائية المعتمدة بملف db-data.js للاستناد عليها:
 ${dbContextText}
@@ -49,21 +48,14 @@ ${dbContextText}
     `;
 
     try {
-        // الاتصال بخوادم Google وتمرير كتل إيقاف الحجب الفني للمصطلحات الجنائية (Safety Settings)
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        // [تم التصحيح الحاسم هنا]: استخدام الإصدار المستقر v1 وتعديل صياغة الرابط لمنع خطأ 404 نهائياً
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 contents: [{
                     parts: [{ text: fullPromptContext }]
                 }],
-                // 🛡️ [تعديل مستحدث وحاسم]: إيقاف فلاتر الأمان التلقائية لضمان عدم حجب الكلمات القضائية (الحبس، القتل، الإعدام)
-                safetySettings: [
-                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-                ],
                 generationConfig: { 
                     temperature: 0.2, 
                     maxOutputTokens: 2048 
@@ -73,7 +65,7 @@ ${dbContextText}
 
         const data = await response.json();
         
-        // التحقق الآمن لاستخراج النص
+        // قراءة ردود خادم جوجل بعد استقرار الرابط الجديد
         if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
             let aiReply = data.candidates[0].content.parts[0].text;
             
@@ -82,11 +74,9 @@ ${dbContextText}
             aiReply = aiReply.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>"); 
             return aiReply;
         } else {
-            console.error("Gemini Response Data Error:", data);
-            
-            // في حال وجود مشكلة أخرى في المفتاح نفسه، يعرض الكود توجيهاً دقيقاً لسيادتكم
+            console.error("Gemini Server Output:", data);
             if(data.error) {
-                return `<b>⚠️ خطأ رسمي من خوادم Google (كود ${data.error.code}):</b><br>${data.error.message}<br><br><i>توجيه برمي:</i> يرجى التأكد من أن حساب Google AI Studio الخاص بسيادتكم مفعل عليه خيار الاستخدام بالمنطقة الجغرافية الحالية (مصر).`;
+                return `<b>⚠️ تنبيه من خادم Google (كود ${data.error.code}):</b><br>${data.error.message}`;
             }
             return `معالي المستشار، استقبلت الخوادم الطلب بنجاح، ولكن الخادم رفض الصياغة. يرجى تجربة إرسال سؤال آخر بعبارات مختلفة يا فندم.`;
         }
