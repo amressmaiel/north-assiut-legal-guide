@@ -545,6 +545,58 @@ body.sidebar-expanded .main{margin-right:290px;width:calc(100% - 290px)}
   .sand-hero-caption span{font-size:7.8px}
 }
 
+
+/* =========================================================
+   V6 — ضبط تدفق الشاشة الرئيسية وكروت الإحصائيات وحلقة سَنَد الصغيرة
+   ========================================================= */
+.hero-summary-band{
+  color:#f0d77a!important;
+  border-color:rgba(212,175,55,.34)!important;
+  background:linear-gradient(135deg,rgba(212,175,55,.115),rgba(212,175,55,.04))!important;
+  box-shadow:inset 0 0 19px rgba(212,175,55,.055),0 0 13px rgba(212,175,55,.035)!important;
+}
+.hero-grid{margin-top:0!important;gap:18px!important;align-items:end!important}
+.leadership-panel{margin-top:0!important;margin-bottom:0!important}
+.stats-grid-under-leadership{
+  width:100%;
+  margin-top:8px!important;
+  gap:8px!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+.stats-grid-under-leadership .stat-card{
+  min-height:72px;
+  padding:10px 10px!important;
+  border-radius:11px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  background:linear-gradient(145deg,rgba(212,175,55,.065),rgba(255,255,255,.018));
+  border-color:rgba(212,175,55,.20);
+}
+.stats-grid-under-leadership .stat-card span{font-size:9px!important;line-height:1.65;color:#bdc9d8!important}
+.stats-grid-under-leadership .stat-card strong{font-size:20px!important;line-height:1.35;margin-top:3px!important}
+.stats-grid-under-leadership .stat-card:last-child strong{font-size:14px!important}
+.bot-trigger::before{bottom:-7px!important;height:16px!important;left:14%!important;width:72%!important;filter:blur(4px)!important}
+.bot-trigger::after{
+  bottom:-8px!important;
+  left:13%!important;
+  width:74%!important;
+  height:17px!important;
+  transform:perspective(80px) rotateX(62deg)!important;
+  transform-origin:center!important;
+  box-shadow:0 0 15px rgba(212,175,55,.28)!important;
+}
+@media(max-width:1100px){
+  .stats-grid-under-leadership{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media(max-width:820px){
+  .hero-grid{gap:10px!important}
+  .stats-grid-under-leadership{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin-top:7px!important}
+  .stats-grid-under-leadership .stat-card{min-height:60px;padding:8px!important}
+  .stats-grid-under-leadership .stat-card strong{font-size:17px!important}
+  .stats-grid-under-leadership .stat-card:last-child strong{font-size:12px!important}
+}
+
 </style>
 </head>
 <body>
@@ -735,6 +787,12 @@ function goHome(){
               </div>
             </div>
           </section>
+          <div class="stats-grid stats-grid-under-leadership">
+            <div class="stat-card"><span>إجمالي المواد المتاحة</span><strong>${m.totalArticles}</strong></div>
+            <div class="stat-card"><span>المواد المعدلة أو المعاد تنظيمها</span><strong>${m.modifiedArticles}</strong></div>
+            <div class="stat-card"><span>المواد المستحدثة بالكامل</span><strong>${m.introducedArticles}</strong></div>
+            <div class="stat-card"><span>تاريخ بدء العمل بالقانون</span><strong style="font-size:18px">${esc(m.effectiveDate || "2026/10/01")}</strong></div>
+          </div>
         </div>
         <div class="sand-hero-zone" aria-label="سَنَد — المساعد القضائي الذكي">
           <div class="sand-energy-ring ring-one"></div>
@@ -747,12 +805,6 @@ function goHome(){
       </div>
     </section>
 
-    <div class="stats-grid">
-      <div class="stat-card"><span>إجمالي المواد المتاحة</span><strong>${m.totalArticles}</strong></div>
-      <div class="stat-card"><span>المواد المعدلة أو المعاد تنظيمها</span><strong>${m.modifiedArticles}</strong></div>
-      <div class="stat-card"><span>المواد المستحدثة بالكامل</span><strong>${m.introducedArticles}</strong></div>
-      <div class="stat-card"><span>تاريخ بدء العمل بالقانون</span><strong style="font-size:18px">${esc(m.effectiveDate || "2026/10/01")}</strong></div>
-    </div>
 
     <div class="section-title"><div><h3>بوابات الانتقال السريع</h3><p>كل كارت يفتح مسارًا مستقلًا ومنظمًا داخل الدليل.</p></div></div>
     <div class="card-grid">
