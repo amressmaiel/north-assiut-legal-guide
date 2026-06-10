@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* المظهر الداكن الفاخر (الافتراضي القطعي والملكي) */
+  /* المظهر الداكن الفاخر والافتراضي القطعي لنيابة شمال أسيوط */
   --primary-dark: #050a14;
   --primary-light: #0b1220;
   --accent-gold: #d4af37;
@@ -43,7 +43,7 @@ body {
 
 .app-container { display: grid; grid-template-columns: 340px 1fr; flex: 1; }
 
-/* القائمة الجانبية */
+/* القائمة الجانبية الفخمة */
 .sidebar {
   background: linear-gradient(180deg, #03060c, #010205);
   color: #fff; border-left: 1px solid var(--border-color);
@@ -148,7 +148,7 @@ body {
 @keyframes cardEntrance { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes floatGlow { from { transform: translate(0, 0); } to { transform: translate(-40px, 30px); } }
 
-/* مساحة عرض المحقق وقراءة البيانات */
+/* لوحة القراءة الإجرائية والبيانات */
 .workspace-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; padding: 25px; }
 .document-view-card { background-color: var(--bg-surface); border-radius: 12px; padding: 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid var(--border-color); }
 .filter-tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
@@ -163,25 +163,24 @@ body {
 .smart-card h3 { font-size: 13px; margin: 0 0 12px 0; border-bottom: 2px solid var(--accent-gold); padding-bottom: 5px; color: var(--accent-gold); }
 .notes-area textarea { width: 100%; height: 90px; background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; padding: 8px; font-size: 12px; resize: none; outline: none; }
 
-
 /* ====================================================================
-   🤖 [التعديل التلقائي]: إظهار صورة الأفاتار المرفوعة مباشرة وإلغاء الرسم البرمجي
+   🤖 [تم التعديل القطعي]: استدعاء صورة الأفاتار المرفوعة avatar-3d.png تلقائياً
    ==================================================================== */
-.bot-trigger-avatar {
-    width: 85px; 
-    height: 85px; 
-    border-radius: 50%;
-    /* استدعاء ملف الصورة المرفوع بجانب الملف تلقائياً وجعله متناسق الأبعاد */
-    background: #050911 url('avatar-3d.png') no-repeat center center;
-    background-size: cover; 
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
-    cursor: pointer; 
-    position: relative;
-    border: 3px solid #d4af37; 
-    transition: transform 0.3s ease;
+#chatBotContainer {
+    position: fixed; bottom: 25px; left: 25px; z-index: 2000; direction: rtl;
 }
 
-/* هالات المدار الذهبية المحيطة بالصورة المرفوعة */
+.bot-trigger-avatar {
+    width: 85px; height: 85px; border-radius: 50%;
+    /* تفعيل استدعاء ملف الصورة المرفوع بجانب الأكواد مباشرة */
+    background: #050a14 url('avatar-3d.png') no-repeat center center;
+    background-size: cover;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+    cursor: pointer; position: relative;
+    border: 3px solid #d4af37; transition: transform 0.3s ease;
+}
+
+/* هالات المدار الذهبية المحيطة بالصورة المرفوعة لمنع التكرار والاختفاء */
 .bot-trigger-avatar::before,
 .bot-trigger-avatar::after {
     content: ''; position: absolute; top: -12px; left: -12px; right: -12px; bottom: -12px;
@@ -196,11 +195,11 @@ body {
 @keyframes goldOrbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes goldOrbitReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
 
-.bot-trigger-avatar:hover { transform: scale(1.08); } }
+.bot-trigger-avatar:hover { transform: scale(1.08); }
 
-/* نافذة المحادثة الزجاجية الفاخرة */
+/* نافذة المحادثة الزجاجية الشفافة المطابقة تماماً للصورة المعروضة */
 .ai-chat-window {
-    position: absolute; bottom: 100px; left: 0; width: 390px; height: 530px;
+    position: absolute; bottom: 100px; left: 0; width: 395px; height: 540px;
     background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
     border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 16px;
     box-shadow: var(--shadow-lg), inset 0 0 20px rgba(212,175,55,0.05);
@@ -216,6 +215,11 @@ body {
 }
 .chat-header-title { display: flex; align-items: center; gap: 10px; }
 .chat-header-title h3 { margin: 0; font-size: 13.5px; color: #e6c667; font-weight: 600; }
+.mini-prosecution-sash {
+    width: 12px; height: 24px;
+    background: linear-gradient(to left, var(--prosecution-red) 45%, var(--prosecution-green) 45%);
+    border-radius: 2px; border: 0.5px solid rgba(255,255,255,0.2);
+}
 .chat-close-btn { background: none; border: none; color: #a0a5a8; cursor: pointer; font-size: 18px; }
 .chat-close-btn:hover { color: #cc1111; }
 
@@ -243,7 +247,11 @@ body {
 .chat-send-btn { background: var(--prosecution-green); border: none; color: white; padding: 0 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
 .chat-send-btn:hover { background: #0e6e36; }
 
-/* 👑 تذييل توثيق البرمجة لسيادتكم بأسفل الشاشة */
+.highlight-yellow { background-color: #fef08a; color: #000; }
+.highlight-red { background-color: #fecaca; color: #000; }
+.highlight-green { background-color: #bbf7d0; color: #000; }
+
+/* 👑 تذييل توثيق الحقوق والبرمجة لسيادتكم بأسفل الشاشة */
 .app-footer {
     background-color: #03060c; color: #57657a; text-align: center; padding: 15px;
     font-size: 12.5px; border-top: 1px solid #111d35; font-family: 'monospace', sans-serif; letter-spacing: 0.5px;
@@ -297,7 +305,7 @@ body {
           </div>
           
           <div class="credit-box author">
-            <div class="role-label">إعداد </div>
+            <div class="role-label">إعداد الأستاذ القاضي</div>
             <div class="name-title">أحمد علي عبد العال</div>
             <div class="sub-name">رئيس النيابة بنيابة شمال أسيوط الكلية</div>
           </div>
@@ -352,8 +360,7 @@ body {
 </div>
 
 <div id="chatBotContainer">
-    <div class="bot-trigger-avatar" onclick="toggleAiChatWindow()" title="المساعد القضائي الرقمي لنيابة شمال أسيوط">
-         </div>
+    <div class="bot-trigger-avatar" onclick="toggleAiChatWindow()" title="المساعد القضائي الرقمي لنيابة شمال أسيوط"></div>
     <div class="ai-chat-window" id="aiChatWindow">
         <div class="chat-window-header">
             <div class="chat-header-title">
@@ -388,13 +395,13 @@ let currentIndex = 0;
 let isSpeaking = false;
 let currentUtterance = null;
 
-// [تم التحسين الجوهري هنا]: بناء المنظومة وقراءة الفهرس بالكامل من ملف db-data.js مباشرة بنسبة 100%
+// الانطلاق الفوري والكامل استناداً لملف db-data.js فقط
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof LEGAL_DATABASE !== 'undefined') {
     buildSidebarMenu();
     setupHighlighter();
   } else {
-    alert("تنبيه حرج: ملف البيانات db-data.js غير موجود بجانب هذا الملف، يرجى التحقق من رفعه.");
+    alert("تنبيه حرج: ملف البيانات db-data.js غير مقروء، يرجى التأكد من وجوده بجانب هذا الملف.");
   }
 });
 
@@ -434,7 +441,6 @@ function loadTargetItem(index) {
   document.getElementById("viewTitle").innerText = data.title;
   document.getElementById("viewSubtitle").innerText = data.chapter;
   
-  // تصفح النصوص المقارنة والشروحات المكتوبة بملف db-data.js
   document.getElementById("legalReaderBody").innerHTML = `
     <div class="legal-section-block" id="block-law"><div class="legal-box"><b>⚖️ النص الحاكم والمقارن:</b><br><p style="white-space: pre-line;">${data.lawText}</p></div></div>
     <div class="legal-section-block" id="block-analysis"><b>📌 الشرح والتحليل والأثر القضائي للنيابة العامة:</b><br><p style="white-space: pre-line;">${data.analysis}</p></div>
@@ -463,7 +469,7 @@ function filterDisplay(type) {
   
   if(blockLaw && blockAnalysis) {
      blockLaw.style.display = (type === 'all' || type === 'law') ? "block" : "none";
-     blockAnalysis = document.getElementById("block-analysis").style.display = (type === 'all' || type === 'analysis') ? "block" : "none";
+     blockAnalysis.style.display = (type === 'all' || type === 'analysis') ? "block" : "none";
   }
 }
 
@@ -483,7 +489,7 @@ function toggleAiChatWindow() {
     }
 }
 
-/* 💬 [تم التصحيح هنا]: تعديل الدالة لتعمل بنظام الـ async/await للانتظار والرد الصحيح من خادم جيرمني أونلاين */
+// محرك سحب الرد السحابي الفوري أونلاين بكفاءة استقرار تامة
 async function sendChatMessage() {
   const inputEl = document.getElementById("chatInput");
   const query = inputEl.value.trim();
@@ -506,7 +512,7 @@ async function sendChatMessage() {
   chatBox.scrollTop = chatBox.scrollHeight;
 
   try {
-      // استدعاء محرك المحادثة أونلاين بملف ai-brain.js
+      // انتظار استجابة المحرك المطور بـ async/await
       const aiResponse = await processHumanIntelligence(query);
 
       const loader = document.getElementById("typingLoader");
