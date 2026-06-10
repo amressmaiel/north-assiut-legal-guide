@@ -25,8 +25,42 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
+/**
+ * إزالة أي ملاحظات داخلية أو خطوات مراجعة قد يضيفها الموديل بالخطأ.
+ * الرد المعروض للمستخدم يجب أن يحتوي على الإجابة النهائية فقط.
+ */
+function sanitizeAiOutput(text) {
+  let cleaned = String(text ?? "");
+
+  // حذف كتل التفكير الصريحة إن ظهرت من أي موديل مستقبلاً.
+  cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, "");
+  cleaned = cleaned.replace(/```(?:analysis|reasoning|internal)[\s\S]*?```/gi, "");
+
+  // حذف أي جزء يبدأ بعلامة مراجعة داخلية حتى نهاية الرد.
+  const internalMarkers = [
+    /(?:^|\n)\s*\d*\.?\s*review\s+against\s+constraints\s*:/i,
+    /(?:^|\n)\s*\d*\.?\s*constraints?\s+check\s*:/i,
+    /(?:^|\n)\s*\d*\.?\s*self[- ]?check\s*:/i,
+    /(?:^|\n)\s*\d*\.?\s*internal\s+(?:review|analysis|reasoning|notes?)\s*:/i,
+    /(?:^|\n)\s*\d*\.?\s*chain\s+of\s+thought\s*:/i,
+    /(?:^|\n)\s*\d*\.?\s*final\s+review\s*:/i
+  ];
+
+  let cutAt = -1;
+  for (const marker of internalMarkers) {
+    const match = cleaned.match(marker);
+    if (match && typeof match.index === "number") {
+      cutAt = cutAt === -1 ? match.index : Math.min(cutAt, match.index);
+    }
+  }
+
+  if (cutAt !== -1) cleaned = cleaned.slice(0, cutAt);
+
+  return cleaned.trim();
+}
+
 function formatAiReply(text) {
-  return escapeHtml(text)
+  return escapeHtml(sanitizeAiOutput(text))
     .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
     .replace(/^###\s(.+)$/gm, '<b class="ai-section-title">$1</b>')
     .replace(/^##\s(.+)$/gm, '<b class="ai-section-title">$1</b>')
@@ -221,6 +255,9 @@ async function processHumanIntelligence(query) {
 4. افصل بين: الإجابة المباشرة، الأساس القانوني المتاح، الخطوات التنفيذية، والأخطاء التي يجب تجنبها.
 5. اجعل الإجابة عملية وقابلة للاستخدام أثناء العمل.
 6. لا تخرج أكواد HTML أو JavaScript.
+7. أعرض الإجابة النهائية فقط. لا تعرض خطوات التفكير أو مسودة الإجابة أو مراجعة القيود أو أي قائمة فحص داخلية.
+8. يُحظر تماماً كتابة عبارات مثل: Review against constraints أو Self-check أو Internal analysis أو Reasoning أو ما يماثلها.
+9. لا تشرح كيف التزمت بالتعليمات؛ ابدأ مباشرة بالإجابة القانونية المطلوبة.
 
 مقتطفات محورية من الدليل:
 ${guideContext}
