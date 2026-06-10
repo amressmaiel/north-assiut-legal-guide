@@ -11,7 +11,7 @@
 // ========================================================================
 // استبدل الرابط التالي بالرابط الذي تحصل عليه بعد نشر الـ Worker.
 // مثال: https://north-assiut-legal-ai-proxy.username.workers.dev
-const AI_PROXY_URL = "ضع_رابط_CLOUDFLARE_WORKER_هنا";
+const AI_PROXY_URL = "https://north-assiut-legal-ai-proxy.amressmaiel.workers.dev";
 
 // ========================================================================
 // 🛡️ أدوات الحماية وتنسيق الرد
