@@ -457,6 +457,94 @@ body.sidebar-expanded .main{margin-right:290px;width:calc(100% - 290px)}
   .leadership-card.development .leadership-name{font-size:12.5px}
 }
 
+
+
+/* =========================================================
+   V5 — إحكام تكوين الشاشة الرئيسية وتحسين التدفق البصري
+   ========================================================= */
+.hero{
+  padding-top:0!important;
+}
+.platform-title-band{
+  width:calc(100% + 88px)!important;
+  margin:0 -44px 7px!important;
+  padding:12px 18px!important;
+  border-radius:27px 27px 13px 13px!important;
+  border-top:0!important;
+}
+.platform-title-copy{min-width:0!important;overflow:visible!important}
+.platform-title-kicker{margin-bottom:1px!important;font-size:10px!important}
+.platform-main-title{
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  font-size:clamp(22px,2.7vw,41px)!important;
+  line-height:1.22!important;
+}
+.hero-intro-stack{
+  position:relative;z-index:3;display:grid;gap:5px;width:100%;margin:0 0 9px;
+}
+.hero-wide-band{
+  width:100%;display:block;text-align:center;border:1px solid rgba(212,175,55,.24);
+  background:linear-gradient(135deg,rgba(212,175,55,.075),rgba(255,255,255,.018));
+  box-shadow:inset 0 0 18px rgba(212,175,55,.025);color:#edd995;border-radius:13px;
+  white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;
+}
+.hero-wide-band::-webkit-scrollbar{display:none}
+.hero-purpose-band{
+  padding:7px 12px!important;font-size:12px!important;font-weight:800;line-height:1.7!important;
+}
+.hero-summary-band{
+  padding:7px 12px;color:#d6deea;font-size:clamp(8.5px,.76vw,11px);font-weight:600;line-height:1.75;
+}
+.hero-grid{margin-top:7px!important}
+.top-navigation-actions{flex-wrap:nowrap}
+.top-navigation-actions .icon-btn{white-space:nowrap;font-weight:700}
+.top-action-start{border-color:rgba(212,175,55,.34)!important;color:#f1dc92!important;background:rgba(212,175,55,.065)!important}
+.top-action-sand{border-color:rgba(17,136,68,.42)!important;color:#c8f6db!important;background:rgba(17,136,68,.10)!important}
+.sand-hero-zone{padding-bottom:42px!important}
+.sand-hero-caption{
+  position:absolute;z-index:8;right:50%;bottom:0;transform:translateX(50%);width:max-content;max-width:94%;
+  padding:8px 15px 7px;text-align:center;border-radius:19px;border:1px solid rgba(212,175,55,.30);
+  background:linear-gradient(135deg,rgba(4,12,22,.89),rgba(13,28,48,.82));backdrop-filter:blur(11px);
+  box-shadow:0 10px 24px rgba(0,0,0,.24),inset 0 0 18px rgba(212,175,55,.035);
+  animation:sandCaptionEnter 1s cubic-bezier(.16,1,.3,1) .5s both;
+}
+.sand-hero-caption strong{display:block;color:#f0d77a;font-size:17px;font-weight:900;line-height:1.45;text-shadow:0 0 14px rgba(212,175,55,.30)}
+.sand-hero-caption span{display:block;color:#d3deeb;font-size:10.5px;font-weight:700;line-height:1.7;white-space:nowrap}
+@keyframes sandCaptionEnter{from{opacity:0;transform:translateX(50%) translateY(12px) scale(.94)}to{opacity:1;transform:translateX(50%) translateY(0) scale(1)}}
+@media(max-width:1180px) and (min-width:821px){
+  .platform-title-band{gap:12px!important;padding:10px 14px!important}
+  .platform-logo-shell{flex-basis:82px!important;width:82px!important;height:82px!important}
+  .platform-main-logo{width:68px!important;height:68px!important}
+  .platform-main-title{font-size:clamp(20px,2.45vw,32px)!important}
+  .platform-title-kicker{font-size:9px!important}
+  .hero-purpose-band{font-size:11px!important}
+  .hero-summary-band{font-size:8.5px!important}
+}
+@media(max-width:820px){
+  .platform-title-band{width:calc(100% + 32px)!important;margin:0 -16px 6px!important;padding:9px 9px!important;border-radius:19px 19px 11px 11px!important}
+  .platform-main-title{white-space:normal!important;overflow:visible!important;font-size:clamp(19px,5.6vw,28px)!important;line-height:1.42!important}
+  .hero-intro-stack{gap:4px;margin-bottom:7px}
+  .hero-purpose-band{padding:6px 9px!important;font-size:9.5px!important;line-height:1.75!important}
+  .hero-summary-band{padding:6px 9px;font-size:8px;line-height:1.7}
+  .sand-hero-zone{padding-bottom:38px!important}
+  .sand-hero-caption{padding:6px 10px 5px;border-radius:15px;max-width:98%}
+  .sand-hero-caption strong{font-size:14px}.sand-hero-caption span{font-size:8.5px}
+  .toolbar .icon-btn{display:none!important}
+  .toolbar .top-action-sand{display:block!important;padding:9px 10px!important;font-size:0!important}
+  .toolbar .top-action-sand::after{content:"🤖";font-size:18px}
+}
+@media(max-width:430px){
+  .platform-title-band{width:calc(100% + 32px)!important;margin-left:-16px!important;margin-right:-16px!important}
+  .platform-logo-shell{flex-basis:54px!important;width:54px!important;height:54px!important}
+  .platform-main-logo{width:44px!important;height:44px!important}
+  .platform-title-kicker{font-size:7px!important}
+  .platform-main-title{font-size:clamp(17px,5.1vw,23px)!important}
+  .hero-purpose-band{font-size:8.5px!important}.hero-summary-band{font-size:7.5px}
+  .sand-hero-caption span{font-size:7.8px}
+}
+
 </style>
 </head>
 <body>
@@ -505,9 +593,10 @@ body.sidebar-expanded .main{margin-right:290px;width:calc(100% - 290px)}
         <span class="search-icon">🔍</span>
         <input id="globalSearch" placeholder="ابحث برقم المادة أو عنوانها أو مضمونها..." oninput="handleGlobalSearch(this.value)">
       </div>
-      <div class="toolbar">
+      <div class="toolbar top-navigation-actions">
         <button class="icon-btn" onclick="goHome()">🏠 الرئيسية</button>
-        <button class="icon-btn" onclick="toggleChat(true)">🤖 سَنَد</button>
+        <button class="icon-btn top-action-start" onclick="openArticleList('all')">📚 ابدأ تصفح المواد</button>
+        <button class="icon-btn top-action-sand" onclick="toggleChat(true)">🤖 اسأل سَنَد</button>
       </div>
     </header>
 
@@ -620,10 +709,12 @@ function goHome(){
           <h2 class="platform-main-title">الدليل القضائي الذكي لأعضاء النيابة العامة</h2>
         </div>
       </div>
+      <div class="hero-intro-stack">
+        <div class="eyebrow hero-wide-band hero-purpose-band">⚖️ منصة قضائية رقمية متكاملة لدعم العمل القانوني والإجرائي لأعضاء النيابة العامة</div>
+        <div class="hero-wide-band hero-summary-band">منظومة معرفية تنفيذية قابلة للتطوير المستمر، تجمع الأدلة القانونية والإجرائية في واجهة واحدة، وتسهّل الوصول إلى النصوص والتحليلات العملية والتصرفات الصحيحة والتنبيهات المهمة — مع مساعد قضائي ذكي يربط السؤال بالمعلومة الأقرب تلقائيًا.</div>
+      </div>
       <div class="hero-grid">
         <div>
-          <div class="eyebrow">⚖️ منصة قضائية رقمية متكاملة لدعم العمل القانوني والإجرائي لأعضاء النيابة العامة</div>
-          <p class="hero-description">منظومة معرفية تنفيذية قابلة للتطوير المستمر، تجمع الأدلة القانونية والإجرائية في واجهة واحدة، وتسهّل الوصول إلى النصوص والتحليلات العملية والتصرفات الصحيحة والتنبيهات المهمة — مع مساعد قضائي ذكي يربط السؤال بالمعلومة الأقرب تلقائيًا.</p>
           <section class="leadership-panel" aria-label="بيانات التوجيه والإشراف والإعداد">
             <div class="leadership-heading">✦ التوجيه والإشراف والإعداد</div>
             <div class="leadership-grid">
@@ -644,10 +735,6 @@ function goHome(){
               </div>
             </div>
           </section>
-          <div class="hero-actions">
-            <button class="primary" onclick="openArticleList('all')">ابدأ تصفح المواد</button>
-            <button class="secondary" onclick="toggleChat(true)">اسأل سَنَد</button>
-          </div>
         </div>
         <div class="sand-hero-zone" aria-label="سَنَد — المساعد القضائي الذكي">
           <div class="sand-energy-ring ring-one"></div>
@@ -655,6 +742,7 @@ function goHome(){
           <div class="sand-ground-shadow"></div>
           <img src="./avatar-3d.png" alt="صورة سَنَد — المساعد القضائي الذكي" class="sand-hero-avatar" onerror="this.style.display='none'; document.getElementById('sandHeroError').style.display='block';">
           <div id="sandHeroError" class="logo-error-note" style="display:none;">تعذر تحميل ملف avatar-3d.png</div>
+          <div class="sand-hero-caption"><strong>أنا سَنَد</strong><span>المساعد القضائي الذكي — تحت أمرك في أي استفسار</span></div>
         </div>
       </div>
     </section>
