@@ -1,431 +1,254 @@
 /**
- * 🧠 الدماغ القضائي الموسع للمساعد الذكي - مسار Google Gemini المطور أونلاين
- * المنصة الرقمية لنيابة شمال أسيوط الكلية
- * ---------------------------------------------------------------------------------
- * تم تطوير وتحديث هذا المحرك ليتجاوز فلاتر الأمان التلقائية لجوجل وتفعيل الربط الفوري بـ db-data.js
- */
-
-// تقسيم المفتاح السري لجزأين لحمايته من روبوتات الفحص التلقائي لجيت هاب
-
-
-
-/**
- * 🧠 محرك المساعد القضائي الذكي - Google Gemini API
+ * 🧠 محرك المساعد القضائي الذكي - نسخة GitHub Pages الآمنة
  * المنصة الرقمية لنيابة شمال أسيوط الكلية
  * -------------------------------------------------------------------------
- * نسخة مصححة:
- * 1) استبدال الموديل القديم المتوقف gemini-1.5-flash-latest.
- * 2) استخدام Gemini API v1 المستقر.
- * 3) اختيار موديل متاح تلقائياً عند تغيير أسماء الموديلات مستقبلاً.
- * 4) إرسال قاعدة البيانات القانونية كاملة للمساعد.
- * 5) تنظيف الرد قبل عرضه داخل نافذة المحادثة لمنع إدخال HTML غير آمن.
- *
- * ⚠️ تنبيه:
- * وضع مفتاح API داخل ملف منشور على GitHub Pages يصلح للاختبار المؤقت فقط.
- * عند النشر العام يفضل استخدام Backend Proxy آمن حتى لا يظهر المفتاح للزوار.
+ * هذه النسخة لا تحتوي على مفتاح Gemini API.
+ * الاتصال يتم من خلال Cloudflare Worker وسيط لحماية المفتاح السري.
  */
 
 // ========================================================================
-// 🔑 مفتاح Gemini API
+// 🌐 رابط Cloudflare Worker
 // ========================================================================
-// ضع مفتاحاً جديداً من Google AI Studio بين علامتي التنصيص.
-// لا تستخدم المفتاح القديم الموجود في النسخة السابقة؛ لأنه أصبح مكشوفاً.
-const PART_A = "AQ.Ab8RN6IaZ0zpu5AWJcTE9XcJVswPmT_kj";
-const PART_B = "U92SlLsRJgIfSsAjA";
-
-const GEMINI_API_KEY = PART_A + PART_B; 
-
-
-// ========================================================================
-// 🌐 إعدادات Google Gemini API
-// ========================================================================
-
-// استخدام الإصدار المستقر من الواجهة البرمجية.
-const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1";
-
-// ترتيب الموديلات المفضلة.
-// لو الموديل الأول غير متاح لحسابك، الكود يجرب البدائل تلقائياً.
-const PREFERRED_GEMINI_MODELS = [
-    "gemini-3.5-flash",
-    "gemini-3.1-flash-lite",
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite"
-];
-
-// الاحتفاظ بالموديل الذي تم اختياره لتجنب طلب قائمة الموديلات مع كل سؤال.
-let cachedGeminiModel = null;
+// استبدل الرابط التالي بالرابط الذي تحصل عليه بعد نشر الـ Worker.
+// مثال: https://north-assiut-legal-ai-proxy.username.workers.dev
+const AI_PROXY_URL = "ضع_رابط_CLOUDFLARE_WORKER_هنا";
 
 // ========================================================================
 // 🛡️ أدوات الحماية وتنسيق الرد
 // ========================================================================
-
-/**
- * تنظيف النصوص قبل عرضها داخل innerHTML.
- * يمنع تنفيذ أي أكواد HTML أو JavaScript غير مرغوبة داخل نافذة المحادثة.
- */
 function escapeHtml(text) {
-    return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+  return String(text ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-/**
- * تنسيق رد المساعد بعد تنظيفه.
- * يدعم الأسطر الجديدة والعناوين المكتوبة بين علامتي **.
- */
 function formatAiReply(text) {
-    return escapeHtml(text)
-        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-        .replace(/\n/g, "<br>");
-}
-
-/**
- * استخراج رسالة الخطأ القادمة من خادم Google بشكل آمن.
- */
-function getErrorMessage(data, fallbackMessage = "حدث خطأ غير متوقع من خادم Google.") {
-    if (data && data.error && data.error.message) {
-        return data.error.message;
-    }
-
-    return fallbackMessage;
+  return escapeHtml(text)
+    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+    .replace(/^###\s(.+)$/gm, '<b class="ai-section-title">$1</b>')
+    .replace(/^##\s(.+)$/gm, '<b class="ai-section-title">$1</b>')
+    .replace(/\n/g, "<br>");
 }
 
 // ========================================================================
-// 🤖 تحديد الموديل المتاح تلقائياً
+// 🔎 انتقاء المواد الأقرب للسؤال محلياً قبل إرسالها للـ Worker
 // ========================================================================
+function normalizeArabic(text) {
+  return String(text ?? "")
+    .toLowerCase()
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .replace(/[ًٌٍَُِّْـ]/g, "")
+    .replace(/[^\u0600-\u06FFa-z0-9\s]/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-/**
- * استدعاء قائمة موديلات Google المتاحة للمفتاح الحالي.
- * ثم اختيار موديل نصي يدعم generateContent.
- *
- * @param {boolean} forceRefresh
- * عند true يتم تجاهل الموديل المحفوظ وإعادة فحص الموديلات من الخادم.
- */
-async function resolveGeminiModel(forceRefresh = false) {
-    if (cachedGeminiModel && !forceRefresh) {
-        return cachedGeminiModel;
-    }
+function selectRelevantArticles(query, maxItems = 12) {
+  if (typeof EXECUTIVE_ARTICLES === "undefined" || !Array.isArray(EXECUTIVE_ARTICLES)) {
+    return [];
+  }
 
-    const response = await fetch(`${GEMINI_API_BASE}/models`, {
-        method: "GET",
-        headers: {
-            "x-goog-api-key": GEMINI_API_KEY
+  const normalizedQuery = normalizeArabic(query);
+  const stopWords = new Set([
+    "ما", "هي", "هو", "عن", "في", "من", "على", "الى", "إلى",
+    "اشرح", "وضح", "هل", "متى", "كيف", "ايه", "إيه"
+  ]);
+
+  const tokens = normalizedQuery
+    .split(" ")
+    .filter(token => token.length >= 2 && !stopWords.has(token));
+
+  const articleNumberMatch = normalizedQuery.match(/\b\d{1,3}\b/g) || [];
+
+  return EXECUTIVE_ARTICLES
+    .map(article => {
+      const normalizedTitle = normalizeArabic(article.shortTitle);
+      const searchable = normalizeArabic([
+        article.articleNumber,
+        article.shortTitle,
+        article.topic,
+        article.officialText,
+        article.practicalExplanation,
+        article.executivePoints,
+        article.hypotheticalExamples,
+        article.correctAction,
+        article.commonErrors
+      ].join(" "));
+
+      let score = 0;
+      let titleMatches = 0;
+
+      tokens.forEach(token => {
+        const variants = [...new Set([
+          token,
+          token.replace(/^ال/, "")
+        ].filter(item => item.length >= 2))];
+
+        const inBody = variants.some(variant => searchable.includes(variant));
+        const inTitle = variants.some(variant => normalizedTitle.includes(variant));
+
+        if (inBody) score += token.length >= 5 ? 5 : 2;
+        if (inTitle) {
+          score += 10;
+          titleMatches += 1;
         }
-    });
+      });
 
-    const data = await response.json();
+      if (tokens.length && titleMatches === tokens.length) score += 25;
+      if (articleNumberMatch.includes(String(article.articleNumber))) score += 100;
 
-    if (!response.ok) {
-        throw new Error(
-            getErrorMessage(
-                data,
-                `تعذر جلب قائمة موديلات Gemini المتاحة. كود الخطأ: ${response.status}`
-            )
-        );
-    }
+      return { article, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .filter(item => item.score > 0)
+    .slice(0, maxItems)
+    .map(item => item.article);
+}
 
-    // استخراج الموديلات التي تدعم إنشاء المحتوى النصي.
-    const availableModels = (data.models || [])
-        .filter(model => Array.isArray(model.supportedGenerationMethods))
-        .filter(model => model.supportedGenerationMethods.includes("generateContent"))
-        .map(model => String(model.name || "").replace(/^models\//, ""))
-        .filter(Boolean);
+function articleToPrompt(article) {
+  return `
+==================================================
+المادة: ${article.articleNumber}
+العنوان: ${article.shortTitle}
+التصنيف التحريري: ${article.classificationLabel}
+المحور: ${article.topic}
 
-    console.log("📋 موديلات Gemini المتاحة:", availableModels);
+النص الرسمي:
+${article.officialText}
 
-    // البحث عن أفضل موديل من القائمة المفضلة.
-    const preferredModel = PREFERRED_GEMINI_MODELS.find(model =>
-        availableModels.includes(model)
-    );
+الشرح التفسيري العملي:
+${article.practicalExplanation}
 
-    if (preferredModel) {
-        cachedGeminiModel = preferredModel;
-        console.log("✅ تم اختيار موديل Gemini:", cachedGeminiModel);
-        return cachedGeminiModel;
-    }
+النقاط التنفيذية:
+${article.executivePoints}
 
-    /**
-     * بديل تلقائي عند تغيّر أسماء الموديلات:
-     * اختيار موديل Flash نصي مستقر مع استبعاد موديلات الصور والصوت والبث.
-     */
-    const flashFallback = availableModels.find(model =>
-        model.includes("flash") &&
-        !model.includes("image") &&
-        !model.includes("tts") &&
-        !model.includes("live") &&
-        !model.includes("audio") &&
-        !model.includes("native") &&
-        !model.includes("preview") &&
-        !model.includes("experimental") &&
-        !model.includes("exp")
-    );
+الأمثلة الافتراضية:
+${article.hypotheticalExamples}
 
-    if (flashFallback) {
-        cachedGeminiModel = flashFallback;
-        console.log("✅ تم اختيار موديل Flash بديل:", cachedGeminiModel);
-        return cachedGeminiModel;
-    }
+التصرف الصحيح:
+${article.correctAction}
 
-    /**
-     * بديل أخير:
-     * اختيار أول موديل نصي يدعم generateContent،
-     * مع استبعاد الموديلات غير المناسبة للمحادثة النصية.
-     */
-    const generalFallback = availableModels.find(model =>
-        !model.includes("image") &&
-        !model.includes("tts") &&
-        !model.includes("live") &&
-        !model.includes("audio") &&
-        !model.includes("embedding") &&
-        !model.includes("imagen") &&
-        !model.includes("veo") &&
-        !model.includes("lyria")
-    );
+الأخطاء الشائعة:
+${article.commonErrors}
+==================================================`;
+}
 
-    if (generalFallback) {
-        cachedGeminiModel = generalFallback;
-        console.log("✅ تم اختيار موديل نصي بديل:", cachedGeminiModel);
-        return cachedGeminiModel;
-    }
+function guideToPrompt(item) {
+  return `
+الباب: ${item.chapter || "غير محدد"}
+الموضوع: ${item.title || "غير محدد"}
+المضمون: ${item.analysis || ""}
+التنبيه: ${item.aiCounter || ""}`;
+}
 
+// ========================================================================
+// 📡 الاتصال الآمن بالـ Cloudflare Worker
+// ========================================================================
+async function callAiProxy(fullPromptContext) {
+  const response = await fetch(AI_PROXY_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      prompt: fullPromptContext
+    })
+  });
+
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("وصل رد غير صالح من خادم المساعد الذكي.");
+  }
+
+  if (!response.ok || !data.ok) {
     throw new Error(
-        "لم يتم العثور على موديل Gemini نصي متاح يدعم generateContent لهذا المفتاح."
+      data.error || `تعذر الاتصال بالمساعد الذكي. كود الخطأ: ${response.status}`
     );
+  }
+
+  return String(data.reply || "").trim();
 }
 
 // ========================================================================
-// 📡 إرسال الطلب إلى Google Gemini
+// ⚖️ الدالة الرئيسية المستدعاة من index.html
 // ========================================================================
-
-/**
- * إرسال السؤال والسياق القانوني إلى موديل Gemini المحدد.
- */
-async function callGeminiGenerateContent(model, fullPromptContext) {
-    const response = await fetch(
-        `${GEMINI_API_BASE}/models/${encodeURIComponent(model)}:generateContent`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-goog-api-key": GEMINI_API_KEY
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        role: "user",
-                        parts: [
-                            {
-                                text: fullPromptContext
-                            }
-                        ]
-                    }
-                ],
-                generationConfig: {
-                    temperature: 0.2,
-                    maxOutputTokens: 2048
-                }
-            })
-        }
-    );
-
-    const data = await response.json();
-
-    return {
-        response,
-        data
-    };
-}
-
-// ========================================================================
-// ⚖️ محرك المساعد القضائي الرئيسي
-// ========================================================================
-
-/**
- * الدالة الرئيسية التي يستدعيها ملف index.html عند إرسال سؤال من نافذة الشات.
- */
 async function processHumanIntelligence(query) {
-    // --------------------------------------------------------------------
-    // فحص قاعدة البيانات القانونية
-    // --------------------------------------------------------------------
-    if (
-        typeof LEGAL_DATABASE === "undefined" ||
-        !Array.isArray(LEGAL_DATABASE) ||
-        LEGAL_DATABASE.length === 0
-    ) {
-        return `
-            <b>⚠️ تعذر تشغيل قاعدة البيانات القانونية:</b><br>
-            ملف <code>db-data.js</code> فارغ أو غير مقروء برمجياً.<br>
-            يرجى التأكد من وجود الملف بجوار <code>index.html</code> وصحة محتواه.
-        `;
-    }
+  if (!query || !query.trim()) {
+    return "يرجى كتابة السؤال أولاً.";
+  }
 
-    // --------------------------------------------------------------------
-    // فحص مفتاح Google
-    // --------------------------------------------------------------------
-    if (
-        !GEMINI_API_KEY ||
-        GEMINI_API_KEY.trim() === "" ||
-        GEMINI_API_KEY.includes("ضع_مفتاح")
-    ) {
-        return `
-            <b>💡 تنبيه برمجي:</b><br>
-            لم يتم إدخال مفتاح Gemini API بعد.<br>
-            يرجى فتح ملف <code>ai-brain.js</code> ووضع المفتاح الجديد داخل المتغير
-            <code>GEMINI_API_KEY</code>.
-        `;
-    }
-
-    // --------------------------------------------------------------------
-    // إعداد كامل قاعدة البيانات القانونية
-    // --------------------------------------------------------------------
-    /**
-     * النسخة القديمة كانت ترسل أول 25 بنداً فقط.
-     * النسخة الحالية ترسل جميع البنود الموجودة داخل db-data.js.
-     */
-    const dbContextText = LEGAL_DATABASE.map((item, index) => {
-        return `
-==================================================
-رقم البند داخل قاعدة البيانات: ${index + 1}
-الباب أو القسم: ${item.chapter || "غير محدد"}
-العنوان: ${item.title || "غير محدد"}
-
-النص القانوني أو المقارن:
-${item.lawText || "لا يوجد نص مسجل."}
-
-الشرح والتحليل العملي:
-${item.analysis || "لا يوجد شرح مسجل."}
-
-التحوط أو التنبيه التنفيذي:
-${item.aiCounter || "لا يوجد تنبيه مسجل."}
-==================================================
-        `;
-    }).join("\n");
-
-    // --------------------------------------------------------------------
-    // صياغة تعليمات المساعد
-    // --------------------------------------------------------------------
-    const fullPromptContext = `
-أنت مساعد قضائي رقمي مخصص لمعاونة أعضاء النيابة العامة بجمهورية مصر العربية.
-
-تعليمات إلزامية لطريقة الإجابة:
-
-1. أجب باللغة العربية الفصحى الواضحة، وبأسلوب مهني رصين ومباشر.
-2. استند أولاً إلى قاعدة البيانات القانونية المرفقة أدناه.
-3. لا تنسب نصاً قانونياً أو حكماً قضائياً أو ميعاداً إجرائياً إلى مصدر رسمي إلا إذا كان وارداً بوضوح في قاعدة البيانات.
-4. إذا كانت قاعدة البيانات لا تتضمن إجابة مؤكدة، صرّح بذلك صراحة واذكر أن المسألة تحتاج إلى الرجوع إلى النص الرسمي أو التعليمات العامة للنيابة العامة.
-5. ميّز بوضوح بين:
-   - النص القانوني.
-   - التحليل العملي.
-   - التنبيه التنفيذي.
-   - المعلومة التي تحتاج إلى مراجعة مصدر رسمي.
-6. لا تخترع مواد قانونية أو أرقام مواد أو مدد أو أحكام نقض.
-7. عند الإجابة عن سؤال إجرائي، استخدم الترتيب التالي متى كان مناسباً:
-   - الإجابة المباشرة.
-   - الأساس القانوني المتاح.
-   - الخطوات التنفيذية.
-   - الأخطاء أو المخاطر الإجرائية الواجب تجنبها.
-8. اجعل الإجابة مفيدة لعضو النيابة أثناء العمل الفعلي، من غير إطالة غير لازمة.
-9. عند وجود نقص في المعلومات، اذكر حدود الإجابة بوضوح ولا تجزم بما لا يتوافر عليه دليل.
-10. لا تُخرج أي أكواد HTML أو JavaScript أو تعليمات برمجية داخل الرد.
-
-قاعدة البيانات القانونية المتاحة:
-${dbContextText}
-
---------------------------------------------------
-سؤال عضو النيابة المطلوب الإجابة عنه:
-${query}
---------------------------------------------------
+  if (!AI_PROXY_URL || AI_PROXY_URL.includes("ضع_رابط") || !AI_PROXY_URL.startsWith("https://")) {
+    return `
+      <b>💡 المساعد الذكي جاهز للربط:</b><br>
+      افتح ملف <code>ai-brain.js</code> واستبدل النص الإرشادي داخل المتغير
+      <code>AI_PROXY_URL</code> برابط Cloudflare Worker بعد نشره.
     `;
+  }
 
-    try {
-        // ----------------------------------------------------------------
-        // تحديد أفضل موديل متاح للمفتاح الحالي
-        // ----------------------------------------------------------------
-        let selectedModel = await resolveGeminiModel();
+  if (typeof EXECUTIVE_ARTICLES === "undefined" || !Array.isArray(EXECUTIVE_ARTICLES)) {
+    return `
+      <b>⚠️ تعذر قراءة البيانات:</b><br>
+      يرجى التأكد من تحميل ملف <code>db-data.js</code> قبل ملف <code>ai-brain.js</code>.
+    `;
+  }
 
-        // ----------------------------------------------------------------
-        // إرسال السؤال إلى Google Gemini
-        // ----------------------------------------------------------------
-        let {
-            response,
-            data
-        } = await callGeminiGenerateContent(selectedModel, fullPromptContext);
+  const relevantArticles = selectRelevantArticles(query);
+  const selectedArticles = relevantArticles.length
+    ? relevantArticles
+    : EXECUTIVE_ARTICLES.slice(0, 8);
 
-        /**
-         * إذا توقف الموديل الذي تم اختياره أو تغيّر اسمه مستقبلاً:
-         * نطلب قائمة الموديلات الجديدة ونحاول مرة ثانية فقط.
-         */
-        if (response.status === 404) {
-            console.warn(
-                "⚠️ الموديل المختار لم يعد متاحاً. تتم إعادة فحص قائمة الموديلات..."
-            );
+  const guideContext = Array.isArray(LEGAL_DATABASE)
+    ? LEGAL_DATABASE.slice(0, 10).map(guideToPrompt).join("\n")
+    : "";
 
-            selectedModel = await resolveGeminiModel(true);
+  const articlesContext = selectedArticles.map(articleToPrompt).join("\n");
 
-            ({
-                response,
-                data
-            } = await callGeminiGenerateContent(
-                selectedModel,
-                fullPromptContext
-            ));
-        }
+  const prompt = `
+أنت مساعد قضائي رقمي متخصص لمعاونة أعضاء النيابة العامة بجمهورية مصر العربية.
+أجب باللغة العربية الفصحى المهنية الواضحة.
 
-        // ----------------------------------------------------------------
-        // التعامل مع رسائل خطأ Google
-        // ----------------------------------------------------------------
-        if (!response.ok) {
-            console.error("Gemini Server Output:", data);
+قواعد إلزامية:
+1. استند أولاً إلى المواد التفصيلية المرفقة أدناه.
+2. لا تخترع نصاً أو رقماً أو ميعاداً أو حكماً قضائياً.
+3. إذا لم تكف البيانات، صرّح بوضوح بأن المسألة تحتاج إلى الرجوع للنص الرسمي أو التعليمات العامة للنيابة العامة.
+4. افصل بين: الإجابة المباشرة، الأساس القانوني المتاح، الخطوات التنفيذية، والأخطاء التي يجب تجنبها.
+5. اجعل الإجابة عملية وقابلة للاستخدام أثناء العمل.
+6. لا تخرج أكواد HTML أو JavaScript.
 
-            return `
-                <b>⚠️ تنبيه من خادم Google — كود ${response.status}:</b><br>
-                ${escapeHtml(getErrorMessage(data))}
-            `;
-        }
+مقتطفات محورية من الدليل:
+${guideContext}
 
-        // ----------------------------------------------------------------
-        // قراءة النص القادم من Gemini
-        // ----------------------------------------------------------------
-        const parts =
-            data &&
-            data.candidates &&
-            data.candidates[0] &&
-            data.candidates[0].content &&
-            Array.isArray(data.candidates[0].content.parts)
-                ? data.candidates[0].content.parts
-                : [];
+المواد الأكثر صلة بالسؤال:
+${articlesContext}
 
-        const aiText = parts
-            .map(part => part.text || "")
-            .join("\n")
-            .trim();
+السؤال:
+${query}
+`;
 
-        if (aiText) {
-            return formatAiReply(aiText);
-        }
+  try {
+    const aiText = await callAiProxy(prompt);
 
-        // ----------------------------------------------------------------
-        // حالة وصول رد فارغ
-        // ----------------------------------------------------------------
-        console.error("Gemini Empty Output:", data);
-
-        return `
-            <b>⚠️ لم يصل رد نصي صالح من الخادم:</b><br>
-            تم إرسال السؤال بنجاح، ولكن لم يتم توليد إجابة نصية.<br>
-            يرجى إعادة صياغة السؤال أو المحاولة مرة أخرى.
-        `;
-    } catch (error) {
-        // ----------------------------------------------------------------
-        // أخطاء الاتصال أو المفتاح أو قائمة الموديلات
-        // ----------------------------------------------------------------
-        console.error("Gemini Fetch Error:", error);
-
-        return `
-            <b>⚠️ تعذر تشغيل المساعد الذكي:</b><br>
-            ${escapeHtml(error.message || "تعذر الاتصال بخوادم Google.")}
-        `;
+    if (!aiText) {
+      return `
+        <b>⚠️ لم يصل رد نصي صالح:</b><br>
+        يرجى إعادة صياغة السؤال والمحاولة مرة أخرى.
+      `;
     }
+
+    return formatAiReply(aiText);
+  } catch (error) {
+    console.error("AI Proxy Error:", error);
+
+    return `
+      <b>⚠️ تعذر تشغيل المساعد الذكي:</b><br>
+      ${escapeHtml(error.message || "تعذر الاتصال بخادم المساعد الذكي.")}
+    `;
+  }
 }
