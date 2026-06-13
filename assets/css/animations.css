@@ -1,1 +1,79 @@
+/* Motion system */
 
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@keyframes breath{50%{transform:scale(1.06);box-shadow:0 0 42px rgba(212,175,55,.28)}}
+
+@keyframes drift{to{transform:translate(55px,35px)}}
+
+@keyframes drift2{to{transform:translate(-40px,-25px)}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}}
+
+@keyframes chatIn{from{opacity:0;transform:translateY(14px)}}
+
+@keyframes heroLogoStageEntrance{0%{opacity:0;transform:translateY(-45px) scale(.72);filter:blur(8px)}70%{opacity:1;transform:translateY(5px) scale(1.04);filter:blur(0)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+@keyframes heroLogoEntrance{0%{opacity:0;transform:scale(.55) rotate(-8deg)}72%{opacity:1;transform:scale(1.07) rotate(1.5deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+
+@keyframes heroLogoFloating{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.025)}}
+
+@keyframes logoGlowPulse{0%,100%{opacity:.58;transform:scale(.93)}50%{opacity:1;transform:scale(1.08)}}
+
+@keyframes logoOrbitClockwise{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+@keyframes logoOrbitCounterClockwise{from{transform:rotate(360deg)}to{transform:rotate(0)}}
+
+@keyframes splashLogoEntrance{0%{opacity:0;transform:scale(.54) translateY(24px);filter:blur(9px)}70%{opacity:1;transform:scale(1.08) translateY(0);filter:blur(0)}100%{opacity:1;transform:scale(1)}}
+
+@keyframes splashTextEntrance{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+@keyframes splashLoadingMove{from{transform:translateX(250%)}to{transform:translateX(-250%)}}
+
+@keyframes splashOpeningGoldShine{0%{background-position:220% center}100%{background-position:-20% center}}
+
+@keyframes attorneyPortraitEntrance{0%{opacity:0;transform:translateY(22px) scale(.78) rotateX(8deg);filter:blur(5px)}70%{opacity:1;transform:translateY(-3px) scale(1.035) rotateX(0);filter:drop-shadow(0 16px 12px rgba(0,0,0,.56)) drop-shadow(0 0 10px rgba(212,175,55,.28))}100%{opacity:1;transform:translateY(0) scale(1) rotateX(0)}}
+
+@keyframes attorneyPortraitFloating{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.012)}}
+
+@keyframes attorneyGlowPulse{0%,100%{opacity:.58;transform:scale(.94)}50%{opacity:1;transform:scale(1.05)}}
+
+@keyframes attorneyGroundGlow{0%,100%{opacity:.56;transform:scaleX(1.05)}50%{opacity:.92;transform:scaleX(1.20)}}
+
+@keyframes menuSweep{0%,62%{transform:translateX(120%)}100%{transform:translateX(-120%)}}
+
+@keyframes leadershipSweep{to{transform:translateX(-42%)}}
+
+@keyframes nameShimmer{to{background-position:-240% center}}
+
+@keyframes sandZoneEnter{from{opacity:0;transform:translateY(32px) scale(.9)}to{opacity:1;transform:none}}
+
+@keyframes sandAvatarEnter{0%{opacity:0;transform:translateY(58px) scale(.72) rotateY(-13deg);filter:blur(8px)}72%{opacity:1;transform:translateY(-9px) scale(1.06) rotateY(2deg);filter:blur(0) drop-shadow(0 34px 22px rgba(0,0,0,.68)) drop-shadow(0 0 30px rgba(212,175,55,.2))}100%{opacity:1;transform:translateY(0) scale(1);filter:drop-shadow(0 30px 18px rgba(0,0,0,.62)) drop-shadow(0 0 24px rgba(212,175,55,.18))}}
+
+@keyframes sandAvatarFloat{50%{transform:translateY(-11px) scale(1.025)}}
+
+@keyframes groundPulse{50%{transform:scale(.88);opacity:.65}}
+
+@keyframes ringPulse{50%{transform:scale(1.08);opacity:.34}}
+
+@keyframes typingDot{50%{transform:translateY(-4px);opacity:.45}}
+
+@keyframes titleGoldShimmer{to{background-position:240% center}}
+
+@keyframes titleBandSweep{0%,68%{right:-160px}100%{right:115%}}
+
+@keyframes leadershipSweep{0%,70%{right:-110px}100%{right:118%}}
+
+@keyframes leadershipCardEnter{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+
+@keyframes platformLogoFloat{50%{transform:translateY(-7px) scale(1.035)}}
+
+@keyframes smallSandStageEnter{from{opacity:0;transform:translateY(20px) scale(.78)}to{opacity:1;transform:none}}
+
+@keyframes smallSandFloat{50%{transform:translateY(-7px) scale(1.025)}}
+
+@keyframes smallGroundPulse{50%{transform:scale(.86);opacity:.66}}
+
+@keyframes smallRingPulse{50%{transform:scale(1.12);opacity:.38}}
+
+@keyframes sandCaptionEnter{from{opacity:0;transform:translateX(50%) translateY(12px) scale(.94)}to{opacity:1;transform:translateX(50%) translateY(0) scale(1)}}
