@@ -58,6 +58,7 @@
     <button class="nav-btn" data-nav="search" onclick="openUnifiedSearch()">🔎 البحث الموحّد</button>
     <button class="nav-btn" data-nav="guide" onclick="openGuide()">🛡️ الدليل الإجرائي المختصر</button>
     <div class="nav-title">أدوات التنفيذ القضائي</div>
+    <button class="nav-btn case-analysis-nav" data-nav="case-analysis" onclick="openCaseAnalysisRoom()">⚖️ سَنَد — غرفة تحليل الواقعة</button>
     <button class="nav-btn" data-nav="tools" onclick="openToolsHub()">🧰 مركز الأدوات التنفيذية</button>
     <button class="nav-btn" data-nav="procedural-shield" onclick="openProceduralShield()">🛡️ درع المراجعة الوقائية</button>
     <button class="nav-btn" data-nav="deadlines" onclick="openDeadlineCalculator()">⏱️ حاسبة المواعيد</button>
@@ -96,6 +97,7 @@
   <button onclick="goHome()"><span>🏠</span>الرئيسية</button>
   <button onclick="openLawLibrary()"><span>🏛️</span>القوانين</button>
   <button onclick="openFavoritesCenter()"><span>⭐</span>المفضلة</button>
+  <button onclick="openCaseAnalysisRoom()"><span>⚖️</span>حلّل واقعة</button>
   <button onclick="toggleChat(true)"><span>🤖</span>سَنَد</button>
 </nav>
 
@@ -146,11 +148,14 @@
 <script src="./assets/js/sidebar.js"></script>
 <script src="./assets/js/app.js"></script>
 <script src="./data/tools/legal-deadlines-current.js"></script>
-<script src="./data/tools/legal-deadlines-174-2025-partial.js"></script>
+<script src="./data/tools/legal-deadlines-174-2025.js"></script>
 <script src="./data/tools/legal-deadlines.js"></script>
 <script src="./assets/js/judicial-tools.js"></script>
 <script src="./assets/js/assistant-ui.js"></script>
 <script src="./assets/js/ai-brain.js"></script>
+<script src="./assets/js/live-voice.js"></script>
+<script src="./assets/js/document-intake.js"></script>
+<script src="./assets/js/case-analysis.js"></script>
 <script src="./assets/js/bootstrap.js"></script>
 </body>
 </html>
