@@ -174,7 +174,9 @@
         const setupMessage={
           setup:{
             model:`models/${token.model||LIVE_MODEL}`,
-            responseModalities:["AUDIO"],
+            generationConfig:{
+              responseModalities:["AUDIO"]
+            },
             systemInstruction:{parts:[{text:systemInstruction()}]},
             inputAudioTranscription:{},
             outputAudioTranscription:{}
