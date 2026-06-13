@@ -165,6 +165,8 @@
       const token=await requestEphemeralToken();
       const wsUrl=`wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=${encodeURIComponent(token.token)}`;
       live.ws=new WebSocket(wsUrl);
+      // ArrayBuffer يقلل اختلافات المتصفحات في استقبال الرسائل الثنائية.
+      live.ws.binaryType="arraybuffer";
       live.ws.onopen=()=>{
         addEvent("تم فتح الاتصال الصوتي. جاري تهيئة الجلسة.");
         startSetupTimer();
@@ -209,7 +211,24 @@
   window.startSandLiveVoiceSession=startSandLiveVoiceSession;
 
   async function handleServerMessage(raw){
-    let data;try{data=JSON.parse(raw);}catch{return;}
+    // رسائل WebSocket قد تصل كنص أو Blob أو ArrayBuffer حسب المتصفح.
+    // تجاهل Blob كان يمنع التقاط setupComplete رغم نجاح الاتصال.
+    let rawText;
+    try{
+      if(raw instanceof Blob) rawText=await raw.text();
+      else if(raw instanceof ArrayBuffer) rawText=new TextDecoder().decode(raw);
+      else rawText=String(raw??"");
+    }catch(error){
+      console.error("[SAND LIVE] Failed to decode server message",error);
+      return;
+    }
+    let data;
+    try{data=JSON.parse(rawText);}
+    catch(error){
+      console.warn("[SAND LIVE] Ignored non-JSON server message",rawText,error);
+      return;
+    }
+    console.debug("[SAND LIVE] Server message",Object.keys(data));
     if(data.error){
       console.error("[SAND LIVE] Server error",data.error);
       addEvent("ورد خطأ من خدمة الحوار الصوتي.");
