@@ -91,7 +91,7 @@
         </aside>
         <main class="sand-live-main">
           <div class="sand-live-toolbar">
-            <label><span>صوت سَنَد</span><select id="sandLiveVoice" onchange="setSandLiveVoice(this.value)"><option>Charon</option><option>Fenrir</option><option>Puck</option><option>Kore</option><option>Aoede</option></select></label>
+            <label><span>صوت سَنَد — تلقائي مؤقتًا</span><select id="sandLiveVoice" disabled title="سيتم إعادة تفعيل اختيار الصوت بعد اختبار ثبات الاتصال"><option>الصوت الافتراضي</option></select></label>
             <button class="primary" id="sandLiveConnectBtn" onclick="startSandLiveVoiceSession()">🎙️ بدء الحوار المباشر</button>
             <button id="sandLiveMuteBtn" onclick="toggleSandLiveMute()" disabled>🔇 كتم الميكروفون</button>
             <button onclick="finishSandLiveTurn()" id="sandLiveFinishTurnBtn" disabled>✓ إنهاء دوري الحالي</button>
@@ -168,17 +168,13 @@
       live.ws.onopen=()=>{
         addEvent("تم فتح الاتصال الصوتي. جاري تهيئة الجلسة.");
         startSetupTimer();
+        // أول رسالة بعد فتح WebSocket يجب أن تكون إعداد جلسة بسيطًا ومتوافقًا
+        // مع مسار الرموز المؤقتة. نبدأ بالحد الأدنى المستقر، ثم نضيف
+        // تخصيص الصوت لاحقًا بعد التأكد من نجاح التهيئة الأساسية.
         const setupMessage={
           setup:{
             model:`models/${token.model||LIVE_MODEL}`,
-            generationConfig:{
-              responseModalities:["AUDIO"],
-              speechConfig:{
-                voiceConfig:{
-                  prebuiltVoiceConfig:{voiceName:live.selectedVoice}
-                }
-              }
-            },
+            responseModalities:["AUDIO"],
             systemInstruction:{parts:[{text:systemInstruction()}]},
             inputAudioTranscription:{},
             outputAudioTranscription:{}
@@ -198,9 +194,9 @@
         addEvent(`انتهى الاتصال الصوتي. code=${event.code||""}`);
         const wasReady=live.setupReady;
         cleanupLive(false);
-        if(!wasReady&&event.code!==1000){
+        if(!wasReady){
           setStatus("تعذر تجهيز الحوار الصوتي","error");
-          toast("تعذر تجهيز جلسة الحوار الصوتي. جرّب مرة تانية، ولو استمر استخدم المسار الاحتياطي مؤقتًا.");
+          toast("تعذر استكمال تهيئة الحوار الصوتي. جرّب مرة تانية، ولو استمر استخدم المسار الاحتياطي مؤقتًا.");
         }else{
           setStatus("انتهت الجلسة الصوتية","idle");
         }
