@@ -1,1 +1,842 @@
-
+/**
+ * ⏱️ مواعيد قانون الإجراءات الجنائية رقم 174 لسنة 2025
+ * دفعة موثقة من المواد المراجعة داخل المنصة.
+ * يبدأ العمل بالقانون في 2026/10/01.
+ */
+const LEGAL_DEADLINES_NEW_LAW = [
+  {
+    "id": "new-complaint-90-days",
+    "category": "الشكاوى والطلبات",
+    "title": "تقديم الشكوى في الجرائم المقيدة بشكوى",
+    "description": "تقديم الشكوى في الجرائم المقيدة بشكوى",
+    "duration": {
+      "value": 90,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ علم المجني عليه بالجريمة وبمرتكبها",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 3",
+      "textSummary": "لا تقبل الشكوى بعد تسعين يوماً من يوم علم المجني عليه بالجريمة وبمرتكبها ما لم ينص القانون على خلاف ذلك."
+    },
+    "warnings": [
+      "تحقق من اكتمال العلم بالجريمة وبمرتكبها معًا.",
+      "راجع أي نص خاص يقرر مدة مختلفة."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-deposit-before-interrogation-24h",
+    "category": "القبض والاستجواب",
+    "title": "الحد الأقصى لإيداع المقبوض عليه لحين استجوابه",
+    "description": "الحد الأقصى لإيداع المقبوض عليه لحين استجوابه",
+    "duration": {
+      "value": 24,
+      "unit": "hours"
+    },
+    "trigger": {
+      "label": "تاريخ ووقت إيداع المتهم بمركز الإصلاح والتأهيل أو مكان الاحتجاز",
+      "excludeTriggerDay": true,
+      "requiresTime": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 112",
+      "textSummary": "لا تزيد مدة إيداع المقبوض عليه لحين استجوابه على أربع وعشرين ساعة."
+    },
+    "warnings": [
+      "أدخل الساعة والدقيقة بدقة.",
+      "راجع الاستثناء الخاص بتعذر الاستجواب لعدم حضور المحامي."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-initial-detention-4-days",
+    "category": "الحبس الاحتياطي",
+    "title": "أمر الحبس الاحتياطي الأول الصادر من النيابة العامة",
+    "description": "أمر الحبس الاحتياطي الأول الصادر من النيابة العامة",
+    "duration": {
+      "value": 4,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ القبض على المتهم أو تسليمه للنيابة العامة بحسب الحالة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 113",
+      "textSummary": "يجوز إصدار أمر مسبب بحبس المتهم احتياطياً لمدة أقصاها أربعة أيام تالية للقبض عليه أو تسليمه للنيابة العامة إذا كان مقبوضاً عليه من قبل."
+    },
+    "warnings": [
+      "راجع نقطة البداية الصحيحة: القبض أو التسليم للنيابة بحسب الحالة."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-alternative-measure-initial-10-days",
+    "category": "بدائل الحبس الاحتياطي",
+    "title": "مدة نفاذ التدبير البديل الصادر من النيابة العامة",
+    "description": "مدة نفاذ التدبير البديل الصادر من النيابة العامة",
+    "duration": {
+      "value": 10,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ بدء تنفيذ التدبير",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 122",
+      "textSummary": "يكون التدبير الصادر من النيابة العامة نافذ المفعول لمدة الأيام العشرة التالية لبدء تنفيذه."
+    },
+    "warnings": [
+      "راجع تاريخ بدء التنفيذ الفعلي."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-chamber-extension-45-days",
+    "category": "الحبس الاحتياطي",
+    "title": "مد الحبس أو التدبير بمعرفة محكمة الجنح المستأنفة منعقدة في غرفة المشورة",
+    "description": "مد الحبس أو التدبير بمعرفة محكمة الجنح المستأنفة منعقدة في غرفة المشورة",
+    "duration": {
+      "value": 45,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ بدء مدة المد الجديدة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 123",
+      "textSummary": "تصدر المحكمة أمراً مسبباً بمد مدة الحبس أو التدبير لمدد متعاقبة لا تزيد كل منها على خمسة وأربعين يوماً."
+    },
+    "warnings": [
+      "كل مدة مد مستقلة وتحتاج تاريخ بداية صحيح."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-ag-periodic-review-90-days",
+    "category": "الحبس الاحتياطي",
+    "title": "العرض الدوري على النائب العام في الجنايات",
+    "description": "العرض الدوري على النائب العام في الجنايات",
+    "duration": {
+      "value": 90,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ بدء الحبس الاحتياطي أو تاريخ آخر عرض دوري بحسب الحالة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 123",
+      "textSummary": "يتعين عرض الأمر على النائب العام كلما انقضى تسعون يوماً على حبس المتهم بجناية احتياطياً أو مده."
+    },
+    "warnings": [
+      "استخدم تاريخ آخر عرض عند وجود عرض سابق."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-detention-max-misdemeanor-3-months",
+    "category": "الحبس الاحتياطي",
+    "title": "الحد الأقصى قبل الإحالة في مواد الجنح",
+    "description": "الحد الأقصى قبل الإحالة في مواد الجنح",
+    "duration": {
+      "value": 3,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ بدء الحبس الاحتياطي أو التدبير",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 124",
+      "textSummary": "لا يجوز أن تزيد مدة الحبس الاحتياطي أو التدبير على ثلاثة أشهر في مواد الجنح ما لم يكن المتهم قد أعلن بإحالته إلى المحكمة المختصة قبل انتهاء هذه المدة."
+    },
+    "warnings": [
+      "راجع ما إذا تم الإعلان بالإحالة قبل انقضاء المدة."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-referral-present-5-days",
+    "category": "الحبس الاحتياطي",
+    "title": "عرض أمر الحبس أو التدبير بعد الإعلان بالإحالة",
+    "description": "عرض أمر الحبس أو التدبير بعد الإعلان بالإحالة",
+    "duration": {
+      "value": 5,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ الإعلان بالإحالة إلى المحكمة المختصة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 124",
+      "textSummary": "تعرض النيابة العامة أمر الحبس أو التدبير خلال خمسة أيام على الأكثر من تاريخ الإعلان بالإحالة."
+    },
+    "warnings": [
+      "تجاوز الميعاد يرتب الإفراج أو إنهاء التدبير بحسب الأحوال."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-detention-max-felony-5-months",
+    "category": "الحبس الاحتياطي",
+    "title": "الحد الأقصى قبل أمر المحكمة في الجنايات",
+    "description": "الحد الأقصى قبل أمر المحكمة في الجنايات",
+    "duration": {
+      "value": 5,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ بدء الحبس الاحتياطي أو التدبير",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 124",
+      "textSummary": "في الجنايات لا يجوز أن تزيد مدة الحبس الاحتياطي أو التدبير على خمسة أشهر إلا بعد الحصول قبل انقضائها على أمر من المحكمة المختصة."
+    },
+    "warnings": [
+      "راجع وجود أمر المحكمة قبل انقضاء الأشهر الخمسة."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-felony-court-extension-45-days",
+    "category": "الحبس الاحتياطي",
+    "title": "مدة مد الحبس أو التدبير بأمر المحكمة المختصة في الجنايات",
+    "description": "مدة مد الحبس أو التدبير بأمر المحكمة المختصة في الجنايات",
+    "duration": {
+      "value": 45,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ بدء مدة المد الجديدة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 124",
+      "textSummary": "يجوز للمحكمة المختصة مد الحبس أو التدبير مدة لا تزيد على خمسة وأربعين يوماً قابلة للتجديد."
+    },
+    "warnings": [
+      "كل تجديد يحتاج تاريخ بداية مستقل."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-overall-detention-misdemeanor-4-months",
+    "category": "الحبس الاحتياطي",
+    "title": "السقف الكلي للحبس الاحتياطي في الجنح",
+    "description": "السقف الكلي للحبس الاحتياطي في الجنح",
+    "duration": {
+      "value": 4,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ بدء الحبس الاحتياطي",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "advanced-review",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 124",
+      "textSummary": "لا تجاوز مدة الحبس الاحتياطي في جميع الأحوال أربعة أشهر في الجنح."
+    },
+    "warnings": [
+      "راجع ثلث الحد الأقصى للعقوبة؛ يطبق القيد الأقصر."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-overall-detention-felony-12-months",
+    "category": "الحبس الاحتياطي",
+    "title": "السقف الكلي للحبس الاحتياطي في الجنايات",
+    "description": "السقف الكلي للحبس الاحتياطي في الجنايات",
+    "duration": {
+      "value": 12,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ بدء الحبس الاحتياطي",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "advanced-review",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 124",
+      "textSummary": "لا تجاوز مدة الحبس الاحتياطي في جميع الأحوال اثني عشر شهراً في الجنايات."
+    },
+    "warnings": [
+      "راجع ثلث الحد الأقصى للعقوبة؛ يطبق القيد الأقصر."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-overall-detention-life-death-18-months",
+    "category": "الحبس الاحتياطي",
+    "title": "السقف الكلي للحبس في جرائم المؤبد أو الإعدام",
+    "description": "السقف الكلي للحبس في جرائم المؤبد أو الإعدام",
+    "duration": {
+      "value": 18,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ بدء الحبس الاحتياطي",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "advanced-review",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 124",
+      "textSummary": "لا تجاوز مدة الحبس الاحتياطي ثمانية عشر شهراً إذا كانت العقوبة المقررة السجن المؤبد أو الإعدام."
+    },
+    "warnings": [
+      "راجع الاستثناءات والمرحلة الإجرائية."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-seized-things-sale-6-months",
+    "category": "المضبوطات",
+    "title": "بيع المضبوطات غير المطلوبة بعد انتهاء الدعوى",
+    "description": "بيع المضبوطات غير المطلوبة بعد انتهاء الدعوى",
+    "duration": {
+      "value": 6,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ انتهاء الدعوى",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 142",
+      "textSummary": "يجوز بيع الشيء المضبوط إذا لم يطلبه صاحبه خلال ستة أشهر من تاريخ انتهاء الدعوى وفق الضوابط المقررة."
+    },
+    "warnings": [
+      "راجع كذلك حالة التلف أو تكاليف الحفظ."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-travel-ban-validity-1-year",
+    "category": "أوامر المنع من السفر",
+    "title": "مدة أمر المنع من السفر أو الإدراج على قوائم ترقب الوصول",
+    "description": "مدة أمر المنع من السفر أو الإدراج على قوائم ترقب الوصول",
+    "duration": {
+      "value": 1,
+      "unit": "years"
+    },
+    "trigger": {
+      "label": "تاريخ صدور الأمر",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 149",
+      "textSummary": "يصدر أمر المنع أو الإدراج لمدة سنة قابلة للتجديد لمدة أو لمدد أخرى مماثلة."
+    },
+    "warnings": [
+      "راجع أوامر التجديد ومبرراتها."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-travel-ban-grievance-15-days",
+    "category": "أوامر المنع من السفر",
+    "title": "التظلم من أمر المنع من السفر أو الإدراج",
+    "description": "التظلم من أمر المنع من السفر أو الإدراج",
+    "duration": {
+      "value": 15,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ العلم بالأمر",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 150",
+      "textSummary": "يجوز التظلم خلال خمسة عشر يوماً من تاريخ العلم بالأمر."
+    },
+    "warnings": [
+      "راجع ثبوت تاريخ العلم."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-travel-ban-repeat-grievance-3-months",
+    "category": "أوامر المنع من السفر",
+    "title": "إعادة التظلم بعد رفض التظلم السابق",
+    "description": "إعادة التظلم بعد رفض التظلم السابق",
+    "duration": {
+      "value": 3,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ رفض التظلم السابق",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 150",
+      "textSummary": "لا يجوز إعادة التظلم قبل مضي ثلاثة أشهر من تاريخ رفض التظلم السابق."
+    },
+    "warnings": [],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-travel-ban-court-decide-15-days",
+    "category": "أوامر المنع من السفر",
+    "title": "الفصل في التظلم من أمر المنع أو الإدراج",
+    "description": "الفصل في التظلم من أمر المنع أو الإدراج",
+    "duration": {
+      "value": 15,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ التقرير بالتظلم",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 150",
+      "textSummary": "تفصل المحكمة في التظلم خلال مدة لا تجاوز خمسة عشر يوماً من تاريخ التقرير به."
+    },
+    "warnings": [],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-expedited-summons-misdemeanor-1-day",
+    "category": "الإعلان والجلسات",
+    "title": "ميعاد تكليف المتهم بالحضور في الجنح المستعجلة المنصوص عليها",
+    "description": "ميعاد تكليف المتهم بالحضور في الجنح المستعجلة المنصوص عليها",
+    "duration": {
+      "value": 1,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ الجلسة المحددة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "reverse-fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 277",
+      "textSummary": "يكون تكليف المتهم بالحضور قبل انعقاد الجلسة بيوم كامل في مواد الجنح."
+    },
+    "warnings": [
+      "هذا القالب للحساب العكسي من تاريخ الجلسة."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-expedited-summons-felony-3-days",
+    "category": "الإعلان والجلسات",
+    "title": "ميعاد تكليف المتهم بالحضور في الجنايات المستعجلة المنصوص عليها",
+    "description": "ميعاد تكليف المتهم بالحضور في الجنايات المستعجلة المنصوص عليها",
+    "duration": {
+      "value": 3,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ الجلسة المحددة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "reverse-fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 277",
+      "textSummary": "يكون تكليف المتهم بالحضور قبل انعقاد الجلسة بثلاثة أيام كاملة في مواد الجنايات."
+    },
+    "warnings": [
+      "هذا القالب للحساب العكسي من تاريخ الجلسة."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-expedited-hearing-2-weeks",
+    "category": "الإعلان والجلسات",
+    "title": "تحديد جلسة القضايا المستعجلة",
+    "description": "تحديد جلسة القضايا المستعجلة",
+    "duration": {
+      "value": 2,
+      "unit": "weeks"
+    },
+    "trigger": {
+      "label": "تاريخ إحالة القضية إلى المحكمة المختصة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 277",
+      "textSummary": "تنظر القضية في جلسة تعقد خلال أسبوعين من يوم إحالتها إلى المحكمة المختصة."
+    },
+    "warnings": [],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-forgery-challenge-notify-8-days",
+    "category": "الادعاء بالتزوير",
+    "title": "إعلان مذكرة الادعاء بالتزوير إلى الخصم",
+    "description": "إعلان مذكرة الادعاء بالتزوير إلى الخصم",
+    "duration": {
+      "value": 8,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ التقرير بالطعن بالتزوير",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 297",
+      "textSummary": "يعلن مدعي التزوير خصمه في الثمانية الأيام التالية للتقرير بمذكرة تحدد الورقة المطعون فيها والأدلة."
+    },
+    "warnings": [],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-criminal-order-review-15-days",
+    "category": "الأوامر الجنائية",
+    "title": "تعديل أو إلغاء الأمر الجنائي بمعرفة المحامي العام أو رئيس النيابة",
+    "description": "تعديل أو إلغاء الأمر الجنائي بمعرفة المحامي العام أو رئيس النيابة",
+    "duration": {
+      "value": 15,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ صدور الأمر الجنائي",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 327",
+      "textSummary": "يجوز الأمر بتعديل أو إلغاء الأمر الجنائي خلال خمسة عشر يوماً من تاريخ صدوره، ولا يجوز إعلانه للخصوم قبل انقضاء هذه المدة."
+    },
+    "warnings": [],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-mental-observation-total-45-days",
+    "category": "الفحص النفسي والعقلي",
+    "title": "الحد الأقصى لإيداع المتهم للملاحظة النفسية أو العقلية",
+    "description": "الحد الأقصى لإيداع المتهم للملاحظة النفسية أو العقلية",
+    "duration": {
+      "value": 45,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ بدء الإيداع للملاحظة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "advanced-review",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 340",
+      "textSummary": "يكون الإيداع للملاحظة لمدة أو لمدد لا يزيد مجموعها على خمسة وأربعين يوماً."
+    },
+    "warnings": [
+      "احسب مجموع مدد الإيداع وليس مدة واحدة فقط."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-hidden-identity-appeal-10-days",
+    "category": "حماية الشهود والبيانات",
+    "title": "الطعن على أمر إخفاء بيانات الشاهد أو الشخص",
+    "description": "الطعن على أمر إخفاء بيانات الشاهد أو الشخص",
+    "duration": {
+      "value": 10,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ مواجهة المتهم بفحوى الشهادة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 525",
+      "textSummary": "يجوز الطعن خلال عشرة أيام من تاريخ مواجهة المتهم بفحوى الشهادة."
+    },
+    "warnings": [
+      "راجع تاريخ المواجهة المثبت بالأوراق."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-criminal-limitation-felony-10-years",
+    "category": "انقضاء الدعوى الجنائية",
+    "title": "انقضاء الدعوى في الجنايات — حساب استرشادي",
+    "description": "انقضاء الدعوى في الجنايات — حساب استرشادي",
+    "duration": {
+      "value": 10,
+      "unit": "years"
+    },
+    "trigger": {
+      "label": "تاريخ وقوع الجريمة أو التاريخ المعدل قانوناً بحسب الحالة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "advanced-review",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 17",
+      "textSummary": "تنقضي الدعوى الجنائية في مواد الجنايات بمضي عشر سنين ما لم ينص القانون على خلاف ذلك."
+    },
+    "warnings": [
+      "راجع الجرائم المستثناة والانقطاع وتاريخ بدء السريان الخاص بجرائم الموظف العام."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-criminal-limitation-misdemeanor-3-years",
+    "category": "انقضاء الدعوى الجنائية",
+    "title": "انقضاء الدعوى في الجنح — حساب استرشادي",
+    "description": "انقضاء الدعوى في الجنح — حساب استرشادي",
+    "duration": {
+      "value": 3,
+      "unit": "years"
+    },
+    "trigger": {
+      "label": "تاريخ وقوع الجريمة أو التاريخ المعدل قانوناً بحسب الحالة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "advanced-review",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 17",
+      "textSummary": "تنقضي الدعوى الجنائية في مواد الجنح بمضي ثلاث سنين ما لم ينص القانون على خلاف ذلك."
+    },
+    "warnings": [
+      "راجع الانقطاع والاستثناءات."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  },
+  {
+    "id": "new-criminal-limitation-contravention-1-year",
+    "category": "انقضاء الدعوى الجنائية",
+    "title": "انقضاء الدعوى في المخالفات — حساب استرشادي",
+    "description": "انقضاء الدعوى في المخالفات — حساب استرشادي",
+    "duration": {
+      "value": 1,
+      "unit": "years"
+    },
+    "trigger": {
+      "label": "تاريخ وقوع الجريمة أو التاريخ المعدل قانوناً بحسب الحالة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "advanced-review",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 174 لسنة 2025",
+      "articleNumber": "المادة 17",
+      "textSummary": "تنقضي الدعوى الجنائية في مواد المخالفات بمضي سنة ما لم ينص القانون على خلاف ذلك."
+    },
+    "warnings": [
+      "راجع الانقطاع والاستثناءات."
+    ],
+    "status": "verified-new-law-reviewed-data",
+    "lawSystem": "criminal-procedure-174-2025",
+    "effectiveFrom": "2026-10-01",
+    "effectiveTo": "",
+    "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf + قاعدة المواد المراجعة بالمنصة",
+    "coverageStatus": "reviewed-articles-batch",
+    "reviewNotes": ""
+  }
+];
+window.LEGAL_DEADLINES_NEW_LAW = LEGAL_DEADLINES_NEW_LAW;
+console.log(`✅ تم تحميل ${LEGAL_DEADLINES_NEW_LAW.length} موعدًا من القانون الجديد.`);
