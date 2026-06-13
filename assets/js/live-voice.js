@@ -13,6 +13,7 @@
   const INPUT_RATE = 16000;
   const OUTPUT_RATE = 24000;
   const MAX_SESSION_MINUTES = 12;
+  const SETUP_TIMEOUT_MS = 15000;
 
   const live = {
     ws:null,
@@ -36,7 +37,9 @@
     selectedVoice:"Charon",
     mode:"audio",
     audioStreamOpen:false,
-    contextMode:"facts"
+    contextMode:"facts",
+    setupTimer:null,
+    closeReason:""
   };
 
   function esc(value){return String(value??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
@@ -51,7 +54,12 @@
     if(status){status.className=`sand-live-status ${type}`;status.innerHTML=`<i></i><span>${esc(text)}</span>`;}
     const shell=byId("sandLiveAvatarShell");if(shell)shell.dataset.state=type;
   }
-  function addEvent(text){live.eventLines.push(`${nowTime()} — ${text}`);live.eventLines=live.eventLines.slice(-8);const box=byId("sandLiveEvents");if(box)box.innerHTML=live.eventLines.map(x=>`<div>${esc(x)}</div>`).join("");}
+  function addEvent(text){
+    const line=`${nowTime()} — ${text}`;
+    live.eventLines.push(line);
+    live.eventLines=live.eventLines.slice(-12);
+    console.debug("[SAND LIVE]",line);
+  }
   function updateTranscript(){
     const user=byId("sandLiveUserTranscript");if(user)user.value=live.transcriptUser.trim();
     const sand=byId("sandLiveSandTranscript");if(sand)sand.value=live.transcriptSand.trim();
@@ -66,7 +74,7 @@
   function liveModalMarkup(){return `<div class="sand-live-backdrop" id="sandLiveVoiceModal">
     <section class="sand-live-dialog" role="dialog" aria-modal="true" aria-label="الحوار الصوتي المباشر مع سند">
       <header class="sand-live-head">
-        <div><span>Gemini Live API — جلسة صوتية مباشرة</span><h2>🎙️ حوار صوتي مباشر مع سَنَد</h2><p>احكي الواقعة بصورة طبيعية، وسَنَد يسمعك ويسأل عن النقط المؤثرة بصوته. راجع النص المستخلص قبل إضافته لغرفة التحليل.</p></div>
+        <div><span>جلسة صوتية مباشرة</span><h2>🎙️ حوار صوتي مباشر مع سَنَد</h2><p>احكي الواقعة بصورة طبيعية، وسَنَد هيسمعك ويسأل عن النقط المؤثرة بهدوء. بعد انتهاء الحوار راجع الملخص قبل إضافته لغرفة التحليل.</p></div>
         <button class="sand-live-close" onclick="closeSandLiveVoiceSession()">✕</button>
       </header>
       <div class="sand-live-privacy">🔒 يرجى عدم ذكر أسماء الأشخاص أو أرقام القضايا أو أي بيانات شخصية أو سرية. استخدم أوصافًا عامة مثل: المتهم الأول، المجني عليه، الشاهد، محل الواقعة.</div>
@@ -89,12 +97,11 @@
             <button onclick="finishSandLiveTurn()" id="sandLiveFinishTurnBtn" disabled>✓ إنهاء دوري الحالي</button>
             <button class="danger" onclick="stopSandLiveVoiceSession()" id="sandLiveStopBtn" disabled>⏹ إنهاء الجلسة</button>
           </div>
-          <div class="sand-live-note">الحوار المباشر يعتمد على اتصال WebSocket آمن برمز مؤقت قصير العمر. عند تعذر الاتصال، استخدم المسار الاحتياطي للتسجيل ثم المراجعة النصية.</div>
+          <div class="sand-live-note">اتكلم بصورة طبيعية، وسيظهر النص المستخلص للمراجعة أثناء الحوار. لو الاتصال اتأخر، هتظهر لك رسالة واضحة وتقدر تستخدم المسار الاحتياطي فورًا.</div>
           <div class="sand-live-transcripts">
             <label><span>📝 كلام عضو النيابة — قابل للمراجعة والتعديل</span><textarea id="sandLiveUserTranscript" rows="8" oninput="updateSandLiveTranscript('user',this.value)" placeholder="هيظهر هنا النص المستخلص من كلامك أثناء الحوار..."></textarea></label>
             <label><span>🤖 ردود سَنَد النصية المصاحبة للصوت</span><textarea id="sandLiveSandTranscript" rows="8" oninput="updateSandLiveTranscript('sand',this.value)" placeholder="هيظهر هنا نص ردود سَنَد..."></textarea></label>
           </div>
-          <div class="sand-live-events" id="sandLiveEvents"></div>
           <footer class="sand-live-actions">
             <button onclick="insertSandLiveTranscriptIntoCase()">➕ إضافة وصف الواقعة بعد المراجعة</button>
             <button onclick="copySandLiveTranscript()">📋 نسخ الحوار</button>
@@ -135,20 +142,69 @@
 لا تطلب ولا تكرر أي بيانات شخصية أو سرية. استخدم أوصافًا عامة: المتهم الأول، المجني عليه، الشاهد، محل الواقعة.
 خلي ردودك الصوتية مختصرة ومريحة، وابتعد عن المقدمات الطويلة.`;}
 
+  function clearSetupTimer(){
+    if(live.setupTimer){clearTimeout(live.setupTimer);live.setupTimer=null;}
+  }
+
+  function startSetupTimer(){
+    clearSetupTimer();
+    live.setupTimer=setTimeout(()=>{
+      if(live.setupReady)return;
+      addEvent("انتهت مهلة انتظار تهيئة الجلسة دون وصول setupComplete.");
+      try{live.ws?.close(4000,"setup-timeout");}catch{}
+      cleanupLive(false);
+      setStatus("تعذر تجهيز الحوار الصوتي","error");
+      toast("اتصال الحوار الصوتي اتأخر عن المعتاد. جرّب مرة تانية، ولو استمر استخدم المسار الاحتياطي مؤقتًا.");
+    },SETUP_TIMEOUT_MS);
+  }
+
   async function startSandLiveVoiceSession(){
     if(live.connecting||live.connected)return;
     try{
-      live.connecting=true;setStatus("بجهّز الجلسة الصوتية الآمنة...","thinking");addEvent("طلب رمز جلسة صوتية مؤقت من الخادم.");toggleControls(true);
+      live.connecting=true;setStatus("بجهّز الحوار الصوتي...","thinking");addEvent("بدأ تجهيز جلسة صوتية جديدة.");toggleControls(true);
       const token=await requestEphemeralToken();
       const wsUrl=`wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=${encodeURIComponent(token.token)}`;
       live.ws=new WebSocket(wsUrl);
       live.ws.onopen=()=>{
-        addEvent("تم فتح الاتصال المباشر بخدمة Gemini Live.");
-        live.ws.send(JSON.stringify({setup:{model:`models/${token.model||LIVE_MODEL}`,generationConfig:{responseModalities:["AUDIO"],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:live.selectedVoice}}}},systemInstruction:{parts:[{text:systemInstruction()}]},inputAudioTranscription:{},outputAudioTranscription:{},realtimeInputConfig:{automaticActivityDetection:{disabled:false,startOfSpeechSensitivity:"START_SENSITIVITY_HIGH",endOfSpeechSensitivity:"END_SENSITIVITY_HIGH",prefixPaddingMs:80,silenceDurationMs:650},activityHandling:"START_OF_ACTIVITY_INTERRUPTS",turnCoverage:"TURN_INCLUDES_ONLY_ACTIVITY"},sessionResumption:{},contextWindowCompression:{slidingWindow:{targetTokens:"12000"},triggerTokens:"24000"}}}));
+        addEvent("تم فتح الاتصال الصوتي. جاري تهيئة الجلسة.");
+        startSetupTimer();
+        const setupMessage={
+          setup:{
+            model:`models/${token.model||LIVE_MODEL}`,
+            generationConfig:{
+              responseModalities:["AUDIO"],
+              speechConfig:{
+                voiceConfig:{
+                  prebuiltVoiceConfig:{voiceName:live.selectedVoice}
+                }
+              }
+            },
+            systemInstruction:{parts:[{text:systemInstruction()}]},
+            inputAudioTranscription:{},
+            outputAudioTranscription:{}
+          }
+        };
+        live.ws.send(JSON.stringify(setupMessage));
       };
       live.ws.onmessage=event=>handleServerMessage(event.data);
-      live.ws.onerror=()=>{setStatus("تعذر الاتصال الصوتي المباشر","error");addEvent("حدث خطأ في WebSocket.");toast("تعذر تشغيل الحوار الصوتي المباشر. استخدم المسار الاحتياطي مؤقتًا.");};
-      live.ws.onclose=event=>{addEvent(`انتهى الاتصال الصوتي (${event.code||""}).`);cleanupLive(false);setStatus("انتهت الجلسة الصوتية","idle");};
+      live.ws.onerror=event=>{
+        console.error("[SAND LIVE] WebSocket error",event);
+        addEvent("حدث خطأ أثناء فتح الاتصال الصوتي.");
+      };
+      live.ws.onclose=event=>{
+        clearSetupTimer();
+        live.closeReason=String(event.reason||"");
+        console.warn("[SAND LIVE] WebSocket closed",{code:event.code,reason:event.reason,wasClean:event.wasClean});
+        addEvent(`انتهى الاتصال الصوتي. code=${event.code||""}`);
+        const wasReady=live.setupReady;
+        cleanupLive(false);
+        if(!wasReady&&event.code!==1000){
+          setStatus("تعذر تجهيز الحوار الصوتي","error");
+          toast("تعذر تجهيز جلسة الحوار الصوتي. جرّب مرة تانية، ولو استمر استخدم المسار الاحتياطي مؤقتًا.");
+        }else{
+          setStatus("انتهت الجلسة الصوتية","idle");
+        }
+      };
     }catch(error){console.error(error);setStatus("تعذر بدء الجلسة","error");toast(error.message||"تعذر بدء الحوار الصوتي.");cleanupLive(false);}
     finally{live.connecting=false;}
   }
@@ -156,8 +212,29 @@
 
   async function handleServerMessage(raw){
     let data;try{data=JSON.parse(raw);}catch{return;}
-    if(data.setupComplete){live.setupReady=true;live.connected=true;live.startedAt=Date.now();startClock();toggleControls(false);setStatus("سَنَد مستعد وبيسمعك...","listening");addEvent("اكتمل إعداد الجلسة. بدأ التقاط الميكروفون.");if(live.contextMode==="result"&&typeof window.getCaseAnalysisVoiceContext==="function"){const ctx=window.getCaseAnalysisVoiceContext();if(ctx)live.ws.send(JSON.stringify({clientContent:{turns:[{role:"user",parts:[{text:`لدينا نتيجة تحليل سابقة للمناقشة الصوتية. تعامل معها كمذكرة مراجعة داخلية قابلة للتحديث، واسأل المستخدم ما النقطة التي يريد مناقشتها.\n\n${ctx}` }]}],turnComplete:true}}));}
-      await startMicrophone();return;}
+    if(data.error){
+      console.error("[SAND LIVE] Server error",data.error);
+      addEvent("ورد خطأ من خدمة الحوار الصوتي.");
+      clearSetupTimer();
+      try{live.ws?.close(4001,"server-error");}catch{}
+      cleanupLive(false);
+      setStatus("تعذر تجهيز الحوار الصوتي","error");
+      toast("تعذر تجهيز جلسة الحوار الصوتي حاليًا. جرّب مرة تانية أو استخدم المسار الاحتياطي.");
+      return;
+    }
+    if(data.setupComplete){
+      clearSetupTimer();
+      live.setupReady=true;live.connected=true;live.startedAt=Date.now();
+      startClock();toggleControls(false);
+      setStatus("سَنَد مستعد وبيسمعك...","listening");
+      addEvent("اكتمل إعداد الجلسة وبدأ التقاط الميكروفون.");
+      await startMicrophone();
+      if(live.contextMode==="result"&&typeof window.getCaseAnalysisVoiceContext==="function"){
+        const ctx=window.getCaseAnalysisVoiceContext();
+        if(ctx)live.ws.send(JSON.stringify({realtimeInput:{text:`لدينا نتيجة تحليل سابقة للمناقشة الصوتية. تعامل معها كمذكرة مراجعة داخلية قابلة للتحديث، وابدأ بسؤال المستخدم عن النقطة التي يريد مناقشتها.\n\n${ctx}`}}));
+      }
+      return;
+    }
     if(data.goAway){addEvent("الخادم نبّه بقرب انتهاء الاتصال. أنهِ الجولة أو ابدأ جلسة متابعة.");toast("الجلسة الصوتية قربت تنتهي. راجع النص واحفظه أو ابدأ جلسة متابعة.");}
     if(data.sessionResumptionUpdate?.newHandle)live.resumeHandle=data.sessionResumptionUpdate.newHandle;
     const content=data.serverContent;
@@ -224,6 +301,7 @@
   window.stopSandLiveVoiceSession=stopSandLiveVoiceSession;
 
   function cleanupLive(closeSocket){
+    clearSetupTimer();
     live.connected=false;live.setupReady=false;live.audioStreamOpen=false;live.muted=false;
     if(closeSocket&&live.ws){try{live.ws.close();}catch{}}live.ws=null;
     if(live.processor){try{live.processor.disconnect();}catch{}}live.processor=null;
@@ -236,7 +314,7 @@
   }
 
   function toggleControls(connecting){
-    const connected=live.connected;const connect=byId("sandLiveConnectBtn");if(connect){connect.disabled=connecting||connected;connect.textContent=connecting?"جارٍ الاتصال...":connected?"🟢 الحوار مباشر":"🎙️ بدء الحوار المباشر";}
+    const connected=live.connected;const connect=byId("sandLiveConnectBtn");if(connect){connect.disabled=connecting||connected;connect.textContent=connecting?"جاري التجهيز...":connected?"🟢 الحوار مباشر":"🎙️ بدء الحوار المباشر";}
     ["sandLiveMuteBtn","sandLiveFinishTurnBtn","sandLiveStopBtn"].forEach(id=>{const el=byId(id);if(el)el.disabled=!connected;});
   }
   function startClock(){stopClock();const clock=byId("sandLiveClock");live.timer=setInterval(()=>{if(!clock||!live.startedAt)return;const secs=Math.floor((Date.now()-live.startedAt)/1000);clock.textContent=`${String(Math.floor(secs/60)).padStart(2,"0")}:${String(secs%60).padStart(2,"0")}`;if(secs===10*60)toast("متبقي حوالي دقيقتين قبل الحد المقترح للجلسة الحالية.");if(secs>=MAX_SESSION_MINUTES*60)stopSandLiveVoiceSession();},1000);}
