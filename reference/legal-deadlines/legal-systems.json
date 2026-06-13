@@ -5,8 +5,7 @@
     "effectiveFrom": "1950-11-15",
     "effectiveTo": "2026-09-30",
     "sourceFile": "text.txt",
-    "coverageStatus": "full-current-text",
-    "notes": "النص المرفوع يتضمن نسخة مجمعة سارية بحسب ظاهر المصدر."
+    "coverageStatus": "full-current-text"
   },
   {
     "id": "criminal-procedure-174-2025",
@@ -14,7 +13,6 @@
     "effectiveFrom": "2026-10-01",
     "effectiveTo": "",
     "sourceFile": "قانون الإجراءات الجنائية رقم 174 لسنة 2025.pdf",
-    "coverageStatus": "partial-pdf-20-pages",
-    "notes": "الملف المرفوع 20 صفحة فقط؛ قاعدة مواعيد القانون الجديد غير مكتملة حتى رفع النص الكامل."
+    "coverageStatus": "reviewed-deadlines-batch"
   }
 ]
