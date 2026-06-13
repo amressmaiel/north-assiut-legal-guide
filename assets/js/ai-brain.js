@@ -6,6 +6,7 @@
 // ضع رابط Cloudflare Worker بعد نشره.
 // مثال: https://north-assiut-legal-ai-proxy.username.workers.dev
 const AI_PROXY_URL = "https://north-assiut-legal-ai-proxy.amressmaiel.workers.dev";
+window.AI_PROXY_URL = AI_PROXY_URL;
 
 // آخر 6 رسائل فقط داخل الجلسة الحالية، حتى يظل الحوار طبيعيًا وخفيفًا.
 const SAND_MAX_HISTORY_MESSAGES = 6;
