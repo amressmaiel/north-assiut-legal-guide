@@ -39,7 +39,12 @@
     audioStreamOpen:false,
     contextMode:"facts",
     setupTimer:null,
-    closeReason:""
+    closeReason:"",
+    interactionMode:"ptt",
+    pttActive:false,
+    isModelSpeaking:false,
+    localVoiceFrames:0,
+    localBargeInTriggered:false
   };
 
   function esc(value){return String(value??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
@@ -92,12 +97,14 @@
         <main class="sand-live-main">
           <div class="sand-live-toolbar">
             <label><span>صوت سَنَد — تلقائي مؤقتًا</span><select id="sandLiveVoice" disabled title="سيتم إعادة تفعيل اختيار الصوت بعد اختبار ثبات الاتصال"><option>الصوت الافتراضي</option></select></label>
+            <label><span>طريقة الحوار</span><select id="sandLiveInteractionMode" onchange="setSandLiveInteractionMode(this.value)"><option value="ptt" selected>اضغط مطولًا للتحدث — الأدق</option><option value="auto">محادثة طبيعية تلقائية</option></select></label>
             <button class="primary" id="sandLiveConnectBtn" onclick="startSandLiveVoiceSession()">🎙️ بدء الحوار المباشر</button>
             <button id="sandLiveMuteBtn" onclick="toggleSandLiveMute()" disabled>🔇 كتم الميكروفون</button>
+            <button id="sandLivePttBtn" class="sand-live-ptt" disabled onpointerdown="startSandLivePushToTalk(event)" onpointerup="stopSandLivePushToTalk(event)" onpointercancel="stopSandLivePushToTalk(event)" onpointerleave="stopSandLivePushToTalk(event)">🎙️ اضغط مطولًا للتحدث</button>
             <button onclick="finishSandLiveTurn()" id="sandLiveFinishTurnBtn" disabled>✓ إنهاء دوري الحالي</button>
             <button class="danger" onclick="stopSandLiveVoiceSession()" id="sandLiveStopBtn" disabled>⏹ إنهاء الجلسة</button>
           </div>
-          <div class="sand-live-note">اتكلم بصورة طبيعية، وسيظهر النص المستخلص للمراجعة أثناء الحوار. لو الاتصال اتأخر، هتظهر لك رسالة واضحة وتقدر تستخدم المسار الاحتياطي فورًا.</div>
+          <div class="sand-live-note">الوضع الموصى به للمراجعة الدقيقة هو «اضغط مطولًا للتحدث»: امسك الزر أثناء كلامك وسيبه لما تخلص. تقدر تغيّر إلى المحادثة التلقائية من القائمة. التفريغ النصي قابل للمراجعة والتعديل قبل إضافته للواقعة.</div>
           <div class="sand-live-transcripts">
             <label><span>📝 كلام عضو النيابة — قابل للمراجعة والتعديل</span><textarea id="sandLiveUserTranscript" rows="8" oninput="updateSandLiveTranscript('user',this.value)" placeholder="هيظهر هنا النص المستخلص من كلامك أثناء الحوار..."></textarea></label>
             <label><span>🤖 ردود سَنَد النصية المصاحبة للصوت</span><textarea id="sandLiveSandTranscript" rows="8" oninput="updateSandLiveTranscript('sand',this.value)" placeholder="هيظهر هنا نص ردود سَنَد..."></textarea></label>
@@ -116,7 +123,7 @@
     if(modal())return;
     live.contextMode=mode==="result"?"result":"facts";
     document.body.insertAdjacentHTML("beforeend",liveModalMarkup());
-    updateTranscript();
+    updateTranscript();syncInteractionModeUI();
   }
   window.openSandLiveVoiceSession=openSandLiveVoiceSession;
 
@@ -125,6 +132,52 @@
 
   function setSandLiveVoice(value){if(!live.connected)live.selectedVoice=String(value||"Charon");else toast("اختيار الصوت يتطبق عند بدء جلسة جديدة.");}
   window.setSandLiveVoice=setSandLiveVoice;
+
+  function setSandLiveInteractionMode(value){
+    if(live.connected||live.connecting){
+      toast("غيّر طريقة الحوار قبل بدء الجلسة الجديدة.");
+      const select=byId("sandLiveInteractionMode");if(select)select.value=live.interactionMode;
+      return;
+    }
+    live.interactionMode=value==="auto"?"auto":"ptt";
+    syncInteractionModeUI();
+  }
+  window.setSandLiveInteractionMode=setSandLiveInteractionMode;
+
+  function syncInteractionModeUI(){
+    const isPtt=live.interactionMode==="ptt";
+    const ptt=byId("sandLivePttBtn");
+    const finish=byId("sandLiveFinishTurnBtn");
+    if(ptt){ptt.style.display=isPtt?"inline-flex":"none";ptt.disabled=!live.connected;}
+    if(finish){finish.style.display=isPtt?"none":"inline-flex";finish.disabled=!live.connected;}
+  }
+
+  function sendRealtimeSignal(field){
+    if(live.ws?.readyState!==WebSocket.OPEN)return;
+    live.ws.send(JSON.stringify({realtimeInput:{[field]:{}}}));
+  }
+
+  function startSandLivePushToTalk(event){
+    if(event?.buttons===0&&event?.pointerType!=="touch")return;
+    if(!live.connected||live.interactionMode!=="ptt"||live.muted)return;
+    if(live.pttActive)return;
+    live.pttActive=true;
+    live.localBargeInTriggered=false;
+    stopPlayback();
+    sendRealtimeSignal("activityStart");
+    const btn=byId("sandLivePttBtn");if(btn)btn.classList.add("active");
+    setStatus("سَنَد بيسمعك... سيب الزر لما تخلص","listening");
+  }
+  window.startSandLivePushToTalk=startSandLivePushToTalk;
+
+  function stopSandLivePushToTalk(){
+    if(!live.pttActive)return;
+    live.pttActive=false;
+    sendRealtimeSignal("activityEnd");
+    const btn=byId("sandLivePttBtn");if(btn)btn.classList.remove("active");
+    setStatus("سَنَد بيرتب ردّه...","thinking");
+  }
+  window.stopSandLivePushToTalk=stopSandLivePushToTalk;
 
   async function requestEphemeralToken(){
     const base=proxyBase();if(!base)throw new Error("رابط Cloudflare Worker غير مضبوط داخل ai-brain.js.");
@@ -135,7 +188,7 @@
   }
 
   function systemInstruction(){return `أنت سَنَد، مساعد قضائي صوتي ذكي مخصص لمعاونة أعضاء النيابة العامة في غرفة تحليل الواقعة.
-اتكلم بالمصري العامي المحترم وبنبرة هادئة ورصينة وودودة. اسأل أسئلة قصيرة ومحددة، سؤالًا أو سؤالين في كل مرة، ولا تقاطع المستخدم بلا داعٍ.
+اتكلم بالمصري العامي المحترم وبنبرة هادئة ورصينة وودودة. افهم العربية المصرية ورد باللغة العربية فقط، واكتب أي تفريغ أو ملخص بالعربية بحروف عربية لا بحروف لاتينية. اسأل أسئلة قصيرة ومحددة، سؤالًا أو سؤالين في كل مرة، ولا تقاطع المستخدم بلا داعٍ. انتظر حتى يكتمل كلام المستخدم، ولا تعتبر الوقفات القصيرة نهايةً لدوره.
 الهدف في الحوار الصوتي هو جمع الوقائع وتحديد النقاط الغامضة فقط، وليس إصدار تكييف نهائي أو قرار قضائي ملزم.
 لا تفترض وقائع غير مذكورة. لو المعلومة ناقصة اسأل عنها. لا تذكر أسماء مواد أو مدد أو أحكام إلا لو متأكد منها من السياق الذي يقدمه التطبيق لاحقًا.
 اطلب من المستخدم في الوقت المناسب مراجعة الملخص النصي واعتماده قبل بدء التحليل القانوني المنظم.
@@ -180,6 +233,23 @@
               responseModalities:["AUDIO"]
             },
             systemInstruction:{parts:[{text:systemInstruction()}]},
+            realtimeInputConfig: live.interactionMode === "ptt"
+              ? {
+                  automaticActivityDetection:{disabled:true},
+                  activityHandling:"START_OF_ACTIVITY_INTERRUPTS",
+                  turnCoverage:"TURN_INCLUDES_ONLY_ACTIVITY"
+                }
+              : {
+                  automaticActivityDetection:{
+                    disabled:false,
+                    startOfSpeechSensitivity:"START_SENSITIVITY_HIGH",
+                    endOfSpeechSensitivity:"END_SENSITIVITY_LOW",
+                    prefixPaddingMs:220,
+                    silenceDurationMs:1500
+                  },
+                  activityHandling:"START_OF_ACTIVITY_INTERRUPTS",
+                  turnCoverage:"TURN_INCLUDES_ONLY_ACTIVITY"
+                },
             inputAudioTranscription:{},
             outputAudioTranscription:{}
           }
@@ -243,7 +313,7 @@
       clearSetupTimer();
       live.setupReady=true;live.connected=true;live.startedAt=Date.now();
       startClock();toggleControls(false);
-      setStatus("سَنَد مستعد وبيسمعك...","listening");
+      setStatus(live.interactionMode==="ptt"?"اضغط مطولًا للتحدث":"سَنَد مستعد وبيسمعك...","listening");
       addEvent("اكتمل إعداد الجلسة وبدأ التقاط الميكروفون.");
       await startMicrophone();
       if(live.contextMode==="result"&&typeof window.getCaseAnalysisVoiceContext==="function"){
@@ -256,7 +326,7 @@
     if(data.sessionResumptionUpdate?.newHandle)live.resumeHandle=data.sessionResumptionUpdate.newHandle;
     const content=data.serverContent;
     if(!content)return;
-    if(content.interrupted){stopPlayback();setStatus("سَنَد وقف الرد وبيسمعك...","listening");addEvent("تمت مقاطعة رد سَنَد طبيعيًا عند بدء كلامك.");}
+    if(content.interrupted){stopPlayback();live.isModelSpeaking=false;setStatus("سَنَد وقف الرد وبيسمعك...","listening");addEvent("تمت مقاطعة رد سَنَد طبيعيًا عند بدء كلامك.");}
     if(content.inputTranscription?.text){appendTranscript("user",content.inputTranscription.text);setStatus("سَنَد بيسمعك...","listening");}
     if(content.outputTranscription?.text){appendTranscript("sand",content.outputTranscription.text);setStatus("سَنَد بيرد عليك...","speaking");}
     const parts=content.modelTurn?.parts||[];
@@ -265,7 +335,7 @@
       const inline=part.inlineData||part.inline_data;
       if(inline?.data&&String(inline.mimeType||inline.mime_type||"").includes("audio"))playPcmChunk(inline.data,parseRate(inline.mimeType||inline.mime_type)||OUTPUT_RATE);
     }
-    if(content.turnComplete){setStatus("سَنَد مستعد يسمعك...","listening");}
+    if(content.turnComplete){live.isModelSpeaking=false;live.localBargeInTriggered=false;setStatus(live.interactionMode==="ptt"?"اضغط مطولًا للتحدث":"سَنَد مستعد يسمعك...","listening");}
   }
 
   async function startMicrophone(){
@@ -279,7 +349,18 @@
     live.silentGain=live.inputContext.createGain();live.silentGain.gain.value=0;
     live.processor.onaudioprocess=e=>{
       if(!live.connected||live.muted||!live.ws||live.ws.readyState!==WebSocket.OPEN)return;
-      const input=e.inputBuffer.getChannelData(0);const down=resample(input,live.inputContext.sampleRate,INPUT_RATE);const pcm=floatTo16BitPCM(down);const base64=arrayBufferToBase64(pcm.buffer);
+      const input=e.inputBuffer.getChannelData(0);
+      let energy=0;for(let i=0;i<input.length;i++)energy+=input[i]*input[i];
+      const rms=Math.sqrt(energy/Math.max(1,input.length));
+      if(live.interactionMode==="auto"&&live.isModelSpeaking){
+        if(rms>0.035)live.localVoiceFrames++;else live.localVoiceFrames=Math.max(0,live.localVoiceFrames-1);
+        if(live.localVoiceFrames>=2&&!live.localBargeInTriggered){
+          live.localBargeInTriggered=true;stopPlayback();setStatus("سَنَد وقف الرد وبيسمعك...","listening");
+        }
+      }
+      const shouldSend=live.interactionMode==="auto"||live.pttActive;
+      if(!shouldSend)return;
+      const down=resample(input,live.inputContext.sampleRate,INPUT_RATE);const pcm=floatTo16BitPCM(down);const base64=arrayBufferToBase64(pcm.buffer);
       live.ws.send(JSON.stringify({realtimeInput:{audio:{mimeType:`audio/pcm;rate=${INPUT_RATE}`,data:base64}}}));live.audioStreamOpen=true;
     };
     live.inputSource.connect(live.processor);live.processor.connect(live.silentGain);live.silentGain.connect(live.inputContext.destination);
@@ -301,25 +382,26 @@
     if(!live.outputContext)live.outputContext=new Context({sampleRate:rate});await live.outputContext.resume();
     const pcm=base64ToInt16(base64);const floats=new Float32Array(pcm.length);for(let i=0;i<pcm.length;i++)floats[i]=pcm[i]/32768;
     const buffer=live.outputContext.createBuffer(1,floats.length,rate);buffer.copyToChannel(floats,0);const source=live.outputContext.createBufferSource();source.buffer=buffer;source.connect(live.outputContext.destination);
+    live.isModelSpeaking=true;
     const now=live.outputContext.currentTime;live.nextPlaybackTime=Math.max(live.nextPlaybackTime||now,now);source.start(live.nextPlaybackTime);live.nextPlaybackTime+=buffer.duration;live.playbackSources.add(source);source.onended=()=>live.playbackSources.delete(source);
   }
-  function stopPlayback(){for(const source of live.playbackSources){try{source.stop();}catch{}}live.playbackSources.clear();if(live.outputContext)live.nextPlaybackTime=live.outputContext.currentTime;}
+  function stopPlayback(){for(const source of live.playbackSources){try{source.stop();}catch{}}live.playbackSources.clear();live.isModelSpeaking=false;if(live.outputContext)live.nextPlaybackTime=live.outputContext.currentTime;}
 
   function toggleSandLiveMute(){live.muted=!live.muted;const btn=byId("sandLiveMuteBtn");if(btn)btn.textContent=live.muted?"🎙️ فتح الميكروفون":"🔇 كتم الميكروفون";setStatus(live.muted?"الميكروفون مكتوم":"سَنَد مستعد يسمعك...",live.muted?"paused":"listening");}
   window.toggleSandLiveMute=toggleSandLiveMute;
 
-  function finishSandLiveTurn(){if(live.ws?.readyState===WebSocket.OPEN){live.ws.send(JSON.stringify({realtimeInput:{audioStreamEnd:true}}));live.audioStreamOpen=false;addEvent("تم إنهاء جولة الكلام الحالية وإرسالها لسَنَد.");setStatus("سَنَد بيرتب ردّه...","thinking");}}
+  function finishSandLiveTurn(){if(live.ws?.readyState===WebSocket.OPEN){if(live.interactionMode==="ptt"){stopSandLivePushToTalk();return;}live.ws.send(JSON.stringify({realtimeInput:{audioStreamEnd:true}}));live.audioStreamOpen=false;addEvent("تم إنهاء جولة الكلام الحالية وإرسالها لسَنَد.");setStatus("سَنَد بيرتب ردّه...","thinking");}}
   window.finishSandLiveTurn=finishSandLiveTurn;
 
   async function stopSandLiveVoiceSession(silent=false){
-    try{if(live.ws?.readyState===WebSocket.OPEN){if(live.audioStreamOpen)live.ws.send(JSON.stringify({realtimeInput:{audioStreamEnd:true}}));live.ws.close(1000,"user-ended");}}catch{}
+    try{if(live.ws?.readyState===WebSocket.OPEN){if(live.interactionMode==="ptt"&&live.pttActive)sendRealtimeSignal("activityEnd");else if(live.audioStreamOpen)live.ws.send(JSON.stringify({realtimeInput:{audioStreamEnd:true}}));live.ws.close(1000,"user-ended");}}catch{}
     cleanupLive(true);if(!silent){setStatus("انتهت الجلسة — راجع النص قبل الإضافة","idle");toast("تم إنهاء الحوار الصوتي. راجع النص قبل إضافته للواقعة.");}
   }
   window.stopSandLiveVoiceSession=stopSandLiveVoiceSession;
 
   function cleanupLive(closeSocket){
     clearSetupTimer();
-    live.connected=false;live.setupReady=false;live.audioStreamOpen=false;live.muted=false;
+    live.connected=false;live.setupReady=false;live.audioStreamOpen=false;live.muted=false;live.pttActive=false;live.isModelSpeaking=false;live.localVoiceFrames=0;live.localBargeInTriggered=false;
     if(closeSocket&&live.ws){try{live.ws.close();}catch{}}live.ws=null;
     if(live.processor){try{live.processor.disconnect();}catch{}}live.processor=null;
     if(live.inputSource){try{live.inputSource.disconnect();}catch{}}live.inputSource=null;
@@ -333,6 +415,7 @@
   function toggleControls(connecting){
     const connected=live.connected;const connect=byId("sandLiveConnectBtn");if(connect){connect.disabled=connecting||connected;connect.textContent=connecting?"جاري التجهيز...":connected?"🟢 الحوار مباشر":"🎙️ بدء الحوار المباشر";}
     ["sandLiveMuteBtn","sandLiveFinishTurnBtn","sandLiveStopBtn"].forEach(id=>{const el=byId(id);if(el)el.disabled=!connected;});
+    syncInteractionModeUI();
   }
   function startClock(){stopClock();const clock=byId("sandLiveClock");live.timer=setInterval(()=>{if(!clock||!live.startedAt)return;const secs=Math.floor((Date.now()-live.startedAt)/1000);clock.textContent=`${String(Math.floor(secs/60)).padStart(2,"0")}:${String(secs%60).padStart(2,"0")}`;if(secs===10*60)toast("متبقي حوالي دقيقتين قبل الحد المقترح للجلسة الحالية.");if(secs>=MAX_SESSION_MINUTES*60)stopSandLiveVoiceSession();},1000);}
   function stopClock(){if(live.timer)clearInterval(live.timer);live.timer=null;}
