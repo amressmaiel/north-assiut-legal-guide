@@ -102,6 +102,7 @@
             <button id="sandLiveMuteBtn" onclick="toggleSandLiveMute()" disabled>🔇 كتم الميكروفون</button>
             <button id="sandLivePttBtn" class="sand-live-ptt" disabled onpointerdown="startSandLivePushToTalk(event)" onpointerup="stopSandLivePushToTalk(event)" onpointercancel="stopSandLivePushToTalk(event)" onpointerleave="stopSandLivePushToTalk(event)">🎙️ اضغط مطولًا للتحدث</button>
             <button onclick="finishSandLiveTurn()" id="sandLiveFinishTurnBtn" disabled>✓ إنهاء دوري الحالي</button>
+            <button onclick="requestSandLivePreliminaryAnalysis()" id="sandLiveAnalyzeBtn" disabled>⚖️ اطلب ترجيحًا قانونيًا مبدئيًا</button>
             <button class="danger" onclick="stopSandLiveVoiceSession()" id="sandLiveStopBtn" disabled>⏹ إنهاء الجلسة</button>
           </div>
           <div class="sand-live-note">الوضع الموصى به للمراجعة الدقيقة هو «اضغط مطولًا للتحدث»: امسك الزر أثناء كلامك وسيبه لما تخلص. تقدر تغيّر إلى المحادثة التلقائية من القائمة. التفريغ النصي قابل للمراجعة والتعديل قبل إضافته للواقعة.</div>
@@ -189,9 +190,23 @@
 
   function systemInstruction(){return `أنت سَنَد، مساعد قضائي صوتي ذكي مخصص لمعاونة أعضاء النيابة العامة في غرفة تحليل الواقعة.
 اتكلم بالمصري العامي المحترم وبنبرة هادئة ورصينة وودودة. افهم العربية المصرية ورد باللغة العربية فقط، واكتب أي تفريغ أو ملخص بالعربية بحروف عربية لا بحروف لاتينية. اسأل أسئلة قصيرة ومحددة، سؤالًا أو سؤالين في كل مرة، ولا تقاطع المستخدم بلا داعٍ. انتظر حتى يكتمل كلام المستخدم، ولا تعتبر الوقفات القصيرة نهايةً لدوره.
-الهدف في الحوار الصوتي هو جمع الوقائع وتحديد النقاط الغامضة فقط، وليس إصدار تكييف نهائي أو قرار قضائي ملزم.
-لا تفترض وقائع غير مذكورة. لو المعلومة ناقصة اسأل عنها. لا تذكر أسماء مواد أو مدد أو أحكام إلا لو متأكد منها من السياق الذي يقدمه التطبيق لاحقًا.
-اطلب من المستخدم في الوقت المناسب مراجعة الملخص النصي واعتماده قبل بدء التحليل القانوني المنظم.
+
+مهمتك ليست مجرد جمع الوقائع. بعد استكمال القدر الكافي من المعلومات، أو بمجرد أن يطلب المستخدم التحليل، قدّم له رأيًا قانونيًا مبدئيًا غير ملزم يساعده في المراجعة المهنية. لا ترفض تقديم التكييفات المحتملة لمجرد أنها ليست قرارًا نهائيًا. القرار النهائي يظل لعضو النيابة، لكن دورك أن تضيف قيمة تحليلية واضحة.
+
+عند طلب التحليل أو عندما تصبح الصورة كافية، رتّب ردك صوتيًا بصورة مختصرة وواضحة كالتالي:
+1. التوصيف أو التكييف القانوني الأقرب مبدئيًا وفق الوقائع المذكورة.
+2. التكييفات البديلة المحتملة إن وجدت، وما الذي قد يرجّح كل بديل.
+3. وصف التهمة الأقرب بصورة عملية.
+4. العناصر المتوافرة من الواقعة والعناصر التي ما زالت تحتاج تحققًا.
+5. نقاط التحقيق أو الاستيفاءات الضرورية التي ينبغي مراجعتها.
+6. المواد القانونية المرشحة فقط إذا كنت متأكدًا منها. لو لم تكن متأكدًا من رقم المادة، اذكر الوصف القانوني بوضوح وقل إن رقم المادة يحتاج مراجعة داخل التقرير النصي المنظم وقاعدة بيانات المنصة.
+7. أي نقطة قد تغيّر التكييف لو ثبتت أو انتفت.
+
+استخدم عبارات مهنية واضحة مثل: «الترجيح المبدئي الأقرب وفق اللي اتقال»، «فيه احتمال بديل لازم يفضل محل مراجعة»، «النقطة دي لو ثبتت ممكن تغيّر الوصف».
+لا تستخدم عبارة «لا أستطيع تقديم تكييف» إلا إذا كانت الوقائع ناقصة بصورة تمنع حتى الترجيح المشروط. وفي الحالة دي اذكر الاحتمالات المشروطة واسأل عن المعلومة الفاصلة.
+
+لا تفترض وقائع غير مذكورة. لو المعلومة ناقصة اسأل عنها. لا تخترع نصوصًا أو أرقام مواد أو مددًا أو أحكامًا. لا تذكر رقم مادة إلا لو متأكد منه.
+اطلب من المستخدم في الوقت المناسب مراجعة الملخص النصي واعتماده قبل بدء التقرير القانوني المنظم، لكن لا تجعل اعتماد الملخص شرطًا يمنعك من تقديم ترجيح مبدئي أثناء الحوار إذا طلبه المستخدم.
 لا تطلب ولا تكرر أي بيانات شخصية أو سرية. استخدم أوصافًا عامة: المتهم الأول، المجني عليه، الشاهد، محل الواقعة.
 خلي ردودك الصوتية مختصرة ومريحة، وابتعد عن المقدمات الطويلة.`;}
 
@@ -393,6 +408,19 @@
   function finishSandLiveTurn(){if(live.ws?.readyState===WebSocket.OPEN){if(live.interactionMode==="ptt"){stopSandLivePushToTalk();return;}live.ws.send(JSON.stringify({realtimeInput:{audioStreamEnd:true}}));live.audioStreamOpen=false;addEvent("تم إنهاء جولة الكلام الحالية وإرسالها لسَنَد.");setStatus("سَنَد بيرتب ردّه...","thinking");}}
   window.finishSandLiveTurn=finishSandLiveTurn;
 
+  function requestSandLivePreliminaryAnalysis(){
+    if(!live.connected||live.ws?.readyState!==WebSocket.OPEN){
+      toast("ابدأ الجلسة الصوتية الأول، وبعد ما تحكي الواقعة اطلب الترجيح المبدئي.");
+      return;
+    }
+    stopPlayback();
+    const prompt=`بناءً على كل الوقائع التي ذكرها المستخدم في هذه الجلسة حتى الآن، قدّم الآن رأيًا قانونيًا مبدئيًا غير ملزم ومفيدًا للمراجعة المهنية. اذكر التكييف الأقرب، والبدائل المحتملة إن وجدت، ووصف التهمة الأقرب، والعناصر المتوافرة، والنقاط الناقصة، والاستيفاءات الضرورية، والمواد القانونية المرشحة فقط إذا كنت متأكدًا من أرقامها. لا ترفض التحليل لمجرد أنه غير نهائي، ولا تخترع أرقام مواد. اجعل الرد مرتبًا ومختصرًا وقابلًا للمناقشة.`;
+    live.ws.send(JSON.stringify({realtimeInput:{text:prompt}}));
+    setStatus("سَنَد بيراجع الوقائع وبيجهّز الترجيح المبدئي...","thinking");
+    addEvent("تم طلب ترجيح قانوني مبدئي من سَنَد.");
+  }
+  window.requestSandLivePreliminaryAnalysis=requestSandLivePreliminaryAnalysis;
+
   async function stopSandLiveVoiceSession(silent=false){
     try{if(live.ws?.readyState===WebSocket.OPEN){if(live.interactionMode==="ptt"&&live.pttActive)sendRealtimeSignal("activityEnd");else if(live.audioStreamOpen)live.ws.send(JSON.stringify({realtimeInput:{audioStreamEnd:true}}));live.ws.close(1000,"user-ended");}}catch{}
     cleanupLive(true);if(!silent){setStatus("انتهت الجلسة — راجع النص قبل الإضافة","idle");toast("تم إنهاء الحوار الصوتي. راجع النص قبل إضافته للواقعة.");}
@@ -414,7 +442,7 @@
 
   function toggleControls(connecting){
     const connected=live.connected;const connect=byId("sandLiveConnectBtn");if(connect){connect.disabled=connecting||connected;connect.textContent=connecting?"جاري التجهيز...":connected?"🟢 الحوار مباشر":"🎙️ بدء الحوار المباشر";}
-    ["sandLiveMuteBtn","sandLiveFinishTurnBtn","sandLiveStopBtn"].forEach(id=>{const el=byId(id);if(el)el.disabled=!connected;});
+    ["sandLiveMuteBtn","sandLiveFinishTurnBtn","sandLiveAnalyzeBtn","sandLiveStopBtn"].forEach(id=>{const el=byId(id);if(el)el.disabled=!connected;});
     syncInteractionModeUI();
   }
   function startClock(){stopClock();const clock=byId("sandLiveClock");live.timer=setInterval(()=>{if(!clock||!live.startedAt)return;const secs=Math.floor((Date.now()-live.startedAt)/1000);clock.textContent=`${String(Math.floor(secs/60)).padStart(2,"0")}:${String(secs%60).padStart(2,"0")}`;if(secs===10*60)toast("متبقي حوالي دقيقتين قبل الحد المقترح للجلسة الحالية.");if(secs>=MAX_SESSION_MINUTES*60)stopSandLiveVoiceSession();},1000);}
