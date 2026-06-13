@@ -1202,6 +1202,161 @@ const LEGAL_DEADLINES_CURRENT = [
     "sourceFile": "text.txt",
     "coverageStatus": "full-current-text",
     "reviewNotes": ""
+  },
+  {
+    "id": "investigation-judge-completion-six-months",
+    "category": "التحقيق بمعرفة قاضي التحقيق",
+    "title": "المدة الأصلية لإنجاز التحقيق بمعرفة قاضي التحقيق المندوب",
+    "description": "متابعة المدة الأصلية المقررة لإنجاز التحقيق بمعرفة قاضي التحقيق المندوب.",
+    "duration": {
+      "value": 6,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ مباشرة قاضي التحقيق المندوب للتحقيق",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 150 لسنة 1950",
+      "articleNumber": "المادة 66",
+      "textSummary": "على قاضي التحقيق المندوب أن ينجز التحقيق خلال مدة لا تجاوز ستة أشهر من وقت مباشرته، إلا إذا حال دون ذلك مقتضى تستلزمه ضرورات التحقيق."
+    },
+    "warnings": [
+      "راجع تاريخ المباشرة الفعلي.",
+      "إذا قام مقتضى التجديد، يلزم اتباع إجراءات العرض المنصوص عليها في المادة."
+    ],
+    "status": "verified-current-law",
+    "lawSystem": "current-criminal-procedure",
+    "effectiveFrom": "1950-11-15",
+    "effectiveTo": "2026-09-30",
+    "sourceFile": "text.txt",
+    "coverageStatus": "full-current-text",
+    "reviewNotes": ""
+  },
+  {
+    "id": "investigation-judge-renewal-six-months",
+    "category": "التحقيق بمعرفة قاضي التحقيق",
+    "title": "مدة تجديد ندب قاضي التحقيق عند قيام المقتضى",
+    "description": "حساب الحد الأقصى لمدة التجديد عند استمرار المقتضى الذي حال دون إنجاز التحقيق.",
+    "duration": {
+      "value": 6,
+      "unit": "months"
+    },
+    "trigger": {
+      "label": "تاريخ بدء مدة التجديد المعتمدة",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 150 لسنة 1950",
+      "articleNumber": "المادة 66",
+      "textSummary": "إذا قام المقتضى وجب العرض لتجديد الندب لمدة لا تجاوز ستة أشهر."
+    },
+    "warnings": [
+      "يلزم التحقق من صدور قرار التجديد من الجهة المختصة.",
+      "القالب يحسب مدة التجديد بعد اعتماد بدايتها ولا يستبدل مراجعة قرار الندب."
+    ],
+    "status": "verified-current-law-with-review-note",
+    "lawSystem": "current-criminal-procedure",
+    "effectiveFrom": "1950-11-15",
+    "effectiveTo": "2026-09-30",
+    "sourceFile": "text.txt",
+    "coverageStatus": "full-current-text",
+    "reviewNotes": "راجع قرار التجديد وتاريخ بدايته."
+  },
+  {
+    "id": "investigation-judge-decide-motions-24h",
+    "category": "التحقيق بمعرفة قاضي التحقيق",
+    "title": "الفصل في الدفوع والطلبات المقدمة إلى قاضي التحقيق",
+    "description": "متابعة ميعاد الفصل في الدفوع والطلبات المقدمة أثناء التحقيق.",
+    "duration": {
+      "value": 24,
+      "unit": "hours"
+    },
+    "trigger": {
+      "label": "تاريخ ووقت تقديم الدفع أو الطلب",
+      "excludeTriggerDay": true,
+      "requiresTime": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 150 لسنة 1950",
+      "articleNumber": "المادة 82",
+      "textSummary": "يفصل قاضي التحقيق في ظرف أربع وعشرين ساعة في الدفوع والطلبات المقدمة إليه، ويبين الأسباب التي يستند إليها."
+    },
+    "warnings": [
+      "أدخل وقت تقديم الطلب بدقة."
+    ],
+    "status": "verified-current-law",
+    "lawSystem": "current-criminal-procedure",
+    "effectiveFrom": "1950-11-15",
+    "effectiveTo": "2026-09-30",
+    "sourceFile": "text.txt",
+    "coverageStatus": "full-current-text",
+    "reviewNotes": ""
+  },
+  {
+    "id": "investigation-judge-notify-orders-24h",
+    "category": "التحقيق بمعرفة قاضي التحقيق",
+    "title": "إعلان أوامر قاضي التحقيق الصادرة في غير مواجهة الخصوم",
+    "description": "متابعة ميعاد إعلان أوامر قاضي التحقيق التي لم تصدر في مواجهة الخصوم.",
+    "duration": {
+      "value": 24,
+      "unit": "hours"
+    },
+    "trigger": {
+      "label": "تاريخ ووقت صدور الأمر",
+      "excludeTriggerDay": true,
+      "requiresTime": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 150 لسنة 1950",
+      "articleNumber": "المادة 83",
+      "textSummary": "إذا لم تكن أوامر قاضي التحقيق صدرت في مواجهة الخصوم، تبلغ إلى النيابة العامة وعليها أن تعلنها لهم في ظرف أربع وعشرين ساعة من تاريخ صدورها."
+    },
+    "warnings": [
+      "تحقق أولًا مما إذا كان الأمر قد صدر في مواجهة الخصوم."
+    ],
+    "status": "verified-current-law",
+    "lawSystem": "current-criminal-procedure",
+    "effectiveFrom": "1950-11-15",
+    "effectiveTo": "2026-09-30",
+    "sourceFile": "text.txt",
+    "coverageStatus": "full-current-text",
+    "reviewNotes": ""
+  },
+  {
+    "id": "referral-send-papers-two-days",
+    "category": "الإحالة والتصرف",
+    "title": "إرسال أوراق الدعوى إلى قلم كتاب المحكمة بعد الإحالة إلى المحكمة الجزئية",
+    "description": "متابعة ميعاد إرسال جميع الأوراق إلى قلم كتاب المحكمة بعد القرار بالإحالة إلى المحكمة الجزئية.",
+    "duration": {
+      "value": 2,
+      "unit": "days"
+    },
+    "trigger": {
+      "label": "تاريخ صدور قرار الإحالة إلى المحكمة الجزئية",
+      "excludeTriggerDay": true
+    },
+    "calculationMode": "fixed",
+    "legalBasis": {
+      "lawTitle": "قانون الإجراءات الجنائية رقم 150 لسنة 1950",
+      "articleNumber": "المادة 157",
+      "textSummary": "على النيابة العامة عند صدور القرار بإحالة الدعوى إلى المحكمة الجزئية أن تقوم بإرسال جميع الأوراق إلى قلم كتاب المحكمة في ظرف يومين."
+    },
+    "warnings": [
+      "راجع نوع الإحالة والجهة المحال إليها.",
+      "تظل مواعيد إعلان الخصوم واجبة المراعاة على نحو مستقل."
+    ],
+    "status": "verified-current-law",
+    "lawSystem": "current-criminal-procedure",
+    "effectiveFrom": "1950-11-15",
+    "effectiveTo": "2026-09-30",
+    "sourceFile": "text.txt",
+    "coverageStatus": "full-current-text",
+    "reviewNotes": ""
   }
 ];
 window.LEGAL_DEADLINES_CURRENT = LEGAL_DEADLINES_CURRENT;
