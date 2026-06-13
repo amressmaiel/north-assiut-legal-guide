@@ -489,6 +489,54 @@ function extractGeneratedText(data) {
     .trim();
 }
 
+
+// ============================================================================
+// 🎙️ Gemini Live API — إصدار رموز جلسات صوتية مؤقتة
+// ============================================================================
+const LIVE_MODEL_NAME = "gemini-3.1-flash-live-preview";
+const LIVE_TOKEN_EXPIRE_MINUTES = 15;
+const LIVE_NEW_SESSION_EXPIRE_SECONDS = 60;
+
+/**
+ * إصدار Ephemeral Token قصير العمر لاستخدامه في اتصال WebSocket المباشر.
+ * المفتاح الأساسي يفضل داخل Cloudflare Secret ولا يصل إلى المتصفح.
+ */
+async function createGeminiLiveEphemeralToken(apiKey) {
+  const now = Date.now();
+  const expireTime = new Date(now + LIVE_TOKEN_EXPIRE_MINUTES * 60 * 1000).toISOString();
+  const newSessionExpireTime = new Date(now + LIVE_NEW_SESSION_EXPIRE_SECONDS * 1000).toISOString();
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1alpha/authTokens?key=${encodeURIComponent(apiKey)}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        authToken: {
+          uses: 1,
+          expireTime,
+          newSessionExpireTime
+        }
+      })
+    }
+  );
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.name) {
+    throw new Error(extractGoogleError(data, "تعذر إصدار رمز الحوار الصوتي المؤقت من Google Gemini."));
+  }
+
+  return { token: data.name, expireTime, newSessionExpireTime };
+}
+
+/** دعم اختياري لـ Cloudflare Rate Limiting Binding عند إضافته باسم SAND_LIVE_RATE_LIMITER. */
+async function allowLiveTokenRequest(request, env) {
+  if (!env.SAND_LIVE_RATE_LIMITER || typeof env.SAND_LIVE_RATE_LIMITER.limit !== "function") return true;
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const result = await env.SAND_LIVE_RATE_LIMITER.limit({ key: ip });
+  return !!result.success;
+}
+
 // ============================================================================
 // 🚀 تشغيل Cloudflare Worker
 // ============================================================================
@@ -516,6 +564,38 @@ export default {
         status: 204,
         headers: getCorsHeaders(origin)
       });
+    }
+
+
+    // ------------------------------------------------------------------------
+    // إصدار رمز جلسة مؤقت للحوار الصوتي المباشر مع سَنَد
+    // ------------------------------------------------------------------------
+    if (new URL(request.url).pathname === "/live-token") {
+      if (request.method !== "POST") {
+        return jsonResponse({ ok: false, error: "طريقة الطلب غير مسموح بها." }, 405, origin);
+      }
+      if (!isAllowedOrigin(origin)) {
+        return jsonResponse({ ok: false, error: "هذا النطاق غير مصرح له باستخدام الحوار الصوتي." }, 403, origin);
+      }
+      if (!env.GEMINI_API_KEY) {
+        return jsonResponse({ ok: false, error: "لم يتم إعداد مفتاح Gemini API داخل إعدادات الخادم." }, 500, origin);
+      }
+      if (!(await allowLiveTokenRequest(request, env))) {
+        return jsonResponse({ ok: false, error: "تم تجاوز عدد جلسات الحوار الصوتي المسموح بها مؤقتًا. حاول بعد قليل." }, 429, origin);
+      }
+      try {
+        const liveToken = await createGeminiLiveEphemeralToken(env.GEMINI_API_KEY);
+        return jsonResponse({
+          ok: true,
+          token: liveToken.token,
+          model: LIVE_MODEL_NAME,
+          expiresAt: liveToken.expireTime,
+          newSessionExpiresAt: liveToken.newSessionExpireTime
+        }, 200, origin);
+      } catch (error) {
+        console.error("Live Token Error:", error);
+        return jsonResponse({ ok: false, error: error?.message || "تعذر إنشاء جلسة صوتية مؤقتة." }, 502, origin);
+      }
     }
 
     // ------------------------------------------------------------------------
