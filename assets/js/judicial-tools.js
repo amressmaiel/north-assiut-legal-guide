@@ -200,6 +200,7 @@
     showPage(`<div class="breadcrumb">الرئيسية / <b>أدوات التنفيذ القضائي</b></div>
       <section class="tools-hub-head"><div><span>المرحلة الثالثة</span><h2>🧰 أدوات التنفيذ والمراجعة الوقائية</h2><p>أدوات مساندة تساعد على ترتيب المراجعة واكتشاف النقاط الناقصة. لا تُغني عن الرجوع إلى النص الرسمي والتعليمات المختصة وتقدير عضو النيابة.</p></div></section>
       <div class="judicial-tools-grid">
+        ${toolCard("⚖️","سَنَد — غرفة تحليل الواقعة","احكِ الواقعة بطريقتك، واستكمل النواقص المؤثرة، وراجع التكييفات القانونية المحتملة وأسانيدها مع سَنَد.","openCaseAnalysisRoom()")}
         ${toolCard("🛡️","درع المراجعة الوقائية","راجع الإجراء قبل اعتماده من خلال قائمة فحص عملية وتحذيرات مركزة.","openProceduralShield()")}
         ${toolCard("⏱️","حاسبة المواعيد والتنبيهات","اختر الإجراء القانوني، أدخل تاريخ الواقعة المنشئة للميعاد، واعرف آخر يوم والمتبقي أو مقدار التأخير مع السند القانوني.","openDeadlineCalculator()")}
         ${toolCard("🧾","منشئ قوائم الاستيفاء","جهّز قائمة استيفاءات قابلة للتعليم والطباعة حسب نوع الواقعة.","openInvestigationChecklistBuilder()")}
@@ -225,10 +226,20 @@
   }
   function updateProcedureScore(){ const list=[...document.querySelectorAll("[data-procedure-check]")]; const score=percent(list.filter(x=>x.checked).length,list.length); const scoreEl=document.getElementById("procedureScore"); const label=document.getElementById("procedureScoreLabel"); if(scoreEl)scoreEl.textContent=`${score}%`; if(label)label.textContent=scoreLabel(score); }
 
-  function getDeadlinePresets(){ return DEADLINE_PRESETS.length ? DEADLINE_PRESETS : [{id:"custom-manual",category:"حساب يدوي",title:"ميعاد مخصص — إدخال يدوي",duration:{value:null,unit:"days"},trigger:{label:"تاريخ بداية الحساب",excludeTriggerDay:true},calculationMode:"manual",legalBasis:{lawTitle:"",articleNumber:"",textSummary:""},warnings:["أدخل المدة بعد مراجعة النص الرسمي."],status:"manual"}]; }
-  function deadlineCategories(){ return [...new Set(getDeadlinePresets().map(p=>p.category))]; }
+  function getDeadlinePresets(){ return DEADLINE_PRESETS.length ? DEADLINE_PRESETS : [{id:"custom-manual",category:"حساب يدوي",title:"ميعاد مخصص — إدخال يدوي",duration:{value:null,unit:"days"},trigger:{label:"تاريخ بداية الحساب",excludeTriggerDay:true},calculationMode:"manual",legalBasis:{lawTitle:"",articleNumber:"",textSummary:""},warnings:["أدخل المدة بعد مراجعة النص الرسمي."],status:"manual",lawSystem:"manual"}]; }
+  function deadlineSystems(){ return Array.isArray(window.LEGAL_DEADLINE_SYSTEMS)?window.LEGAL_DEADLINE_SYSTEMS:[]; }
+  function selectedDeadlineSystemFilter(){ return document.getElementById("deadlineSystemFilter")?.value || "all"; }
+  function visibleDeadlinePresets(){ const filter=selectedDeadlineSystemFilter(); return getDeadlinePresets().filter(p=>filter==="all"||p.id==="custom-manual"||p.lawSystem===filter); }
+  function deadlineCategories(){ return [...new Set(visibleDeadlinePresets().map(p=>p.category))]; }
   function selectedDeadlinePreset(){ const id=document.getElementById("deadlinePreset")?.value || "custom-manual"; return getDeadlinePresets().find(p=>p.id===id) || getDeadlinePresets()[0]; }
-  function deadlineStatusBadge(status){ return status==="verified-current-law"?"✅ قالب قانوني موثق":status==="verified-current-law-with-review-note"?"🟡 قالب موثق مع ملاحظة مراجعة":status==="verified-new-law-partial-source"?"🟡 مستخرج من الجزء المرفوع من القانون الجديد":status==="advanced-review"?"⚠️ حساب استرشادي يحتاج مراجعة متقدمة":"📝 إدخال يدوي"; }
+  function deadlineStatusBadge(status){
+    if(status==="verified-current-law")return "✅ قالب قانوني موثق";
+    if(status==="verified-current-law-with-review-note")return "🟡 قالب موثق مع ملاحظة مراجعة";
+    if(status==="verified-new-law-reviewed-data")return "✅ قالب موثق من القانون الجديد";
+    if(status==="advanced-review")return "⚠️ حساب استرشادي يحتاج مراجعة متقدمة";
+    return "📝 إدخال يدوي";
+  }
+  function deadlineCalculationBadge(preset){ return preset.calculationMode==="advanced-review"?"⚠️ حساب متقدم يحتاج مراجعة الظروف والاستثناءات":preset.calculationMode==="manual"?"📝 حساب يدوي":"✅ حساب مباشر وفق القالب المختار"; }
   function deadlineUnitLabel(unit,value){ const n=Number(value); if(unit==="hours") return `${n} ساعة`; if(unit==="months") return `${n} شهر`; if(unit==="years") return `${n} سنة`; return `${n} يوم`; }
   function addLegalDuration(startValue,duration,options={}){
     if(!startValue || !duration || duration.value===null || duration.value==="") return null;
@@ -244,57 +255,72 @@
   function deadlineDateTimeISO(date){ const base=dateToISO(date); return `${base}T${String(date.getHours()).padStart(2,"0")}:${String(date.getMinutes()).padStart(2,"0")}`; }
   function deadlineDisplayDate(date,includeTime=false){ return includeTime?`${formatArabicDate(date)} — ${new Intl.DateTimeFormat("ar-EG-u-nu-arab",{hour:"numeric",minute:"2-digit"}).format(date)}`:formatArabicDate(date); }
   function daysDifference(target){ const today=new Date();today.setHours(0,0,0,0); const date=new Date(target);date.setHours(0,0,0,0); return Math.ceil((date-today)/86400000); }
-  function relativeDeadlineStatus(target){ const days=daysDifference(target); if(days<0)return {className:"expired",icon:"🔴",title:"المعاد انقضى",detail:`انتهى الميعاد منذ ${Math.abs(days)} يوم.`}; if(days===0)return {className:"urgent",icon:"🟠",title:"اليوم هو آخر ميعاد",detail:"يلزم المراجعة واتخاذ الإجراء فورًا بحسب الحالة."}; if(days<=3)return {className:"warning",icon:"🟡",title:"اقترب انتهاء الميعاد",detail:`متبقي ${days} يوم فقط.`}; return {className:"active",icon:"🟢",title:"الميعاد ما زال قائمًا",detail:`متبقي ${days} يوم.`}; }
-  function renderDeadlinePresetOptions(category){ return getDeadlinePresets().filter(p=>!category||p.category===category).map(p=>`<option value="${escLocal(p.id)}">${escLocal(p.title)}</option>`).join(""); }
+  function relativeDeadlineStatus(target){ const days=daysDifference(target); if(days<0)return {className:"expired",icon:"🔴",title:"الميعاد انقضى",detail:`انتهى الميعاد منذ ${Math.abs(days)} يوم.`}; if(days===0)return {className:"urgent",icon:"🟠",title:"اليوم هو آخر ميعاد",detail:"يلزم المراجعة واتخاذ الإجراء فورًا بحسب الحالة."}; if(days<=3)return {className:"warning",icon:"🟡",title:"اقترب انتهاء الميعاد",detail:`متبقي ${days} يوم فقط.`}; return {className:"active",icon:"🟢",title:"الميعاد ما زال قائمًا",detail:`متبقي ${days} يوم.`}; }
+  function renderDeadlineSystemOptions(){ return `<option value="all">كل الأنظمة القانونية المتاحة</option>${deadlineSystems().map(s=>`<option value="${escLocal(s.id)}">${escLocal(s.title)}</option>`).join("")}`; }
+  function renderDeadlinePresetOptions(category){ return visibleDeadlinePresets().filter(p=>!category||p.category===category).map(p=>`<option value="${escLocal(p.id)}">${escLocal(p.title)}</option>`).join(""); }
+  function firstCountedMoment(start,preset,duration){ const first=new Date(start); if(duration.unit!=="hours" && preset.trigger?.excludeTriggerDay!==false) first.setDate(first.getDate()+1); return first; }
+  function presetPeriodWarning(preset,startValue){
+    if(!startValue||!preset||preset.lawSystem==="manual")return "";
+    const date=String(startValue).slice(0,10);
+    if(preset.effectiveFrom && date<preset.effectiveFrom)return `⚠️ تاريخ البداية يسبق بدء سريان القالب المختار (${preset.effectiveFrom}). راجع النظام القانوني المناسب.`;
+    if(preset.effectiveTo && date>preset.effectiveTo)return `⚠️ تاريخ البداية يتجاوز نهاية سريان القالب المختار (${preset.effectiveTo}). راجع النظام القانوني المناسب.`;
+    return "";
+  }
+  function deadlineQuestionsForPreset(preset){
+    const list=[...(Array.isArray(preset.requiredQuestions)?preset.requiredQuestions:[])]; const add=q=>{if(!list.some(x=>x.id===q.id))list.push(q)}; const hay=`${preset.id||""} ${preset.category||""} ${preset.title||""}`;
+    if(hay.includes("الشكوى"))add({id:"specialText",label:"هل يوجد نص خاص يقرر مدة مختلفة لهذه الجريمة؟",type:"select",options:["غير محدد بعد","لا يظهر نص خاص","يوجد نص خاص ويحتاج تطبيقه"]});
+    if(hay.includes("استئناف")||hay.includes("المعارضة")||hay.includes("النقض"))add({id:"judgmentType",label:"طبيعة الحكم أو الأمر محل الإجراء",type:"select",options:["غير محدد بعد","حضوري","غيابي","معتبر حضوريًا","أمر أو قرار"]});
+    if(hay.includes("الحبس")||hay.includes("التدبير"))add({id:"referralStatus",label:"هل توجد إحالة أو واقعة مؤثرة في حساب المدة؟",type:"select",options:["لا","نعم — يلزم مراجعتها","غير محدد بعد"]});
+    if(hay.includes("المضبوطات"))add({id:"caseEndConfirmed",label:"هل تم التحقق من تاريخ انتهاء الدعوى بصورة نهائية؟",type:"select",options:["نعم","لا","يحتاج مراجعة"]});
+    if(preset.calculationMode==="advanced-review")add({id:"advancedReview",label:"هل تمت مراجعة أسباب الانقطاع والوقف والاستثناءات والنصوص الخاصة؟",type:"select",options:["لا — الحساب استرشادي فقط","تمت مراجعتها مبدئيًا","تحتاج مراجعة متخصصة"]});
+    return list;
+  }
+  function renderDeadlineQuestionInputs(preset){ const questions=deadlineQuestionsForPreset(preset); if(!questions.length)return ""; return `<div class="deadline-context-questions"><b>أسئلة مساعدة قبل الاعتماد</b><div class="tool-form-grid deadline-question-grid">${questions.map(q=>`<label><span>${escLocal(q.label)}</span>${q.type==="text"?`<input data-deadline-question="${escLocal(q.id)}" placeholder="${escLocal(q.placeholder||"")}">`:`<select data-deadline-question="${escLocal(q.id)}">${(q.options||[]).map(o=>`<option>${escLocal(o)}</option>`).join("")}</select>`}</label>`).join("")}</div></div>`; }
+  function collectDeadlineAnswers(){ const out={}; document.querySelectorAll("[data-deadline-question]").forEach(el=>out[el.dataset.deadlineQuestion]=el.value); return out; }
+  function findDeadlineArticleId(preset){
+    if(!preset?.legalBasis?.articleNumber || !String(preset.legalBasis.lawTitle||"").includes("174"))return "";
+    const num=String(preset.legalBasis.articleNumber).replace(/[^0-9]/g,""); if(!num)return "";
+    const modules=typeof window.getLawModules==="function"?window.getLawModules():[]; const law=modules.find(x=>x.id==="criminal-procedure-174-2025");
+    const article=(law?.articles||[]).find(a=>String(a.articleNumber||"").replace(/[^0-9]/g,"")===num); return article?.id||"";
+  }
+  function closeDeadlineLegalText(){ document.getElementById("deadlineLegalModal")?.remove(); }
+  function openDeadlineLegalText(){
+    const preset=selectedDeadlinePreset(); const basis=preset.legalBasis||{}; if(!basis.articleNumber){toast("لا يوجد سند قانوني مسجل للقالب الحالي.");return;}
+    closeDeadlineLegalText(); const articleId=findDeadlineArticleId(preset); const modal=document.createElement("div"); modal.id="deadlineLegalModal"; modal.className="deadline-legal-modal";
+    modal.innerHTML=`<div class="deadline-legal-dialog"><header><div><span>⚖️ السند القانوني المرتبط بالميعاد</span><h3>${escLocal(basis.lawTitle||"")} — ${escLocal(basis.articleNumber||"")}</h3></div><button onclick="closeDeadlineLegalText()">✕</button></header><p>${escLocal(basis.textSummary||"لم يتم تسجيل ملخص النص بعد.")}</p><div class="deadline-modal-note">يعرض هذا الجزء السند المختصر المسجل بقاعدة المواعيد. راجع النص الرسمي الكامل قبل الاعتماد المهني النهائي.</div><div class="tool-actions">${articleId?`<button onclick="closeDeadlineLegalText();openArticleAcrossLaws('${escLocal(articleId)}')">📄 فتح المادة داخل مكتبة المنصة</button>`:""}<button onclick="closeDeadlineLegalText()">إغلاق</button></div></div>`;
+    modal.addEventListener("click",e=>{if(e.target===modal)closeDeadlineLegalText()}); document.body.appendChild(modal);
+  }
   function openDeadlineCalculator(){
     const categories=deadlineCategories();
     showPage(`<div class="breadcrumb">أدوات التنفيذ / <b>حاسبة المواعيد والتنبيهات القضائية</b></div>
-      <section class="tool-page-head"><div><h2>⏱️ حاسبة المواعيد والتنبيهات القضائية</h2><p>اختار الإجراء، وأدخل تاريخ الواقعة المنشئة للميعاد، والمنصة تعرض آخر يوم قانوني والمتبقي أو مقدار التأخير مع طريقة الحساب والسند القانوني.</p></div><button onclick="openToolsHub()">العودة للأدوات</button></section>
-      <section class="deadline-smart-layout">
-        <div class="deadline-calculator-card deadline-smart-card">
-          <div class="deadline-step-title"><b>١</b><div><h3>اختيار الإجراء القانوني</h3><p>اختار الفئة ثم الإجراء المطلوب حساب ميعاده.</p></div></div>
-          <div class="tool-form-grid deadline-main-grid">
-            <label><span>الفئة</span><select id="deadlineCategory" onchange="refreshDeadlinePresetList()">${categories.map(cat=>`<option>${escLocal(cat)}</option>`).join("")}</select></label>
-            <label><span>الإجراء</span><select id="deadlinePreset" onchange="applyDeadlinePreset()">${renderDeadlinePresetOptions(categories[0])}</select></label>
-          </div>
-          <div id="deadlinePresetInfo" class="deadline-preset-info"></div>
-          <div class="deadline-step-title"><b>٢</b><div><h3>بيانات الحساب</h3><p>أدخل التاريخ أو الوقت الذي يبدأ منه الحساب وفق القالب المختار.</p></div></div>
-          <div class="tool-form-grid deadline-main-grid" id="deadlineDynamicInputs"></div>
-          <div class="deadline-options">
-            <label><input id="deadlineExtendWeekend" type="checkbox"> إذا وافق آخر يوم الجمعة أو السبت، انقله لأول يوم عمل تالٍ</label>
-          </div>
-          <label class="jurisdiction-notes"><span>ملاحظة داخلية اختيارية</span><textarea id="deadlineNotes" rows="2" placeholder="مثال: رقم القضية أو سبب المتابعة — دون إدخال بيانات حساسة"></textarea></label>
-          <div class="tool-actions"><button onclick="calculateLegalDeadline()">احسب الميعاد</button><button onclick="resetDeadlineCalculator()">إعادة ضبط</button><button onclick="openDeadlineHistory()">🕘 الحسابات المحفوظة</button></div>
-          <div id="deadlineResult" class="deadline-result"><p>اختار الإجراء وأدخل البيانات ثم اضغط «احسب الميعاد».</p></div>
-        </div>
-      </section>
-      <div class="tool-safety-note">⚠️ الحاسبة أداة مساندة للمراجعة. راجع النص القانوني والتعليمات الأحدث وأي استثناءات أو قواعد امتداد أو انقطاع قبل الاعتماد المهني النهائي.</div>`,'deadlines');
-    applyDeadlinePreset();
+      <section class="tool-page-head"><div><h2>⏱️ حاسبة المواعيد والتنبيهات القضائية</h2><p>اختار النظام والإجراء، وأدخل تاريخ الواقعة المنشئة للميعاد، والمنصة تعرض آخر يوم قانوني والمتبقي أو مقدار التأخير مع طريقة الحساب والسند القانوني.</p></div><button onclick="openToolsHub()">العودة للأدوات</button></section>
+      <section class="deadline-smart-layout"><div class="deadline-calculator-card deadline-smart-card">
+        <div class="deadline-step-title"><b>١</b><div><h3>اختيار النظام والإجراء القانوني</h3><p>يمكنك عرض جميع القوالب أو تصفية القواعد حسب القانون الساري.</p></div></div>
+        <div class="tool-form-grid deadline-main-grid"><label><span>النظام القانوني</span><select id="deadlineSystemFilter" onchange="refreshDeadlineSystemFilter()">${renderDeadlineSystemOptions()}</select></label><label><span>الفئة</span><select id="deadlineCategory" onchange="refreshDeadlinePresetList()">${categories.map(cat=>`<option>${escLocal(cat)}</option>`).join("")}</select></label><label><span>الإجراء</span><select id="deadlinePreset" onchange="applyDeadlinePreset()">${renderDeadlinePresetOptions(categories[0])}</select></label></div>
+        <div id="deadlinePresetInfo" class="deadline-preset-info"></div>
+        <div class="deadline-step-title"><b>٢</b><div><h3>بيانات الحساب</h3><p>أدخل التاريخ أو الوقت الذي يبدأ منه الحساب، وأجب عن الأسئلة المساعدة إن ظهرت.</p></div></div>
+        <div class="tool-form-grid deadline-main-grid" id="deadlineDynamicInputs"></div><div id="deadlineContextQuestions"></div>
+        <div class="deadline-options"><label><input id="deadlineExtendWeekend" type="checkbox"> إذا وافق آخر يوم الجمعة أو السبت، انقله لأول يوم عمل تالٍ <small>— فعّلها فقط بعد مراجعة القاعدة المنطبقة.</small></label></div>
+        <label class="jurisdiction-notes"><span>ملاحظة داخلية اختيارية</span><textarea id="deadlineNotes" rows="2" placeholder="مثال: رقم القضية أو سبب المتابعة — دون إدخال بيانات حساسة"></textarea></label>
+        <div class="tool-actions"><button onclick="calculateLegalDeadline()">احسب الميعاد</button><button onclick="resetDeadlineCalculator()">إعادة ضبط</button><button onclick="openDeadlineHistory()">🕘 الحسابات المحفوظة</button></div><div id="deadlineResult" class="deadline-result"><p>اختار الإجراء وأدخل البيانات ثم اضغط «احسب الميعاد».</p></div>
+      </div></section><div class="tool-safety-note">⚠️ الحاسبة أداة مساندة للمراجعة. راجع النص القانوني والتعليمات الأحدث وأي استثناءات أو قواعد امتداد أو انقطاع قبل الاعتماد المهني النهائي.</div>`,'deadlines'); applyDeadlinePreset();
   }
+  function refreshDeadlineSystemFilter(){ const cats=deadlineCategories(); const cat=document.getElementById("deadlineCategory"); if(!cat)return; cat.innerHTML=cats.map(x=>`<option>${escLocal(x)}</option>`).join(""); refreshDeadlinePresetList(); }
   function refreshDeadlinePresetList(){ const category=document.getElementById("deadlineCategory")?.value||""; const select=document.getElementById("deadlinePreset"); if(!select)return; select.innerHTML=renderDeadlinePresetOptions(category); applyDeadlinePreset(); }
   function applyDeadlinePreset(){
-    const preset=selectedDeadlinePreset(); const info=document.getElementById("deadlinePresetInfo"), inputs=document.getElementById("deadlineDynamicInputs"); if(!info||!inputs)return;
+    const preset=selectedDeadlinePreset(); const info=document.getElementById("deadlinePresetInfo"), inputs=document.getElementById("deadlineDynamicInputs"), questions=document.getElementById("deadlineContextQuestions"); if(!info||!inputs)return;
     const manual=preset.calculationMode==="manual"; const requiresTime=!!preset.trigger?.requiresTime;
-    info.innerHTML=`<div class="deadline-preset-head"><div><span>${escLocal(deadlineStatusBadge(preset.status))}</span><h4>${escLocal(preset.title)}</h4><p>${escLocal(preset.description||"")}</p></div><b>${preset.duration?.value===null?"إدخال يدوي":escLocal(deadlineUnitLabel(preset.duration.unit,preset.duration.value))}</b></div>
-      ${preset.legalBasis?.articleNumber?`<div class="deadline-legal-basis"><b>⚖️ السند القانوني:</b> ${escLocal(preset.legalBasis.lawTitle)} — ${escLocal(preset.legalBasis.articleNumber)}<small>${escLocal(preset.legalBasis.textSummary||"")}</small>${preset.effectiveFrom?`<small>📅 فترة السريان: من ${escLocal(preset.effectiveFrom)}${preset.effectiveTo?` حتى ${escLocal(preset.effectiveTo)}`:" فأحدث"}</small>`:""}</div>`:""}
-      ${(preset.warnings||[]).length?`<div class="deadline-warning-list">${preset.warnings.map(w=>`<p>⚠️ ${escLocal(w)}</p>`).join("")}</div>`:""}`;
-    inputs.innerHTML=`<label><span>${escLocal(preset.trigger?.label||"تاريخ بداية الحساب")}</span><input id="deadlineStart" type="${requiresTime?"datetime-local":"date"}" value="${requiresTime?deadlineDateTimeISO(new Date()).slice(0,16):dateToISO(new Date())}"></label>
-      ${manual?`<label><span>عدد الوحدات</span><input id="deadlineManualValue" type="number" min="0" step="1" placeholder="أدخل المدة"></label><label><span>نوع الوحدة</span><select id="deadlineManualUnit"><option value="days">أيام</option><option value="hours">ساعات</option><option value="months">شهور</option><option value="years">سنوات</option></select></label>`:""}`;
-    document.getElementById("deadlineResult").innerHTML="<p>أدخل البيانات ثم اضغط «احسب الميعاد».</p>";
+    info.innerHTML=`<div class="deadline-preset-head"><div><span>${escLocal(deadlineStatusBadge(preset.status))}</span><h4>${escLocal(preset.title)}</h4><p>${escLocal(preset.description||"")}</p><small class="deadline-calc-type">${escLocal(deadlineCalculationBadge(preset))}</small></div><b>${preset.duration?.value===null?"إدخال يدوي":escLocal(deadlineUnitLabel(preset.duration.unit,preset.duration.value))}</b></div>${preset.legalBasis?.articleNumber?`<div class="deadline-legal-basis"><b>⚖️ السند القانوني:</b> ${escLocal(preset.legalBasis.lawTitle)} — ${escLocal(preset.legalBasis.articleNumber)}<small>${escLocal(preset.legalBasis.textSummary||"")}</small>${preset.effectiveFrom?`<small>📅 فترة السريان: من ${escLocal(preset.effectiveFrom)}${preset.effectiveTo?` حتى ${escLocal(preset.effectiveTo)}`:" فأحدث"}</small>`:""}<button onclick="openDeadlineLegalText()">📄 عرض النص القانوني</button></div>`:""}${(preset.warnings||[]).length?`<div class="deadline-warning-list">${preset.warnings.map(w=>`<p>⚠️ ${escLocal(w)}</p>`).join("")}</div>`:""}`;
+    inputs.innerHTML=`<label><span>${escLocal(preset.trigger?.label||"تاريخ بداية الحساب")}</span><input id="deadlineStart" type="${requiresTime?"datetime-local":"date"}" value="${requiresTime?deadlineDateTimeISO(new Date()).slice(0,16):dateToISO(new Date())}"></label>${manual?`<label><span>عدد الوحدات</span><input id="deadlineManualValue" type="number" min="0" step="1" placeholder="أدخل المدة"></label><label><span>نوع الوحدة</span><select id="deadlineManualUnit"><option value="days">أيام</option><option value="hours">ساعات</option><option value="months">شهور</option><option value="years">سنوات</option></select></label>`:""}`;
+    if(questions)questions.innerHTML=renderDeadlineQuestionInputs(preset); const result=document.getElementById("deadlineResult"); if(result)result.innerHTML="<p>أدخل البيانات ثم اضغط «احسب الميعاد».</p>";
   }
-  function buildDeadlineTimeline(start,target,preset,status){ const includeTime=preset.duration.unit==="hours"; return `<div class="deadline-timeline"><div><i>📅</i><b>بداية الميعاد</b><small>${escLocal(deadlineDisplayDate(start,includeTime))}</small></div><span>←</span><div><i>${status.icon}</i><b>آخر يوم محسوب</b><small>${escLocal(deadlineDisplayDate(target,includeTime))}</small></div></div>`; }
+  function buildDeadlineTimeline(start,target,preset,status,duration){ const includeTime=duration.unit==="hours"; const first=firstCountedMoment(start,preset,duration); return `<div class="deadline-timeline deadline-timeline-three"><div><i>📅</i><b>الواقعة المنشئة</b><small>${escLocal(deadlineDisplayDate(start,includeTime))}</small></div><span>←</span><div><i>▶️</i><b>بداية العد</b><small>${escLocal(deadlineDisplayDate(first,includeTime))}</small></div><span>←</span><div><i>${status.icon}</i><b>آخر يوم محسوب</b><small>${escLocal(deadlineDisplayDate(target,includeTime))}</small></div></div>`; }
   function calculateLegalDeadline(){
-    const preset=selectedDeadlinePreset(); const startValue=document.getElementById("deadlineStart")?.value; const manual=preset.calculationMode==="manual"; const duration=manual?{value:Number(document.getElementById("deadlineManualValue")?.value),unit:document.getElementById("deadlineManualUnit")?.value||"days"}:preset.duration;
-    const target=addLegalDuration(startValue,duration,{extendWeekend:!!document.getElementById("deadlineExtendWeekend")?.checked}); const result=document.getElementById("deadlineResult"); if(!target||!startValue||duration.value===null||!Number.isFinite(Number(duration.value))){result.innerHTML="<p>⚠️ راجع تاريخ البداية والمدة المطلوبة.</p>";return;}
-    const start=new Date(String(startValue).includes("T")?startValue:`${startValue}T12:00:00`); const state=relativeDeadlineStatus(target); const notes=document.getElementById("deadlineNotes")?.value.trim()||""; const includeTime=duration.unit==="hours";
-    const record={id:`deadline-${Date.now()}`,presetId:preset.id,title:preset.title,start:startValue,target:includeTime?deadlineDateTimeISO(target):dateToISO(target),duration,notes,createdAt:new Date().toISOString(),legalBasis:preset.legalBasis};
-    window.__lastDeadlineRecord=record;
-    result.innerHTML=`<section class="deadline-outcome ${state.className}"><header><div><span>${state.icon} ${escLocal(state.title)}</span><h3>${escLocal(deadlineDisplayDate(target,includeTime))}</h3><p>${escLocal(state.detail)}</p></div><b>${escLocal(deadlineUnitLabel(duration.unit,duration.value))}</b></header>
-      ${buildDeadlineTimeline(start,target,{duration},state)}
-      <div class="deadline-calculation-explain"><b>طريقة الحساب</b><p>بدأ الحساب من: ${escLocal(deadlineDisplayDate(start,includeTime))}</p><p>أضيفت مدة: ${escLocal(deadlineUnitLabel(duration.unit,duration.value))}</p>${document.getElementById("deadlineExtendWeekend")?.checked?"<p>تم تفعيل نقل آخر يوم إذا وافق الجمعة أو السبت.</p>":""}</div>
-      ${preset.legalBasis?.articleNumber?`<div class="deadline-result-basis"><b>السند القانوني</b><p>${escLocal(preset.legalBasis.lawTitle)} — ${escLocal(preset.legalBasis.articleNumber)}</p><small>${escLocal(preset.legalBasis.textSummary||"")}</small></div>`:""}
-      ${(preset.warnings||[]).length?`<div class="deadline-warning-list">${preset.warnings.map(w=>`<p>⚠️ ${escLocal(w)}</p>`).join("")}</div>`:""}
-      <div class="tool-actions"><button onclick="saveLastDeadlineCalculation()">💾 حفظ الحساب</button><button onclick="copyDeadlineResult()">📋 نسخ النتيجة</button><button onclick="printToolArea('deadlineResult','نتيجة حاسبة المواعيد القضائية')">🖨️ طباعة</button><button onclick="askSandAboutDeadline()">🤖 اسأل سَنَد</button></div></section>`;
+    const preset=selectedDeadlinePreset(); const startValue=document.getElementById("deadlineStart")?.value; const manual=preset.calculationMode==="manual"; const duration=manual?{value:Number(document.getElementById("deadlineManualValue")?.value),unit:document.getElementById("deadlineManualUnit")?.value||"days"}:preset.duration; const result=document.getElementById("deadlineResult");
+    const target=addLegalDuration(startValue,duration,{extendWeekend:!!document.getElementById("deadlineExtendWeekend")?.checked}); if(!target||!startValue||duration.value===null||!Number.isFinite(Number(duration.value))){result.innerHTML="<p>⚠️ راجع تاريخ البداية والمدة المطلوبة.</p>";return;}
+    const start=new Date(String(startValue).includes("T")?startValue:`${startValue}T12:00:00`); const state=relativeDeadlineStatus(target); const notes=document.getElementById("deadlineNotes")?.value.trim()||""; const includeTime=duration.unit==="hours"; const answers=collectDeadlineAnswers(); const periodWarning=presetPeriodWarning(preset,startValue);
+    const record={id:`deadline-${Date.now()}`,presetId:preset.id,title:preset.title,start:startValue,target:includeTime?deadlineDateTimeISO(target):dateToISO(target),duration,notes,answers,createdAt:new Date().toISOString(),legalBasis:preset.legalBasis,lawSystem:preset.lawSystem,calculationMode:preset.calculationMode}; window.__lastDeadlineRecord=record;
+    result.innerHTML=`<section class="deadline-outcome ${state.className}"><header><div><span>${state.icon} ${escLocal(state.title)}</span><h3>${escLocal(deadlineDisplayDate(target,includeTime))}</h3><p>${escLocal(state.detail)}</p><small class="deadline-calc-type">${escLocal(deadlineCalculationBadge(preset))}</small></div><b>${escLocal(deadlineUnitLabel(duration.unit,duration.value))}</b></header>${periodWarning?`<div class="deadline-period-alert">${escLocal(periodWarning)}</div>`:""}${buildDeadlineTimeline(start,target,preset,state,duration)}<div class="deadline-calculation-explain"><b>طريقة الحساب</b><p>الواقعة المنشئة للميعاد: ${escLocal(deadlineDisplayDate(start,includeTime))}</p><p>أول يوم في العد: ${escLocal(deadlineDisplayDate(firstCountedMoment(start,preset,duration),includeTime))}</p><p>المدة المضافة: ${escLocal(deadlineUnitLabel(duration.unit,duration.value))}</p>${document.getElementById("deadlineExtendWeekend")?.checked?"<p>تم تفعيل نقل آخر يوم إذا وافق الجمعة أو السبت — راجع انطباق قاعدة الامتداد.</p>":""}</div>${Object.keys(answers).length?`<div class="deadline-answer-summary"><b>بيانات المراجعة المدخلة</b>${Object.values(answers).map(v=>`<p>• ${escLocal(v)}</p>`).join("")}</div>`:""}${preset.legalBasis?.articleNumber?`<div class="deadline-result-basis"><b>السند القانوني</b><p>${escLocal(preset.legalBasis.lawTitle)} — ${escLocal(preset.legalBasis.articleNumber)}</p><small>${escLocal(preset.legalBasis.textSummary||"")}</small></div>`:""}${(preset.warnings||[]).length?`<div class="deadline-warning-list">${preset.warnings.map(w=>`<p>⚠️ ${escLocal(w)}</p>`).join("")}</div>`:""}<div class="tool-actions"><button onclick="saveLastDeadlineCalculation()">💾 حفظ الحساب</button><button onclick="copyDeadlineResult()">📋 نسخ النتيجة</button><button onclick="printToolArea('deadlineResult','نتيجة حاسبة المواعيد القضائية')">🖨️ طباعة</button>${preset.legalBasis?.articleNumber?`<button onclick="openDeadlineLegalText()">📄 فتح النص القانوني</button>`:""}<button onclick="askSandAboutDeadline()">🤖 اسأل سَنَد</button></div></section>`;
   }
   function calculateDeadline(){ return calculateLegalDeadline(); }
   function readDeadlineHistory(){ try{return JSON.parse(localStorage.getItem(DEADLINE_HISTORY_KEY)||"[]")}catch{return[]} }
@@ -356,6 +382,9 @@
   window.updateProcedureScore=updateProcedureScore;
   window.openDeadlineCalculator=openDeadlineCalculator;
   window.refreshDeadlinePresetList=refreshDeadlinePresetList;
+  window.refreshDeadlineSystemFilter=refreshDeadlineSystemFilter;
+  window.openDeadlineLegalText=openDeadlineLegalText;
+  window.closeDeadlineLegalText=closeDeadlineLegalText;
   window.applyDeadlinePreset=applyDeadlinePreset;
   window.calculateDeadline=calculateDeadline;
   window.calculateLegalDeadline=calculateLegalDeadline;
