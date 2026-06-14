@@ -5,11 +5,11 @@
 
 // ضع رابط Cloudflare Worker بعد نشره.
 // مثال: https://north-assiut-legal-ai-proxy.username.workers.dev
-const AI_PROXY_URL = "https://north-assiut-legal-ai-proxy.amressmaiel.workers.dev";
+const AI_PROXY_URL = (window.SAND_APP_CONFIG && window.SAND_APP_CONFIG.backend && window.SAND_APP_CONFIG.backend.proxyUrl) || "https://north-assiut-legal-ai-proxy.amressmaiel.workers.dev";
 window.AI_PROXY_URL = AI_PROXY_URL;
 
 // آخر 6 رسائل فقط داخل الجلسة الحالية، حتى يظل الحوار طبيعيًا وخفيفًا.
-const SAND_MAX_HISTORY_MESSAGES = 6;
+const SAND_MAX_HISTORY_MESSAGES = Number((window.SAND_APP_CONFIG && window.SAND_APP_CONFIG.sand && window.SAND_APP_CONFIG.sand.maxHistoryMessages) || 6);
 const sandConversationHistory = [];
 
 function escapeHtml(text) {
@@ -206,6 +206,16 @@ async function callAiProxy(fullPromptContext) {
   return String(data.reply || "").trim();
 }
 
+
+function getInstitutionalSandInstruction() {
+  try {
+    const appendix = window.SAND_ADMIN_BRIDGE?.buildSandInstructionAppendix?.() || "";
+    return appendix ? `\nتعليمات مؤسسية مضافة من لوحة الإدارة:\n${appendix}\n` : "";
+  } catch (e) {
+    return "";
+  }
+}
+
 function getSandModeInstruction(mode) {
   const instructions = {
     brief: "نمط الإجابة المطلوب: مختصر. قدّم إجابة مباشرة ومركزة في نقاط قليلة، من غير توسع إلا عند وجود تنبيه لازم.",
@@ -257,10 +267,11 @@ async function processHumanIntelligence(query, options = {}) {
   const articlesContext = finalSelectedArticles.map(articleToPrompt).join("\n");
   const historyContext = getSandHistoryPrompt();
   const modeInstruction = getSandModeInstruction(options.mode);
+  const institutionalInstruction = getInstitutionalSandInstruction();
 
   const prompt = `
 ${modeInstruction}
-
+${institutionalInstruction}
 سياق المحادثة السابقة داخل الجلسة الحالية:
 ${historyContext}
 

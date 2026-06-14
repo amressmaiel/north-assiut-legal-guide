@@ -8,8 +8,8 @@
  * - لا يضع GEMINI_API_KEY داخل GitHub أو المتصفح.
  */
 (function(){
-  const LIVE_MODEL = "gemini-3.1-flash-live-preview";
-  const TOKEN_PATH = "/live-token";
+  const LIVE_MODEL = (window.SAND_APP_CONFIG && window.SAND_APP_CONFIG.sand && window.SAND_APP_CONFIG.sand.liveVoiceModel) || "gemini-3.1-flash-live-preview";
+  const TOKEN_PATH = (window.SAND_APP_CONFIG && window.SAND_APP_CONFIG.backend && window.SAND_APP_CONFIG.backend.liveTokenPath) || "/live-token";
   const INPUT_RATE = 16000;
   const OUTPUT_RATE = 24000;
   const MAX_SESSION_MINUTES = 12;
@@ -34,13 +34,13 @@
     eventLines:[],
     startedAt:null,
     timer:null,
-    selectedVoice:"Charon",
+    selectedVoice:(window.SAND_APP_CONFIG && window.SAND_APP_CONFIG.sand && window.SAND_APP_CONFIG.sand.defaultVoice) || "Charon",
     mode:"audio",
     audioStreamOpen:false,
     contextMode:"facts",
     setupTimer:null,
     closeReason:"",
-    interactionMode:"ptt",
+    interactionMode:(window.SAND_APP_CONFIG && window.SAND_APP_CONFIG.sand && window.SAND_APP_CONFIG.sand.defaultInteractionMode) || "ptt",
     pttActive:false,
     isModelSpeaking:false,
     localVoiceFrames:0,
@@ -209,7 +209,9 @@
 لا تفترض وقائع غير مذكورة. لو المعلومة ناقصة اسأل عنها. لا تخترع نصوصًا أو أرقام مواد أو مددًا أو أحكامًا. لا تذكر رقم مادة إلا لو متأكد منه.
 اطلب من المستخدم في الوقت المناسب مراجعة الملخص النصي واعتماده قبل بدء التقرير القانوني المنظم، لكن لا تجعل اعتماد الملخص شرطًا يمنعك من تقديم ترجيح مبدئي أثناء الحوار إذا طلبه المستخدم.
 لا تطلب ولا تكرر أي بيانات شخصية أو سرية. استخدم أوصافًا عامة: المتهم الأول، المجني عليه، الشاهد، محل الواقعة.
-خلي ردودك الصوتية مختصرة ومريحة، وابتعد عن المقدمات الطويلة.`;}
+خلي ردودك الصوتية مختصرة ومريحة، وابتعد عن المقدمات الطويلة.
+
+${window.SAND_ADMIN_BRIDGE?.buildSandInstructionAppendix?.()||""}`;}
 
   function clearSetupTimer(){
     if(live.setupTimer){clearTimeout(live.setupTimer);live.setupTimer=null;}
