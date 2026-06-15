@@ -1,0 +1,18 @@
+Phase 5.5.5 — Signup Avatar Editor from uploaded files
+
+This update integrates the avatarEditor.js capabilities from the user's uploaded application files:
+- Dedicated modal editor for the member photo.
+- Drag image inside circular crop frame.
+- Zoom control.
+- Live final preview.
+- Export standardized 512px image and 96px thumbnail.
+- Mandatory image before submitting membership request.
+- Thumbnail is stored as memberPhotoThumb in judicialProfile.
+
+Changed files:
+- index.html
+- assets/js/avatar-editor.js
+- assets/js/auth-api-bridge.js
+- assets/css/main.css
+
+No Cloudflare Worker or D1 migration changes are required for this UI-only update.

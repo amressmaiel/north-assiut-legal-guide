@@ -1,0 +1,32 @@
+Phase 5.8 — Professional Judicial Membership Request Review
+
+ما تم تنفيذه:
+- تحويل تبويب طلبات العضوية إلى لوحة مراجعة قضائية احترافية.
+- عرض صورة العضو بصورة واضحة مع بطاقة البيانات القضائية.
+- حساب درجة اكتمال بيانات الطلب مبدئيًا.
+- فتح بطاقة مراجعة تفصيلية في نافذة مستقلة.
+- قبول وتفعيل العضوية مع تحديد الدور وبداية ونهاية العضوية وعدد الأجهزة.
+- رفض الطلب مع سبب إلزامي يسجل في Audit Log.
+- طلب استكمال بيانات مع حفظ سبب الاستكمال في حقول review_status/review_note، مع بقاء الطلب معلقًا للمراجعة.
+- نسخ بيانات الطلب للمراجعة الإدارية.
+
+ملفات الواجهة المعدلة:
+- assets/js/auth-api-bridge.js
+- assets/js/auth-api-client.js
+- assets/css/main.css
+
+ملفات Backend المعدلة:
+- backend/cloudflare-worker-auth-api.js
+- backend/d1/migration-5.8-membership-review.sql
+
+أوامر مطلوبة للإنتاج:
+1) تنفيذ Migration على D1:
+wrangler d1 execute north_assiut_auth_db --remote --file=backend/d1/migration-5.8-membership-review.sql
+
+2) نشر Worker المحدث:
+copy .\backend\cloudflare-worker-auth-api.js .\auth-worker\cloudflare-worker-auth-api.js
+cd .\auth-worker
+wrangler deploy
+
+ملاحظة:
+إذا كان ملف migration نُفذ سابقًا وظهر خطأ duplicate column، فهذا يعني أن الأعمدة موجودة بالفعل ويمكن تجاهله.

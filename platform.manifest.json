@@ -1,0 +1,33 @@
+{
+  "name": "north-assiut-legal-guide",
+  "version": "5.2.0-institutional-settings",
+  "phase": "5.5.4",
+  "architecture": "modular-institutional-front-end",
+  "settings": "config/app-config.js",
+  "adminPanel": "assets/js/admin-settings.js",
+  "secretsPolicy": "no-secrets-in-frontend",
+  "institutionalModules": [
+    "content-admin"
+  ],
+  "phaseName": "Admin Activation Integration",
+  "updatedModules": [
+    "admin",
+    "drafts",
+    "sand",
+    "live-voice"
+  ],
+  "phase_name": "Auth, Permissions and Licensing Design Alignment",
+  "updated_at": "2026-06-14T00:00:00Z",
+  "notes": [
+    "Added institutional auth/license design based on uploaded reference files."
+  ],
+  "authFoundation": "secure-bootstrap-digital-license-d1",
+  "backend": {
+    "authWorker": "backend/cloudflare-worker-auth-api.js"
+  },
+  "assets": {
+    "authApiClient": "assets/js/auth-api-client.js"
+  },
+  "authFrontendIntegration": true,
+  "authBackend": "Cloudflare Worker + D1"
+}

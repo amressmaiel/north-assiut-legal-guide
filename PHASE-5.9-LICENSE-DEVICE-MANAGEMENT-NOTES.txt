@@ -1,0 +1,33 @@
+المرحلة 5.9 — إدارة التراخيص والأجهزة ومدة العضوية
+
+تمت إضافة شاشة مؤسسية مستقلة لإدارة التراخيص والأجهزة، مخصصة لمالك النظام أو من يملك صلاحيات users.manage / licenses.manage.
+
+ما تم تنفيذه:
+- شاشة 🎫 التراخيص والأجهزة.
+- إحصائيات سريعة: مستخدمون نشطون، عضويات قرب الانتهاء، عضويات منتهية، أجهزة مفعلة، تراخيص نشطة.
+- إدارة مدة العضوية وتاريخ الانتهاء وعدد الأجهزة المسموح لكل مستخدم.
+- تصفير/استبدال أجهزة مستخدم عند الحاجة.
+- عرض الأجهزة المفعلة وإيقاف/تفعيل/إلغاء الجهاز.
+- عرض التراخيص وتفعيل/إيقاف/إلغاء الترخيص.
+- عند إلغاء ترخيص يتم إضافته إلى revoked_license_cache وتعطيل المستخدمين المرتبطين به غير المالك.
+- عرض سجل عمليات مخصص للتراخيص والأجهزة.
+
+ملفات الواجهة المعدلة أو المضافة:
+- index.html
+- assets/js/admin-license-devices.js
+- assets/js/auth-api-client.js
+- assets/css/main.css
+
+ملفات Backend المعدلة:
+- backend/cloudflare-worker-auth-api.js
+
+Endpoints جديدة:
+- GET  /api/licenses
+- POST /api/licenses/update-status
+- POST /api/users/update-access
+- POST /api/devices/reset-user
+
+ملاحظات:
+- لا توجد حاجة إلى Migration جديدة في D1 لهذه المرحلة.
+- يجب نشر ملف backend/cloudflare-worker-auth-api.js المحدث على Cloudflare Worker.
+- يجب رفع ملفات الواجهة على GitHub Pages.

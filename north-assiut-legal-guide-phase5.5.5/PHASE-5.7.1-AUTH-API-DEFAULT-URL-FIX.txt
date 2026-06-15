@@ -1,0 +1,14 @@
+Phase 5.7.1 — Auth API Default URL Fix
+
+تم ضبط رابط Auth API الافتراضي داخل config/app-config.js على:
+https://north-assiut-legal-auth-api.amressmaiel.workers.dev
+
+الغرض: عند تطبيق بوابة الزائر بحيث لا يرى إلا تسجيل الدخول، لا يجب إجبار المستخدم على فتح إعدادات المنصة لضبط رابط Auth API.
+
+الملف المطلوب رفعه يدويًا:
+config/app-config.js
+
+بعد الرفع: Ctrl+F5.
+
+ملاحظة: إذا كان المتصفح يحتفظ بإعداد قديم فارغ داخل localStorage، يمكن من Console تنفيذ:
+localStorage.setItem('SAND_AUTH_API_BASE','https://north-assiut-legal-auth-api.amressmaiel.workers.dev')

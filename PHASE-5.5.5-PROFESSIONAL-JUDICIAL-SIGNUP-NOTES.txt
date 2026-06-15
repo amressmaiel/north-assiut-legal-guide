@@ -1,0 +1,23 @@
+Phase 5.5.5 — Professional Judicial Sign-up
+
+What changed:
+- Rebuilt the sign-up screen as a professional judicial membership request form.
+- Added judicial verification fields:
+  * Judicial title/rank
+  * Prosecution office
+  * Parent prosecution / higher office
+  * District/governorate
+  * Employee/internal code if available
+  * Official/work email if available
+  * Request reason and requested access type
+  * Verification reference and contact notes
+- Requests remain pending_approval until the Super Owner/admin approves.
+- Admin pending requests now show the judicial profile to support verification before approval.
+- Worker /api/auth/register accepts judicialProfile and stores it in users.judicial_profile_json.
+- Added D1 migration: backend/d1/migration-5.5.5-judicial-profile.sql
+
+Security notes:
+- Do not request or upload sensitive ID photos in this phase.
+- The profile is for administrative review only.
+- Actual activation remains controlled by the Super Owner/admin.
+- D1 migration should be applied before relying on the new judicial profile data.
