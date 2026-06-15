@@ -1501,6 +1501,124 @@ ${lineList(["الاسم الرباعي والرقم القومي أو بيانا
   function removeSavedCaseReport(id){writeSaved(readSaved().filter(x=>x.id!==id));openSavedCaseAnalyses();}
   window.saveCaseAnalysisLocally=saveCaseAnalysisLocally;window.openSavedCaseAnalyses=openSavedCaseAnalyses;window.copySavedCaseReport=copySavedCaseReport;window.removeSavedCaseReport=removeSavedCaseReport;
 
+
+
+  /* Phase 5.16.3 — Professional Case Analysis Command Room redesign */
+  function caseStatusMetricsMarkup(){
+    const r=state.result||{};
+    const questions=(r.clarifyingQuestions||[]).length;
+    const classifications=(r.classifications||[]).length;
+    const sources=(r.sources||[]).length;
+    const drafts=(typeof getDispositionDraftsForCaseResult==="function" && r)?(getDispositionDraftsForCaseResult(r)||[]).length:0;
+    const completeness=r.confidence?.dataCompleteness || (state.result?"تحتاج مراجعة":"لم يبدأ");
+    const legalLink=r.confidence?.legalLinking || (sources?"متوسط":"لم يبدأ");
+    return `<section class="case-command-metrics" aria-label="مؤشرات جلسة تحليل الواقعة">
+      <article><span>حالة الجلسة</span><b>${safe(({input:"إدخال الواقعة",understanding:"فهم الوقائع",clarification:"استكمال",analysis:"تحليل",result:"تقرير جاهز"}[state.phase])||"جاهز")}</b><small>${state.busy?"سَنَد يعمل الآن":"جاهز للتفاعل"}</small></article>
+      <article><span>اكتمال البيانات</span><b>${safe(completeness)}</b><small>${questions?`${questions} سؤال فاصل`:"لا توجد أسئلة حالية"}</small></article>
+      <article><span>التكييفات</span><b>${classifications}</b><small>احتمالات منظمة للمراجعة</small></article>
+      <article><span>الربط بالنصوص</span><b>${safe(legalLink)}</b><small>${sources} مادة/مصدر مرشح</small></article>
+      <article><span>المسودات</span><b>${drafts}</b><small>قابلة للتحرير بعد التحليل</small></article>
+    </section>`;
+  }
+
+  function caseCommandHeroMarkup(){
+    const type=ANALYSIS_TYPES[state.analysisType]||ANALYSIS_TYPES.comprehensive;
+    const started=state.startedAt?new Date(state.startedAt).toLocaleString("ar-EG"):"—";
+    return `<header class="case-command-hero">
+      <div class="case-command-hero-bg"></div>
+      <div class="case-command-title">
+        <span class="case-command-kicker">مركز عمليات تحليل الواقعة</span>
+        <h1><span>⚖️</span> غرفة تحليل الوقائع القضائية</h1>
+        <p>مساحة مهنية موحدة لفهم الواقعة، كشف النواقص، مراجعة التكييفات، توليد تقرير احترافي، وربط النتيجة بالمسودات والمواعيد والتواصل الآمن.</p>
+        <div class="case-command-badges">
+          <span>نوع التحليل: <b>${safe(type.title)}</b></span>
+          <span>بدأت الجلسة: <b>${safe(started)}</b></span>
+          <span>${state.privacyMode==="local"?"حفظ محلي اختياري":"جلسة مؤقتة"}</span>
+        </div>
+      </div>
+      <div class="case-command-actions">
+        <button onclick="openCommandCenterDashboard?.() || openHome?.()">🏛️ مركز القيادة</button>
+        <button onclick="openSecureCommunicationCenter?.()">💬 مناقشة آمنة</button>
+        <button onclick="resetCaseAnalysisRoom()">↻ جلسة جديدة</button>
+      </div>
+    </header>`;
+  }
+
+  function caseQuickActionsMarkup(){
+    const canReport=!!state.result;
+    return `<aside class="case-command-sidepanel">
+      <section class="case-side-card case-side-primary">
+        <span>سَنَد</span>
+        <h3>مساعد التحليل القضائي</h3>
+        <p>ابدأ من وصف الواقعة، وبعد ظهور النتيجة استخدم أدوات التقرير والمسودات والمواعيد.</p>
+      </section>
+      <section class="case-side-card">
+        <h3>إجراءات سريعة</h3>
+        <div class="case-side-actions">
+          <button onclick="openSandSecureIntake?.('documents')">📄 إضافة مستند</button>
+          <button onclick="openSandLiveVoiceSession?.('facts')">🎙️ إملاء صوتي</button>
+          <button onclick="openDeadlineCalculator?.() || openToolsHub?.()">⏱️ حاسبة المواعيد</button>
+          <button onclick="openDispositionDraftCenter?.()" ${canReport?"":"disabled"}>📝 مسودات التصرف</button>
+          <button onclick="copyCaseAnalysisReport?.()" ${canReport?"":"disabled"}>📋 نسخ التقرير</button>
+          <button onclick="printCaseAnalysisReport?.()" ${canReport?"":"disabled"}>🖨️ طباعة التقرير</button>
+        </div>
+      </section>
+      <section class="case-side-card">
+        <h3>ضوابط مهنية</h3>
+        <ul class="case-side-checks">
+          <li>إزالة بيانات الأشخاص والقضايا الفعلية قبل الإدخال.</li>
+          <li>اعتبار النتائج احتمالات قابلة للمراجعة فقط.</li>
+          <li>مراجعة النصوص الرسمية والتعليمات الأحدث قبل الاعتماد.</li>
+        </ul>
+      </section>
+    </aside>`;
+  }
+
+  function caseResultPreviewMarkup(){
+    const r=state.result;
+    if(!r){
+      return `<section class="case-command-preview empty">
+        <div><span>لوحة النتيجة</span><h2>لم يبدأ التحليل بعد</h2><p>بعد إرسال الواقعة ستظهر هنا خلاصة ذكية: التكييف الأقرب، النواقص، الاستيفاءات، التنبيهات، والمواد المرتبطة.</p></div>
+        <div class="case-preview-orb">⚖️</div>
+      </section>`;
+    }
+    return `<section class="case-command-preview">
+      <div>
+        <span>خلاصة تنفيذية</span>
+        <h2>${safe(r.closestCharge||"نتيجة تحليل مبدئية جاهزة للمراجعة")}</h2>
+        <p>${safe(r.summary||"")}</p>
+      </div>
+      <div class="case-preview-tags">
+        <span>نواقص: ${(r.missingPoints||[]).length}</span>
+        <span>استيفاءات: ${(r.investigationChecklist||[]).length}</span>
+        <span>تنبيهات: ${(r.warnings||[]).length}</span>
+        <span>مواد: ${(r.sources||[]).length}</span>
+      </div>
+    </section>`;
+  }
+
+  function renderCaseAnalysisCommandRoom(){
+    setNav();
+    view(`<div class="breadcrumb">الرئيسية / أدوات التنفيذ / <b>غرفة تحليل الوقائع القضائية</b></div>
+      <section class="case-analysis-page case-command-page">
+        ${caseCommandHeroMarkup()}
+        ${caseStatusMetricsMarkup()}
+        <section class="case-command-workspace">
+          <div class="case-command-main">
+            <section class="case-analysis-types case-command-types">${Object.entries(ANALYSIS_TYPES).map(([id,item])=>analysisTypeCard(id,item)).join("")}</section>
+            ${caseResultPreviewMarkup()}
+            <section class="case-room-layout case-command-room-layout">${avatarMarkup()}${conversationMarkup()}</section>
+          </div>
+          ${caseQuickActionsMarkup()}
+        </section>
+        ${resultPanelMarkup()}
+        <div class="case-analysis-disclaimer">⚠️ هذه الغرفة أداة مساندة للتحليل والمراجعة. لا تُنشئ قرارًا قضائيًا، ولا تغني عن فحص الأوراق والنصوص الرسمية والتعليمات الأحدث والتقدير القضائي لعضو النيابة.</div>
+      </section>`);
+    setTimeout(()=>{const box=document.getElementById("caseConversation");if(box)box.scrollTop=box.scrollHeight;},30);
+  }
+  renderCaseAnalysisRoom=renderCaseAnalysisCommandRoom;
+  window.openCaseAnalysisRoom=renderCaseAnalysisCommandRoom;
+
   function resetCaseAnalysisRoom(){
     if(state.messages.length&&!confirm("بدء جلسة جديدة ومسح الحوار الحالي؟"))return;
     Object.assign(state,{analysisType:"comprehensive",privacyMode:"temporary",confirmedPrivacy:false,phase:"input",factsText:"",followUpText:"",messages:[],result:null,preAnalysis:null,sources:[],busy:false,sessionId:`case-${Date.now()}`,startedAt:new Date().toISOString()});renderCaseAnalysisRoom();

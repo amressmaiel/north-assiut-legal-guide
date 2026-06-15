@@ -1,7 +1,7 @@
 {
   "name": "north-assiut-legal-guide",
-  "version": "5.16.2",
-  "phase": "5.16.2",
+  "version": "5.16.3",
+  "phase": "5.16.4",
   "architecture": "modular-institutional-front-end",
   "settings": "config/app-config.js",
   "adminPanel": "assets/js/admin-settings.js",
@@ -17,9 +17,12 @@
     "communication-worker-sync",
     "message-pinning",
     "read-confirmations",
-    "communication-attachments"
+    "communication-attachments",
+    "professional-case-analysis-command-room",
+    "case-analysis-redesign",
+    "case-analysis-executive-dashboard"
   ],
-  "phaseName": "مركز التواصل القضائي الحقيقي والتطوير المتقدم",
+  "phaseName": "Law Library Navigation Fix",
   "updatedModules": [
     "admin",
     "drafts",
@@ -47,10 +50,15 @@
     "message-read-confirmations",
     "pinned-messages",
     "message-attachment-metadata",
-    "cross-device-sync-settings"
+    "cross-device-sync-settings",
+    "case-analysis-room",
+    "case-analysis-command-layout",
+    "case-analysis-metrics",
+    "case-analysis-quick-actions",
+    "case-analysis-professional-ui"
   ],
   "phase_name": "Auth, Permissions and Licensing Design Alignment",
-  "updated_at": "2026-06-15T09:25:00Z",
+  "updated_at": "2026-06-15T09:55:00Z",
   "notes": [
     "Added institutional auth/license design based on uploaded reference files.",
     "Added Phase 5.13 Judicial Visual Training Center with courses, lessons, meetings, local progress, quizzes and training record.",
@@ -60,7 +68,9 @@
     "Added Phase 5.15: smart institutional command center after login with account/session status, training progress, upcoming meetings, workspace resume cards, role-aware admin shortcuts and preliminary operational alerts.",
     "Added Phase 5.16: world-class institutional notifications center with categories, priorities, read/archive lifecycle, search/filtering, action buttons, topbar badge, settings, and integration with command center dashboard.",
     "Added Phase 5.16.1: secure judicial communication center with trusted colleagues, mutual connection requests, member search, privacy settings, official announcement channel, safe groups, block controls, local communication audit, and notifications integration.",
-    "Added Phase 5.16.2: realtime-ready secure communication layer with Worker sync endpoint, cross-device configuration, manual/automatic sync, message pinning, read confirmations, attachment metadata, and D1 schema for real multi-device communication."
+    "Added Phase 5.16.2: realtime-ready secure communication layer with Worker sync endpoint, cross-device configuration, manual/automatic sync, message pinning, read confirmations, attachment metadata, and D1 schema for real multi-device communication.",
+    "Added Phase 5.16.3: professional redesign of the case analysis room into a judicial command room with executive hero, session metrics, result preview, quick actions side panel, enhanced black/gold institutional styling, and better integration with drafts, deadlines, secure communication, document intake and voice input.",
+    "Fixed law library open button to navigate directly to selected law articles instead of home/dashboard."
   ],
   "authFoundation": "secure-bootstrap-digital-license-d1",
   "backend": {
@@ -71,7 +81,7 @@
   },
   "authFrontendIntegration": true,
   "authBackend": "Cloudflare Worker + D1",
-  "lastUpgrade": "Phase 5.16.1 Secure Judicial Communication Center and Trusted Colleagues",
+  "lastUpgrade": "Phase 5.16.3 Professional Case Analysis Command Room Redesign",
   "modules": {
     "accessControl": {
       "phase": "5.10",
@@ -264,5 +274,6 @@
         "guest exclusion from communication features"
       ]
     }
-  }
+  },
+  "lastUpdate": "2026-06-15"
 }

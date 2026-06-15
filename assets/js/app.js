@@ -168,8 +168,18 @@ function lawLibraryCard(law,isActive){
 }
 function selectLaw(id){
   if(typeof window.setActiveLawModule==="function" && window.setActiveLawModule(id)){
-    state.listType="all";state.topic="all";state.query="";state.searchLawFilter="all";state.selectedArticleId=null;state.visibleFields=new Set(fields().map(f=>f.key));
-    updateLawAwareNavigation();goHome();
+    state.listType="all";
+    state.topic="all";
+    state.query="";
+    state.searchLawFilter="all";
+    state.selectedArticleId=null;
+    state.visibleFields=new Set(fields().map(f=>f.key));
+    const search=document.getElementById("globalSearch");
+    if(search) search.value="";
+    updateLawAwareNavigation();
+    // فتح القانون من مكتبة القوانين يجب أن يفتح قائمة مواد القانون مباشرة،
+    // وليس مركز القيادة / الشاشة الرئيسية.
+    if(typeof openArticleList==="function") openArticleList("all");
   }
 }
 
