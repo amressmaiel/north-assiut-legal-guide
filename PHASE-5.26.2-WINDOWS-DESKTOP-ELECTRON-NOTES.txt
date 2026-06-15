@@ -1,0 +1,68 @@
+============================================================
+PHASE 5.26.2 — WINDOWS DESKTOP EXE USING ELECTRON
+============================================================
+
+الهدف:
+تحويل المنصة من واجهة ويب فقط إلى تطبيق Windows Desktop مستقل باستخدام Electron، مع الحفاظ على نسخة الويب وعدم كسر أي وحدة من وحدات المنصة.
+
+ما تم تنفيذه:
+1) إنشاء ملف package.json فعلي في جذر المشروع.
+2) تجهيز أوامر التشغيل والبناء:
+   - npm run desktop
+   - npm run build:win
+   - npm run build:win:portable
+3) تطوير Electron Main Process:
+   - نافذة مستقلة كبيرة تبدأ Maximized.
+   - عنوان التطبيق الرسمي.
+   - فتح الروابط الخارجية في المتصفح الافتراضي.
+   - منع التنقل الخارجي داخل نافذة التطبيق.
+   - قائمة تطبيق عربية مختصرة.
+   - دعم الطباعة من Electron.
+   - دعم ملء الشاشة.
+4) تطوير Preload Bridge آمن:
+   - SandNativeBridge.openExternal
+   - SandNativeBridge.print
+   - SandNativeBridge.saveTextFile
+   - SandNativeBridge.getDesktopInfo
+5) إضافة أيقونة تطبيق مبدئية:
+   - app-shell/electron/icon.ico
+   - app-shell/electron/icon.png
+6) إضافة ملفات تشغيل وبناء مباشرة:
+   - START-DESKTOP-DEV.bat
+   - BUILD-WINDOWS-EXE.bat
+7) تحديث App Shell Adapter ليستفيد من:
+   - Save Dialog داخل التطبيق.
+   - Native Print داخل التطبيق.
+   - كشف نسخة Electron Desktop.
+8) إضافة .gitignore مناسب لمنع رفع node_modules وملفات البناء.
+9) تحديث platform.manifest.json إلى المرحلة 5.26.2.
+
+طريقة التجربة على Windows:
+1) افتح PowerShell داخل فولدر المشروع.
+2) نفذ:
+   npm install
+   npm run desktop
+
+أو اضغط على:
+START-DESKTOP-DEV.bat
+
+طريقة بناء ملف التثبيت:
+1) افتح PowerShell داخل فولدر المشروع.
+2) نفذ:
+   npm run build:win
+
+أو اضغط على:
+BUILD-WINDOWS-EXE.bat
+
+الناتج المتوقع:
+مجلد dist-desktop يحتوي على ملف تثبيت Windows NSIS.
+
+ملاحظات مهمة:
+- هذه المرحلة تجهز نسخة Windows Desktop، لكنها لا تبني EXE داخل هذه الحزمة نفسها لأن البناء يتم على جهاز Windows بعد تثبيت npm dependencies.
+- لا يتم تضمين أي مفاتيح سرية داخل التطبيق.
+- روابط Workers وAuth وAI تظل تدار من مركز الإعدادات العامة المتقدم.
+- node_modules و dist-desktop يجب عدم رفعهم إلى GitHub.
+
+المرحلة التالية المقترحة:
+5.26.3 — Android APK باستخدام Capacitor بعد اختبار نسخة Windows Desktop.
+============================================================

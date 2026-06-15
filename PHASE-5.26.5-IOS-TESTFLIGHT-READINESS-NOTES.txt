@@ -1,0 +1,29 @@
+المرحلة 5.26.5 — تجهيز إصدار iPhone / iPad للاختبار عبر TestFlight
+============================================================
+
+الغرض من هذه المرحلة:
+- تجهيز حزمة تنفيذ عملية لانتقال المشروع من Web/Capacitor إلى مشروع iOS قابل للبناء على Mac.
+- إضافة ملفات إرشادية وقوالب Privacy Manifest وبيانات App Store Connect.
+- إضافة أداة فحص محلية للتأكد من جاهزية ملفات iOS الأساسية قبل فتح Xcode.
+
+ما تم إضافته:
+1) IOS-TESTFLIGHT-EXECUTION-GUIDE.md
+   دليل تنفيذ عملي من GitHub إلى Xcode ثم TestFlight.
+
+2) app-shell/capacitor/ios/ios-readiness-check.mjs
+   أداة فحص جاهزية iOS تعمل بالأمر: npm run ios:doctor
+
+3) app-shell/capacitor/ios/templates/PrivacyInfo.xcprivacy
+   قالب Privacy Manifest مبدئي يضاف داخل مشروع Xcode عند الحاجة.
+
+4) app-shell/capacitor/ios/templates/ExportOptions-AppStore.plist
+   قالب إعدادات التصدير لأرشيف App Store / TestFlight.
+
+5) app-shell/capacitor/ios/metadata/ar-SA و en-US
+   قوالب بيانات التطبيق على App Store Connect.
+
+ملاحظات مهمة:
+- هذه المرحلة لا تنتج IPA داخل Windows.
+- بناء iOS الحقيقي يحتاج Mac + Xcode + Apple Developer Account.
+- لا يتم تخزين أي أسرار أو مفاتيح داخل ملفات المشروع.
+- البيانات الحساسة وSecrets تبقى في Cloudflare / Apple Developer / App Store Connect وليس داخل الواجهة.

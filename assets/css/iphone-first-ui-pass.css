@@ -1,0 +1,194 @@
+/* =========================================================
+   Phase 5.26.4 — iPhone-first UI Pass
+   هدف الملف: تهيئة واجهة المنصة للعمل كتطبيق iPhone / iPad مريح وفخم
+   بدون كسر نسخة الويب أو Electron.
+   ========================================================= */
+
+:root{
+  --ios-safe-top: env(safe-area-inset-top, 0px);
+  --ios-safe-right: env(safe-area-inset-right, 0px);
+  --ios-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ios-safe-left: env(safe-area-inset-left, 0px);
+  --ios-touch: 48px;
+  --ios-radius: 22px;
+  --ios-sheet-bg: rgba(9, 10, 12, .94);
+  --ios-gold-glow: rgba(212, 175, 55, .28);
+}
+
+body.ios-first-pass{
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+}
+
+body.ios-first-pass .app-shell{
+  min-height: 100dvh;
+  padding-top: var(--ios-safe-top);
+  padding-left: var(--ios-safe-left);
+  padding-right: var(--ios-safe-right);
+}
+
+body.ios-first-pass .main-content,
+body.ios-first-pass main,
+body.ios-first-pass .content-area{
+  min-height: calc(100dvh - var(--ios-safe-top));
+  padding-bottom: calc(92px + var(--ios-safe-bottom));
+}
+
+/* لمس مريح للأزرار داخل iPhone */
+@media (max-width: 820px){
+  body.ios-first-pass button,
+  body.ios-first-pass .btn,
+  body.ios-first-pass .nav-btn,
+  body.ios-first-pass input[type="button"],
+  body.ios-first-pass input[type="submit"]{
+    min-height: var(--ios-touch);
+    touch-action: manipulation;
+  }
+
+  body.ios-first-pass input,
+  body.ios-first-pass textarea,
+  body.ios-first-pass select{
+    font-size: 16px !important; /* يمنع Zoom تلقائي في iOS عند التركيز */
+    min-height: 46px;
+    border-radius: 16px;
+  }
+
+  body.ios-first-pass textarea{
+    line-height: 1.85;
+  }
+
+  body.ios-first-pass .card,
+  body.ios-first-pass .panel,
+  body.ios-first-pass .glass-card,
+  body.ios-first-pass .command-card,
+  body.ios-first-pass .case-file-card{
+    border-radius: var(--ios-radius);
+  }
+
+  body.ios-first-pass .sidebar{
+    padding-top: calc(12px + var(--ios-safe-top));
+    padding-bottom: calc(80px + var(--ios-safe-bottom));
+  }
+
+  body.ios-first-pass .sand-chat,
+  body.ios-first-pass #sandChat,
+  body.ios-first-pass .chat-panel{
+    inset: calc(10px + var(--ios-safe-top)) 10px calc(82px + var(--ios-safe-bottom)) 10px !important;
+    width: auto !important;
+    max-width: none !important;
+    border-radius: 24px;
+  }
+
+  body.ios-first-pass .chat-input{
+    padding-bottom: max(10px, var(--ios-safe-bottom));
+  }
+
+  body.ios-first-pass .modal,
+  body.ios-first-pass .dialog,
+  body.ios-first-pass .premium-dialog{
+    max-height: calc(100dvh - var(--ios-safe-top) - var(--ios-safe-bottom) - 28px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* شريط أدوات iPhone سريع لا يظهر إلا على الموبايل */
+.iphone-quick-dock{
+  display:none;
+}
+
+@media (max-width: 820px){
+  body.ios-first-pass .iphone-quick-dock{
+    position: fixed;
+    z-index: 9990;
+    left: max(10px, var(--ios-safe-left));
+    right: max(10px, var(--ios-safe-right));
+    bottom: max(10px, var(--ios-safe-bottom));
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid rgba(212,175,55,.28);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(18,18,20,.88), rgba(8,8,10,.94));
+    box-shadow: 0 18px 50px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.04) inset;
+    backdrop-filter: blur(18px);
+  }
+
+  body.ios-first-pass .iphone-quick-dock button{
+    min-height: 52px;
+    border: 0;
+    border-radius: 18px;
+    background: rgba(255,255,255,.055);
+    color: #f6e8ba;
+    font-family: Cairo, sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+  }
+
+  body.ios-first-pass .iphone-quick-dock button b{
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  body.ios-first-pass .iphone-quick-dock button.is-active,
+  body.ios-first-pass .iphone-quick-dock button:active{
+    background: linear-gradient(135deg, rgba(212,175,55,.24), rgba(255,255,255,.07));
+    box-shadow: 0 0 22px var(--ios-gold-glow);
+  }
+}
+
+/* شاشة فحص جاهزية iPhone */
+.ios-readiness-panel{
+  margin: 18px 0;
+  padding: 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(212,175,55,.24);
+  background: linear-gradient(145deg, rgba(15,15,17,.92), rgba(0,0,0,.72));
+  box-shadow: 0 18px 50px rgba(0,0,0,.25);
+}
+
+.ios-readiness-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.ios-readiness-item{
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.ios-readiness-item strong{
+  display:block;
+  color:#f8df9b;
+  margin-bottom: 6px;
+}
+
+.ios-readiness-item span{
+  color: rgba(255,255,255,.72);
+  font-size: 13px;
+}
+
+/* تحسينات وضع العرض على iPhone */
+@media (max-width: 820px){
+  body.ios-first-pass .presentation-stage,
+  body.ios-first-pass .cinematic-stage{
+    min-height: calc(100dvh - var(--ios-safe-top) - var(--ios-safe-bottom));
+    padding: 14px;
+  }
+
+  body.ios-first-pass .presentation-card,
+  body.ios-first-pass .cinematic-caption{
+    border-radius: 24px;
+  }
+}

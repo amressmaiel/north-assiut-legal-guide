@@ -1,0 +1,72 @@
+============================================================
+PHASE 5.26.1 — APP SHELL PREPARATION
+============================================================
+
+الهدف:
+تجهيز المنصة للتحول من صفحة ويب تعمل داخل المتصفح إلى نواة تطبيق مستقل يمكن لاحقًا تغليفها بنسخة Windows Desktop عبر Electron، ونسخة Android / iOS عبر Capacitor، مع الحفاظ على نفس الكود الأساسي.
+
+ما تم تنفيذه:
+
+1) إضافة طبقة App Shell Adapter:
+- الملف: assets/js/app-shell-adapter.js
+- كشف بيئة التشغيل: Browser / Electron / Capacitor / PWA.
+- إضافة كائن SandAppShell للاستخدام العام.
+- دعم فتح الروابط الخارجية بأمان.
+- دعم الطباعة الآمنة.
+- دعم تصدير JSON/Text داخل التطبيق.
+- دعم وضع ملء الشاشة لوضع العرض الرسمي.
+- دعم شريط حالة الاتصال Offline/Online.
+- إضافة لوحة جاهزية التطبيق المستقل.
+
+2) إضافة إعدادات App Shell:
+- الملف: config/app-shell-config.js
+- إعدادات نافذة سطح المكتب.
+- إعدادات تطبيق الموبايل.
+- سياسة الروابط الخارجية.
+- سياسة التخزين Local-first.
+- سياسة وضع العرض الرسمي.
+
+3) إضافة تنسيقات App Shell:
+- الملف: assets/css/app-shell.css
+- مؤشر حالة التطبيق المستقل.
+- لوحة جاهزية التطبيق.
+- شريط Offline.
+- تحسينات ملء الشاشة والعرض الرسمي.
+
+4) تجهيز Web App Manifest:
+- الملف: manifest.webmanifest
+- اسم التطبيق.
+- اللون الأساسي.
+- وضع Standalone.
+- اتجاه RTL.
+- أيقونة مبدئية من شعار المنصة.
+
+5) تجهيز قوالب Electron:
+- app-shell/electron/main.js
+- app-shell/electron/preload.js
+- app-shell/electron/package.template.json
+
+هذه القوالب لا تبني EXE الآن، لكنها تمهد لمرحلة 5.26.2.
+
+6) تجهيز قالب Capacitor:
+- app-shell/capacitor/capacitor.config.template.ts
+
+هذا القالب لا يبني APK أو iOS الآن، لكنه يمهد لمرحلة 5.26.3 وما بعدها.
+
+7) تحديث index.html:
+- إضافة manifest.webmanifest.
+- إضافة app-shell.css.
+- إضافة app-shell-config.js.
+- إضافة app-shell-adapter.js.
+
+8) تحديث platform.manifest.json:
+- رفع المرحلة إلى 5.26.1.
+- إضافة وحدات App Shell Readiness.
+
+ملاحظات مهمة:
+- لم يتم إنشاء EXE في هذه المرحلة.
+- لم يتم إنشاء APK في هذه المرحلة.
+- لم يتم إضافة أي مفاتيح سرية داخل الواجهة.
+- المرحلة التالية المنطقية: 5.26.2 — Windows Desktop EXE باستخدام Electron.
+
+============================================================

@@ -1,0 +1,3 @@
+Android package id: eg.prosecution.northassiut.sand
+App name: الدليل القضائي الذكي
+Recommended theme: dark / no action bar / gold accent

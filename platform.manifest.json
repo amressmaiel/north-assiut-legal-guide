@@ -1,7 +1,7 @@
 {
   "name": "north-assiut-legal-guide",
-  "version": "5.25.1",
-  "phase": "5.25.1",
+  "version": "5.26.7",
+  "phase": "5.26.7",
   "architecture": "modular-institutional-front-end",
   "settings": "config/app-config.js",
   "adminPanel": "assets/js/admin-settings.js",
@@ -64,9 +64,38 @@
     "screen-zoom-highlight",
     "presentation-callout-cards",
     "auto-demo-walkthrough",
-    "executive-video-style-showcase"
+    "executive-video-style-showcase",
+    "app-shell-preparation",
+    "desktop-app-readiness",
+    "mobile-app-readiness",
+    "electron-shell-template",
+    "capacitor-shell-template",
+    "safe-external-link-policy",
+    "standalone-web-manifest",
+    "presentation-fullscreen-bridge",
+    "windows-desktop-electron-app",
+    "electron-main-process",
+    "electron-preload-secure-bridge",
+    "windows-nsis-installer",
+    "desktop-build-scripts",
+    "safe-native-printing",
+    "native-save-dialog",
+    "desktop-icon-assets",
+    "iphone-first-ui-pass",
+    "ios-safe-area-refinement",
+    "mobile-touch-targets",
+    "iphone-quick-dock",
+    "ios-readiness-panel",
+    "android-app-shell",
+    "capacitor-android-preparation",
+    "android-touch-optimization",
+    "android-build-readiness",
+    "multi-platform-build-guide",
+    "release-checklist",
+    "windows-ios-android-execution-guide",
+    "build-commands-cheatsheet"
   ],
-  "phaseName": "Official Presentation Mode with Cinematic Screen Tour",
+  "phaseName": "Windows Desktop EXE Build with Electron",
   "updatedModules": [
     "admin",
     "drafts",
@@ -138,10 +167,22 @@
     "official-demo-flow",
     "main-css",
     "official-presentation-mode",
-    "presentation-settings"
+    "presentation-settings",
+    "index.html",
+    "app-shell-adapter",
+    "app-shell-config",
+    "webmanifest",
+    "electron-template",
+    "capacitor-template",
+    "app-shell",
+    "electron-desktop",
+    "desktop-installer",
+    "native-bridge",
+    "package-json",
+    "windows-build-batch"
   ],
-  "phase_name": "Auth, Permissions and Licensing Design Alignment",
-  "updated_at": "2026-06-15T13:55:00Z",
+  "phase_name": "Premium UI & Motion Layer",
+  "updated_at": "2026-06-15T15:30:00+02:00",
   "notes": [
     "Added institutional auth/license design based on uploaded reference files.",
     "Added Phase 5.13 Judicial Visual Training Center with courses, lessons, meetings, local progress, quizzes and training record.",
@@ -323,7 +364,24 @@
     "privacy settings for discoverability and messaging",
     "communication audit trail",
     "notifications integration for communication events",
-    "guest exclusion from communication features"
+    "guest exclusion from communication features",
+    "Judicial Premium Design System",
+    "Premium Toasts",
+    "Confirm Dialogs",
+    "Tooltips",
+    "Skeleton Loading",
+    "Empty States",
+    "Premium App Splash",
+    "Reduced Motion Support",
+    "ios-ipados-app-shell",
+    "capacitor-ios-preparation",
+    "safe-area-aware-ui",
+    "ios-build-guides",
+    "iOS TestFlight readiness kit",
+    "iOS privacy manifest template",
+    "App Store metadata templates",
+    "Mac build execution guide",
+    "iOS readiness checker"
   ],
   "phaseModules": {
     "visualTrainingGuestPrestigePortal": {
@@ -406,7 +464,7 @@
     }
   },
   "lastUpdate": "2026-06-15",
-  "lastPhaseNotes": "PHASE-5.25-OFFICIAL-PRESENTATION-MODE-NOTES.txt",
+  "lastPhaseNotes": "PHASE-5.26.4-IPHONE-FIRST-UI-PASS-NOTES.txt",
   "phaseDetails": {
     "advancedGeneralSettingsCenter": {
       "phase": "5.24",
@@ -455,6 +513,91 @@
         "presentation visual polish layer",
         "exit to normal platform mode"
       ]
+    },
+    "iphoneFirstUiPass": {
+      "phase": "5.26.4",
+      "files": [
+        "assets/css/iphone-first-ui-pass.css",
+        "assets/js/iphone-first-ui-pass.js",
+        "IPHONE-FIRST-UI-CHECKLIST.md",
+        "PHASE-5.26.4-IPHONE-FIRST-UI-PASS-NOTES.txt",
+        "index.html",
+        "platform.manifest.json"
+      ],
+      "capabilities": [
+        "iPhone/iPad safe area refinement",
+        "touch-friendly buttons and inputs",
+        "iOS input zoom prevention",
+        "bottom quick dock for one-hand use",
+        "chat and modal mobile containment",
+        "iOS readiness panel",
+        "no build tools required",
+        "compatible with Web, Electron, and Capacitor"
+      ]
     }
+  },
+  "appShellPreparation": {
+    "phase": "5.26.1",
+    "desktop": "Electron-ready template only; EXE build in 5.26.2",
+    "android": "Capacitor-ready template only; APK build in 5.26.3",
+    "ios": "Capacitor-ready template only; iOS build later",
+    "secretsPolicy": "No secrets in frontend or app shell templates",
+    "linkPolicy": "External meeting/cloud links open safely outside the app shell",
+    "offlinePolicy": "Local-first features remain available when offline"
+  },
+  "desktopApp": {
+    "enabled": true,
+    "framework": "Electron",
+    "target": "Windows x64 NSIS Installer",
+    "entry": "app-shell/electron/main.js",
+    "package": "package.json",
+    "output": "dist-desktop",
+    "devCommand": "npm run desktop",
+    "buildCommand": "npm run build:win"
+  },
+  "files": [
+    "capacitor.config.ts",
+    "assets/css/ios-app-shell.css",
+    "assets/js/ios-app-shell-adapter.js",
+    "IOS-CAPACITOR-BUILD-INSTRUCTIONS.md",
+    "PHASE-5.26.3-IOS-IPADOS-APP-SHELL-NOTES.txt",
+    "assets/css/iphone-first-ui-pass.css",
+    "assets/js/iphone-first-ui-pass.js",
+    "IPHONE-FIRST-UI-CHECKLIST.md",
+    "PHASE-5.26.4-IPHONE-FIRST-UI-PASS-NOTES.txt",
+    "MULTI-PLATFORM-BUILD-GUIDE.md",
+    "BUILD-COMMANDS-CHEATSHEET.md",
+    "RELEASE-CHECKLIST.md",
+    "PHASE-5.26.7-MULTI-PLATFORM-BUILD-GUIDE-NOTES.txt"
+  ],
+  "iosAppShell": {
+    "enabled": true,
+    "framework": "Capacitor",
+    "uiPriority": "iPhone-first",
+    "safeArea": "enabled",
+    "touchTargets": "48px minimum on mobile",
+    "readinessCommand": "openIOSReadinessPanel()"
+  },
+  "phase_title": "Multi-Platform Build and Execution Guide",
+  "androidAppShell": {
+    "platform": "Capacitor Android",
+    "packageId": "eg.prosecution.northassiut.sand",
+    "status": "prepared-for-Android-Studio-build",
+    "readinessCheck": "npm run android:doctor",
+    "buildGuide": "ANDROID-CAPACITOR-BUILD-INSTRUCTIONS.md"
+  },
+  "multiPlatformBuildGuide": {
+    "phase": "5.26.7",
+    "status": "ready",
+    "centralGuide": "MULTI-PLATFORM-BUILD-GUIDE.md",
+    "commandsCheatsheet": "BUILD-COMMANDS-CHEATSHEET.md",
+    "releaseChecklist": "RELEASE-CHECKLIST.md",
+    "targets": [
+      "Web/GitHub Pages",
+      "Windows Desktop EXE",
+      "iPhone/iPad TestFlight",
+      "Android APK/AAB"
+    ],
+    "principle": "Single Web Core with platform-specific shells"
   }
 }

@@ -1,0 +1,55 @@
+المرحلة 5.26.1.1 — Premium UI & Motion Layer
+================================================
+
+الهدف:
+إضافة طبقة مظهر وتجربة احترافية فوق تجهيز App Shell قبل الدخول في بناء نسخة Windows Desktop EXE.
+
+ما تم تنفيذه:
+1) إضافة Design Tokens للهوية القضائية الفاخرة:
+   - درجات الأسود والذهبي والعاجي.
+   - ظلال، زوايا، حدود، Glow موحد.
+   - قواعد حركة Motion مضبوطة.
+
+2) إضافة ملف CSS جديد:
+   assets/css/premium-ui-motion.css
+
+3) إضافة ملف JS جديد:
+   assets/js/premium-ui-motion.js
+
+4) تحسين الكروت والأزرار والتفاعل:
+   - Glassmorphism مضبوط.
+   - Hover محترم غير مبالغ فيه.
+   - تأثير Shine ذهبي للعناصر المهمة.
+   - Page transitions خفيفة بين الشاشات.
+
+5) إضافة نظام Toasts موحد:
+   - نجاح.
+   - تحذير.
+   - خطر.
+   - معلومة.
+
+6) إضافة Confirm Dialog احترافي بدل تنبيهات المتصفح التقليدية:
+   window.SandConfirm({...})
+
+7) إضافة Tooltips ذكية:
+   - تدعم data-tip.
+   - تمنع الاعتماد على title العادي عند المرور.
+
+8) إضافة Skeleton Loading و Empty State جاهزين للاستخدام:
+   window.SandPremiumUI.skeleton(...)
+   window.SandPremiumUI.empty(...)
+
+9) تحسين Splash Screen:
+   - توهج للشعار.
+   - حركة نبض خفيفة.
+   - مظهر أكثر جاهزية للتطبيق المستقل.
+
+10) دعم Reduced Motion:
+   - احترام إعدادات تقليل الحركة.
+   - إعداد داخلي motion=low.
+
+ملاحظات مهمة:
+- لم يتم إدخال Bootstrap أو Tailwind حتى لا تتعارض مع تصميم المنصة الحالي.
+- الطبقة لا تعتمد على Build Tools ولا npm، وتعمل مباشرة داخل Web / Electron / Capacitor.
+- لم يتم تخزين أسرار أو مفاتيح.
+- المرحلة تمهد بصريًا لمرحلة 5.26.2 الخاصة ببناء Windows Desktop EXE.

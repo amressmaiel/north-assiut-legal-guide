@@ -1,0 +1,92 @@
+{
+  "name": "sand-judicial-platform-desktop",
+  "version": "5.26.6",
+  "private": true,
+  "description": "Windows Desktop, iOS, and Android App Shell build for the Smart Judicial Guide Platform — SAND.",
+  "main": "app-shell/electron/main.js",
+  "author": "Amr Essmaiel",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "desktop": "electron .",
+    "build:win": "electron-builder --win nsis",
+    "build:win:portable": "electron-builder --win portable",
+    "dist": "electron-builder --win nsis",
+    "ios:init": "npm install && npx cap init \"الدليل القضائي الذكي\" eg.prosecution.northassiut.sand --web-dir .",
+    "ios:add": "npx cap add ios",
+    "ios:sync": "npx cap sync ios",
+    "ios:open": "npx cap open ios",
+    "ios:prepare": "npm run ios:sync",
+    "ios:doctor": "node app-shell/capacitor/ios/ios-readiness-check.mjs",
+    "ios:metadata": "node app-shell/capacitor/ios/ios-readiness-check.mjs --metadata",
+    "ios:release-notes": "node app-shell/capacitor/ios/ios-readiness-check.mjs --release-notes",
+    "android:init": "npm install && npx cap init \"الدليل القضائي الذكي\" eg.prosecution.northassiut.sand --web-dir .",
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:prepare": "npm run android:sync",
+    "android:doctor": "node app-shell/capacitor/android/android-readiness-check.mjs"
+  },
+  "devDependencies": {
+    "electron": "^32.3.3",
+    "electron-builder": "^25.1.8",
+    "@capacitor/cli": "^6.2.0"
+  },
+  "build": {
+    "appId": "eg.prosecution.northassiut.sand",
+    "productName": "الدليل القضائي الذكي",
+    "copyright": "Copyright © 2026 Amr Essmaiel",
+    "directories": {
+      "output": "dist-desktop"
+    },
+    "files": [
+      "index.html",
+      "manifest.webmanifest",
+      "platform.manifest.json",
+      "COPYRIGHT-NOTICE.txt",
+      "README.md",
+      "assets/**/*",
+      "config/**/*",
+      "core/**/*",
+      "data/**/*",
+      "reference/**/*",
+      "modules/**/*",
+      "backend/**/*",
+      "app-shell/electron/**/*",
+      "PHASE-*.txt"
+    ],
+    "extraMetadata": {
+      "main": "app-shell/electron/main.js"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "app-shell/electron/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "الدليل القضائي الذكي",
+      "installerLanguages": [
+        "ar_EG",
+        "en_US"
+      ],
+      "language": "1025"
+    }
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0",
+    "@capacitor/android": "^6.2.0"
+  }
+}
