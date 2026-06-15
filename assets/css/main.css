@@ -897,3 +897,82 @@ body.sidebar-expanded .main{margin-right:290px;width:calc(100% - 290px)}
   .signup-lock-badge { white-space:normal; }
   .signup-review-card { position:static; }
 }
+
+/* Phase 5.5.5 UX fix — professional public sign-up layout */
+.auth-signup-public-shell{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) 330px;
+  gap:22px;
+  align-items:start;
+  max-width:1320px;
+  margin:0 auto;
+}
+.auth-signup-public-shell .professional-signup-card{
+  width:100%;
+  min-width:0;
+}
+.auth-signup-public-shell .signup-review-card{
+  position:sticky;
+  top:92px;
+}
+.member-photo-upload{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.member-photo-preview{
+  width:132px;
+  height:152px;
+  border-radius:26px;
+  border:1px solid rgba(218,165,32,.42);
+  background:linear-gradient(145deg, rgba(255,255,255,.06), rgba(0,0,0,.18));
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  color:#f3d179;
+  box-shadow:0 18px 40px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.member-photo-preview span{font-size:42px;line-height:1;margin-bottom:8px;}
+.member-photo-preview small{font-size:12px;color:#d7dfef;text-align:center;padding:0 8px;}
+.member-photo-preview img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.member-photo-tools{
+  flex:1;
+  min-width:240px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.request-member-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.request-member-photo{
+  width:58px;
+  height:68px;
+  border-radius:16px;
+  object-fit:cover;
+  border:1px solid rgba(218,165,32,.45);
+  background:rgba(255,255,255,.06);
+  flex:0 0 auto;
+}
+.request-member-photo.placeholder{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  color:#f3d179;
+}
+@media (max-width: 980px){
+  .auth-signup-public-shell{grid-template-columns:1fr;}
+  .auth-signup-public-shell .signup-review-card{position:static;}
+}
