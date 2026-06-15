@@ -863,3 +863,37 @@ body.sidebar-expanded .main{margin-right:290px;width:calc(100% - 290px)}
 .code-box{background:#0d1324;color:#f8f4e8;border:1px solid rgba(212,175,55,.25);border-radius:14px;padding:12px;min-height:120px;white-space:pre-wrap;overflow:auto;direction:ltr;text-align:left}
 .loading-card{padding:24px;border-radius:18px;border:1px solid rgba(212,175,55,.25);background:rgba(255,255,255,.06);text-align:center;font-weight:700}
 @media(max-width:850px){.auth-api-config-box .inline-form,.approval-box{grid-template-columns:1fr}.auth-admin-tabs{overflow:auto;flex-wrap:nowrap}.auth-admin-tabs button{white-space:nowrap}}
+
+/* Phase 5.5.5 — Professional judicial sign-up */
+.auth-signup-layout { align-items: flex-start; }
+.professional-signup-card { overflow: hidden; }
+.signup-hero { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:18px; border:1px solid rgba(215,181,109,.25); border-radius:22px; background:linear-gradient(135deg, rgba(215,181,109,.12), rgba(255,255,255,.03)); margin-bottom:18px; }
+.signup-hero h3 { margin: 4px 0 8px; }
+.signup-lock-badge { white-space:nowrap; border:1px solid rgba(215,181,109,.4); color:#f8df9f; border-radius:999px; padding:10px 14px; background:rgba(0,0,0,.25); font-weight:700; }
+.signup-section { border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:16px; margin:14px 0; background:rgba(255,255,255,.025); }
+.signup-section h4 { margin:0 0 12px; color:#f5d58a; }
+.signup-grid { display:grid; gap:14px; }
+.signup-grid.two-cols { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.signup-section label { display:flex; flex-direction:column; gap:7px; font-weight:700; }
+.signup-section input, .signup-section select, .signup-section textarea { width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.13); background:rgba(0,0,0,.22); color:#fff; padding:12px 13px; font-family:Cairo, sans-serif; }
+.signup-section textarea { resize:vertical; min-height:84px; }
+.signup-ack .checkbox-label { flex-direction:row; align-items:flex-start; font-weight:600; }
+.signup-review-card { position:sticky; top:14px; }
+.membership-request-list { display:grid; gap:16px; }
+.membership-request-card { border:1px solid rgba(215,181,109,.25); border-radius:22px; padding:16px; background:linear-gradient(135deg, rgba(255,255,255,.04), rgba(215,181,109,.04)); }
+.request-head { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:12px; }
+.request-head h4 { margin:0 0 4px; color:#f7df9c; }
+.judicial-profile-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:10px; margin:12px 0; }
+.judicial-profile-grid > div { border:1px solid rgba(255,255,255,.08); border-radius:15px; padding:10px; background:rgba(0,0,0,.18); }
+.judicial-profile-grid span { display:block; font-size:.78rem; color:rgba(255,255,255,.62); margin-bottom:5px; }
+.judicial-profile-grid strong { display:block; color:#fff; font-size:.92rem; }
+.request-notes { border-right:3px solid #d7b56d; background:rgba(215,181,109,.08); padding:10px 12px; border-radius:14px; margin:10px 0; }
+.professional-approval { display:grid; grid-template-columns: 1.2fr 1fr .7fr auto auto; gap:10px; align-items:end; margin-top:14px; }
+.professional-approval label { display:flex; flex-direction:column; gap:6px; font-size:.85rem; }
+.muted-text { color:rgba(255,255,255,.68); }
+@media (max-width: 900px) {
+  .signup-grid.two-cols, .judicial-profile-grid, .professional-approval { grid-template-columns:1fr; }
+  .signup-hero, .request-head { flex-direction:column; }
+  .signup-lock-badge { white-space:normal; }
+  .signup-review-card { position:static; }
+}
