@@ -5,7 +5,7 @@
  */
 (function(){
   const DEFAULT_CONFIG = {
-    version: "5.5.4-auth-api-integration",
+    version: "5.7.1-auth-api-default-url-fix",
     app: {
       name: "الدليل القضائي الذكي لأعضاء النيابة العامة",
       shortName: "الدليل القضائي الذكي",
@@ -30,7 +30,7 @@
       provider: "cloudflare-worker",
       proxyUrl: "https://north-assiut-legal-ai-proxy.amressmaiel.workers.dev",
       liveTokenPath: "/live-token",
-      authApiUrl: "",
+      authApiUrl: "https://north-assiut-legal-auth-api.amressmaiel.workers.dev",
       authApiMode: "worker-d1",
       secretsPolicy: "no-secrets-in-frontend"
     },
