@@ -1,7 +1,7 @@
 {
   "name": "north-assiut-legal-guide",
-  "version": "5.25",
-  "phase": "5.25",
+  "version": "5.25.1",
+  "phase": "5.25.1",
   "architecture": "modular-institutional-front-end",
   "settings": "config/app-config.js",
   "adminPanel": "assets/js/admin-settings.js",
@@ -59,9 +59,14 @@
     "presentation-storyboard",
     "presentation-demo-data",
     "presentation-outline-export",
-    "presentation-polish-layer"
+    "presentation-polish-layer",
+    "cinematic-presentation-tour",
+    "screen-zoom-highlight",
+    "presentation-callout-cards",
+    "auto-demo-walkthrough",
+    "executive-video-style-showcase"
   ],
-  "phaseName": "Official Presentation Mode and Executive Demo Route",
+  "phaseName": "Official Presentation Mode with Cinematic Screen Tour",
   "updatedModules": [
     "admin",
     "drafts",
@@ -131,7 +136,9 @@
     "notification-settings",
     "presentation-mode",
     "official-demo-flow",
-    "main-css"
+    "main-css",
+    "official-presentation-mode",
+    "presentation-settings"
   ],
   "phase_name": "Auth, Permissions and Licensing Design Alignment",
   "updated_at": "2026-06-15T13:55:00Z",

@@ -46,7 +46,7 @@
       <div class="opm-hero">
         <div class="opm-glow"></div>
         <div class="opm-logo-card"><img src="./assets/images/logo.png" alt="شعار المنصة" onerror="this.style.display='none'"><span>⚖</span></div>
-        <div class="opm-hero-text"><span class="opm-kicker">المرحلة 5.25 — وضع العرض الرسمي</span><h2>مسار العرض التنفيذي للمنصة القضائية الذكية</h2><p>واجهة Presentation Mode منظمة لتقديم قيمة المنصة في عرض رسمي احترافي، بدون تشتيت أو رسائل تقنية غير لازمة.</p><div class="opm-hero-actions"><button class="opm-gold" onclick="OfficialPresentationMode.openStep(0)">ابدأ العرض من البداية</button><button class="opm-soft" onclick="OfficialPresentationMode.toggleDemoData()">تفعيل/إيقاف بيانات العرض</button><button class="opm-soft" onclick="OfficialPresentationMode.exportOutline()">تصدير سيناريو العرض</button><button class="opm-soft" onclick="OfficialPresentationMode.exit()">خروج من وضع العرض</button></div></div>
+        <div class="opm-hero-text"><span class="opm-kicker">المرحلة 5.25 — وضع العرض الرسمي</span><h2>مسار العرض التنفيذي للمنصة القضائية الذكية</h2><p>واجهة Presentation Mode منظمة لتقديم قيمة المنصة في عرض رسمي احترافي، بدون تشتيت أو رسائل تقنية غير لازمة.</p><div class="opm-hero-actions"><button class="opm-gold" onclick="OfficialPresentationMode.openStep(0)">ابدأ العرض من البداية</button><button class="opm-soft" onclick="OfficialPresentationMode.toggleDemoData()">تفعيل/إيقاف بيانات العرض</button><button class="opm-gold opm-cinema-main-btn" onclick="CinematicOfficialPresentation.start()">بدء العرض السينمائي</button><button class="opm-soft" onclick="OfficialPresentationMode.exportOutline()">تصدير سيناريو العرض</button><button class="opm-soft" onclick="OfficialPresentationMode.exit()">خروج من وضع العرض</button></div></div>
         <div class="opm-progress-ring"><b>${progress}%</b><small>تقدم العرض</small></div>
       </div>
       <div class="opm-stage">
@@ -76,4 +76,97 @@
   function exit(){clearPresentationClass(); if(typeof goHome==='function') goHome();}
   window.openOfficialPresentationMode=open;
   window.OfficialPresentationMode={open,openStep:renderStep,toggleDemoData,clearDemoData,exportOutline,exit,steps};
+})();
+
+
+/* =========================================================
+   Phase 5.25.1 — Cinematic Screen Tour Layer
+   ========================================================= */
+(function(){
+  'use strict';
+  const CINEMA_STATE='sand_official_cinematic_state_v5251';
+  let currentIndex=0, autoTimer=null, lastTarget=null;
+  const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+  const $=(s)=>document.querySelector(s);
+  const esc=(s)=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  function toast(msg){try{window.showToast?window.showToast(msg):console.log(msg)}catch(e){console.log(msg)}}
+  function runAction(action){
+    try{ if(typeof action==='function') return action(); if(action) return (new Function(action))(); }catch(e){ console.warn('Presentation action failed:',action,e); }
+  }
+  const scenes=[
+    {id:'opening',title:'البداية الرسمية',screen:'الواجهة الافتتاحية',benefit:'تبدأ العرض بصورة مؤسسية قوية تشرح أن المنصة ليست مجرد موقع، بل بيئة عمل قضائي متكاملة.',action:'OfficialPresentationMode.openStep(0)',targets:['.opm-hero','.hero','.home-hero'],callout:'افتتاح منظم يثبت الهوية والقيمة قبل الدخول في التفاصيل.',duration:7600},
+    {id:'dashboard',title:'مركز القيادة المؤسسي',screen:'لوحة القيادة',benefit:'يجمع حالة الحساب، التدريب، الملفات، التنبيهات، والاختصارات في شاشة واحدة حسب صلاحيات المستخدم.',action:'openCommandCenterDashboard && openCommandCenterDashboard()',targets:['.cmd-hero','.cmd-actions-grid','.cmd-stats-grid','.cmd-session-card'],callout:'هنا تظهر المنصة كمكتب قيادة رقمي لا كمجموعة أزرار متفرقة.',duration:8200},
+    {id:'laws',title:'مكتبة القوانين والبحث',screen:'مكتبة القوانين',benefit:'الوصول السريع للنصوص القانونية والشروح التنفيذية والبحث الموحد بين القوانين.',action:'openLawLibrary && openLawLibrary()',targets:['.law-library-hero','.law-library-grid','.law-card','.laws-grid','[data-nav="law-library"]'],callout:'فتح القانون يجب أن يقود مباشرة إلى مواده، والبحث يختصر وقت الوصول للنص.',duration:7800},
+    {id:'sand',title:'سَنَد المساعد القضائي',screen:'مساعد سند',benefit:'يوجه المستخدم للفهم والتحليل واستخراج النصوص والتكييفات المحتملة مع بقاء القرار النهائي للعضو.',action:'toggleChat && toggleChat(true)',targets:['.sand-chat-panel','#sandChat','.chat-panel','.chat-window','.assistant-dock'],callout:'الذكاء هنا داعم للتقدير القانوني وليس بديلًا عنه.',duration:7600},
+    {id:'analysis',title:'غرفة تحليل الوقائع',screen:'غرفة تحليل الوقائع',benefit:'تحويل الواقعة إلى تكييفات محتملة، خطة تحقيق، نقاط استيفاء، ومسودات قابلة للحفظ.',action:'openCaseAnalysisRoom && openCaseAnalysisRoom()',targets:['.case-command-hero','.case-command-metrics','.case-command-room-layout','.case-command-sidepanel','.case-command-preview'],callout:'دي لحظة القوة الأساسية: الواقعة تدخل خام وتخرج منظمة قابلة للتصرف.',duration:9000},
+    {id:'caseFiles',title:'ملفات الوقائع والتحليلات',screen:'مركز الملفات',benefit:'يحفظ نتائج التحليل داخل ملف قضائي منظم له حالة وأولوية وملاحظات ومسودات ومواعيد.',action:'openCaseFilesCenter && openCaseFilesCenter()',targets:['.case-files-hero','.case-files-list','.case-files-grid','.case-file-card','.case-files-tabs'],callout:'التحليل لا يضيع؛ يتحول إلى ملف عمل يمكن الرجوع إليه وتطويره.',duration:8200},
+    {id:'sharing',title:'المشاركة والتعاون الآمن',screen:'مشاركة الملفات',benefit:'مشاركة ملف واقعة مع زميل موثوق أو جهة مراجعة بصلاحيات ومدة محددة وسجل مراجعة.',action:'openCaseFilesCenter && openCaseFilesCenter()',targets:['button[onclick*="share"]','.case-file-sharing-panel','.case-file-review-panel','.case-files-hero','.case-files-tabs'],callout:'التعاون هنا محكوم: قراءة، تعليق، مراجعة، أو مشاركة محددة بزمن.',duration:7600},
+    {id:'training',title:'مركز التدريب المرئي',screen:'التدريب والاجتماعات',benefit:'دورات ومحاضرات واجتماعات مباشرة وروابط ضيوف، مع سجل تدريبي واختبارات.',action:'openTrainingCenter && openTrainingCenter()',targets:['.training-hero','.training-grid','.training-course-card','.training-meetings-panel','.training-panel'],callout:'المنصة لا تشرح القانون فقط؛ هي كمان تدرب وتتابع الحضور والتقدم.',duration:8200},
+    {id:'communication',title:'التواصل القضائي الآمن',screen:'مركز التواصل',benefit:'مراسلة داخلية بين الأعضاء مع زملاء موثوقين وخصوصية ومزامنة حقيقية عند ضبط Worker.',action:'openSecureCommunicationCenter && openSecureCommunicationCenter()',targets:['.secure-comm-hero','.comm-layout','.comm-thread','.trusted-colleagues-panel','.communication-center'],callout:'لا توجد فوضى: طلب تواصل، موافقة، ثم محادثة محكومة.',duration:8200},
+    {id:'notifications',title:'مركز الإشعارات',screen:'الإشعارات والتنبيهات',benefit:'غرفة عمليات مصغرة تجمع تنبيهات الأمن، التدريب، العضوية، الملفات، والمواعيد حسب الأولوية.',action:'openNotificationsCenter && openNotificationsCenter()',targets:['.notifications-hero','.notif-stats','.notifications-list','.notif-filters','.notification-card'],callout:'الإدارة والمستخدم لا يضيعوا وسط الأحداث؛ كل تنبيه له أولوية وإجراء.',duration:7600},
+    {id:'reports',title:'التقارير والتحليلات المؤسسية',screen:'التقارير',benefit:'تعرض للإدارة صورة كاملة عن الاستخدام، التدريب، الملفات، الأمن، والتواصل.',action:'openInstitutionalReportsCenter && openInstitutionalReportsCenter()',targets:['.reports-hero','.institutional-reports-hero','.reports-grid','.analytics-tabs','.health-score'],callout:'هنا تظهر قيمة الإدارة: المنصة تقيس وتعرض وتوصي، مش مجرد تخزن بيانات.',duration:8200},
+    {id:'settings',title:'الإعدادات العامة المتقدمة',screen:'مركز الإعدادات',benefit:'تغيير هوية المنصة وروابط الخدمات وسياسات التخزين والتدريب والضيوف من مكان واحد.',action:'openInstitutionalSettings && openInstitutionalSettings()',targets:['.advanced-settings-hero','.worker-url-grid','.advanced-status-row','.advanced-settings-grid','.settings-card'],callout:'المنصة قابلة للتخصيص والتوسع بدون تعديل الكود في كل مرة.',duration:7800},
+    {id:'closing',title:'الخاتمة التنفيذية',screen:'رسالة القيمة',benefit:'تختتم العرض بتأكيد أن المنصة تجمع المعرفة والتحليل والتدريب والتواصل والإدارة في بيئة واحدة.',action:'OfficialPresentationMode.openStep(10)',targets:['.opm-current-slide','.opm-hero','.opm-focus'],callout:'النهاية لازم تسيب انطباع واضح: منصة قابلة للاعتماد والتوسع.',duration:7600}
+  ];
+  function findTarget(scene){
+    for(const sel of (scene.targets||[])){
+      const el=$(sel);
+      if(el && el.offsetWidth>20 && el.offsetHeight>20) return el;
+    }
+    return document.getElementById('appView') || document.querySelector('main') || document.body;
+  }
+  function clearOverlay(){
+    if(autoTimer) clearTimeout(autoTimer); autoTimer=null;
+    document.querySelectorAll('.opm-cinema-overlay,.opm-cinema-focus-frame,.opm-cinema-progress').forEach(x=>x.remove());
+    if(lastTarget){ lastTarget.classList.remove('opm-cinema-target-live'); lastTarget=null; }
+    document.body.classList.remove('opm-cinematic-running');
+  }
+  function buildOverlay(scene,rect){
+    const overlay=document.createElement('div'); overlay.className='opm-cinema-overlay';
+    overlay.innerHTML=`
+      <div class="opm-cinema-topbar">
+        <div><span>وضع العرض السينمائي</span><b>${esc(scene.screen)}</b></div>
+        <div class="opm-cinema-controls">
+          <button onclick="CinematicOfficialPresentation.prev()">السابق</button>
+          <button onclick="CinematicOfficialPresentation.next()">التالي</button>
+          <button onclick="CinematicOfficialPresentation.pause()">إيقاف مؤقت</button>
+          <button onclick="CinematicOfficialPresentation.stop()">إنهاء</button>
+        </div>
+      </div>
+      <article class="opm-cinema-caption">
+        <small>لقطة ${currentIndex+1} من ${scenes.length}</small>
+        <h2>${esc(scene.title)}</h2>
+        <p>${esc(scene.benefit)}</p>
+        <div>${esc(scene.callout)}</div>
+      </article>
+      <div class="opm-cinema-hint">Zoom in → شرح الفائدة → Zoom out</div>`;
+    const focus=document.createElement('div'); focus.className='opm-cinema-focus-frame';
+    Object.assign(focus.style,{right:(window.innerWidth-rect.right-10)+'px',top:(rect.top-10)+'px',width:(rect.width+20)+'px',height:(rect.height+20)+'px'});
+    const progress=document.createElement('div'); progress.className='opm-cinema-progress'; progress.style.setProperty('--cinema-progress',((currentIndex+1)/scenes.length*100)+'%');
+    document.body.appendChild(overlay); document.body.appendChild(focus); document.body.appendChild(progress);
+  }
+  async function showScene(index,auto=true){
+    clearOverlay();
+    currentIndex=Math.max(0,Math.min(scenes.length-1,Number(index)||0));
+    const scene=scenes[currentIndex];
+    localStorage.setItem(CINEMA_STATE,JSON.stringify({index:currentIndex,updatedAt:new Date().toISOString()}));
+    runAction(scene.action);
+    await sleep(620);
+    const target=findTarget(scene);
+    target.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'});
+    await sleep(520);
+    const rect=target.getBoundingClientRect();
+    lastTarget=target; target.classList.add('opm-cinema-target-live');
+    document.body.classList.add('opm-cinematic-running');
+    buildOverlay(scene,rect);
+    if(auto && currentIndex<scenes.length-1){ autoTimer=setTimeout(()=>showScene(currentIndex+1,true),scene.duration||8000); }
+  }
+  function start(){ showScene(0,true); }
+  function next(){ showScene(Math.min(currentIndex+1,scenes.length-1),true); }
+  function prev(){ showScene(Math.max(currentIndex-1,0),false); }
+  function pause(){ if(autoTimer) clearTimeout(autoTimer); autoTimer=null; toast('تم إيقاف الانتقال التلقائي مؤقتًا.'); }
+  function stop(){ clearOverlay(); if(window.OfficialPresentationMode) OfficialPresentationMode.open(); }
+  function resume(){ showScene(currentIndex,true); }
+  window.CinematicOfficialPresentation={start,open:showScene,next,prev,pause,resume,stop,scenes};
+  window.startCinematicOfficialPresentation=start;
 })();
