@@ -69,7 +69,7 @@
         <label>رقم الهاتف للتواصل الإداري<input id="regPhone" type="tel" dir="ltr" placeholder="اختياري — رقم للتواصل عند مراجعة الطلب"></label>
       </div><div class="form-info" id="regUsernameInfo"></div><div class="form-error" id="regFullNameError"></div><div class="form-error" id="regUsernameError"></div><div class="form-error" id="regEmailError"></div></div>
 
-      <div class="signup-section signup-photo-section"><h4>ثانيًا — صورة العضو للتحقق الإداري <span class="required">*</span></h4><p class="muted-text">أرفق صورة شخصية واضحة وحديثة. لا ترفع صورة بطاقة أو مستند رسمي في هذه المرحلة. يمكنك ضبط الصورة قبل إرسال الطلب.</p><div class="member-photo-studio"><div class="member-photo-preview professional"><canvas id="regAvatarCanvas" width="520" height="600" aria-label="معاينة صورة العضو"></canvas><div id="regAvatarPlaceholder" class="avatar-canvas-placeholder"><span>👤</span><small>لم يتم اختيار صورة</small></div></div><div class="member-photo-tools professional"><input id="regAvatar" type="file" accept="image/*" hidden><div class="photo-main-actions"><button type="button" class="gold-btn" onclick="document.getElementById('regAvatar').click()">اختيار صورة العضو</button><button type="button" class="soft-btn" id="regAvatarReset" style="display:none">إعادة الضبط</button><button type="button" class="danger-soft-btn" id="regAvatarRemove" style="display:none">إزالة الصورة</button></div><div class="photo-adjust-grid" id="regAvatarControls" style="display:none"><label>تقريب / إبعاد<input id="regAvatarZoom" type="range" min="1" max="2.6" step="0.05" value="1.1"></label><label>الإضاءة<input id="regAvatarBrightness" type="range" min="0.75" max="1.35" step="0.05" value="1"></label><label>التباين<input id="regAvatarContrast" type="range" min="0.75" max="1.45" step="0.05" value="1"></label><div class="photo-rotate-actions"><button type="button" class="soft-btn" id="regAvatarRotateLeft">↶ تدوير يسار</button><button type="button" class="soft-btn" id="regAvatarRotateRight">↷ تدوير يمين</button></div></div><div class="form-info">سيتم ضغط الصورة تلقائيًا وحفظها داخل طلب العضوية بصيغة مناسبة للعرض الإداري. الحد الأقصى للملف قبل المعالجة: 5MB.</div><div class="form-error" id="regAvatarError"></div></div></div></div>
+      <div class="signup-section signup-photo-section"><h4>ثانيًا — صورة العضو للتحقق الإداري <span class="required">*</span></h4><p class="muted-text">أرفق صورة شخصية واضحة وحديثة. لا ترفع صورة بطاقة أو مستند رسمي في هذه المرحلة.</p><div class="member-photo-upload professional-editor"><div id="regAvatarPreview" class="member-photo-preview editor-preview"><span>👤</span><small>لم يتم اختيار صورة</small></div><div class="member-photo-tools professional"><input id="regAvatar" type="file" accept="image/png,image/jpeg,image/webp" hidden><div class="photo-main-actions"><button type="button" class="gold-btn" onclick="document.getElementById('regAvatar').click()">اختيار وضبط الصورة</button><button type="button" class="soft-btn" id="regAvatarChange" style="display:none" onclick="document.getElementById('regAvatar').click()">تغيير الصورة</button><button type="button" class="danger-soft-btn" id="regAvatarRemove" style="display:none">إزالة الصورة</button></div><div class="form-info">سيتم فتح محرر الصورة: اسحب الصورة داخل الإطار، اضبط التكبير، ثم اضغط اعتماد الصورة. تُحفظ نسخة موحدة ونسخة مصغرة تلقائيًا.</div><div class="form-error" id="regAvatarError"></div></div></div></div>
 
       <div class="signup-section"><h4>ثالثًا — البيانات القضائية للتحقق من الصفة</h4><div class="signup-grid two-cols">
         <label>الصفة / الدرجة القضائية <span class="required">*</span><select id="regJudicialTitle"><option value="">اختر الصفة</option><option>معاون نيابة</option><option>مساعد نيابة</option><option>وكيل نيابة</option><option>رئيس نيابة</option><option>مدير نيابة</option><option>باحث قانوني / إداري مصرح له</option><option>أخرى</option></select></label>
@@ -98,59 +98,48 @@
     </form><aside class="settings-card signup-review-card"><h3>ما الذي ستراجعه الإدارة؟</h3><ul class="quality-list"><li>مطابقة الاسم والصفة والنيابة التابعة.</li><li>مدى الحاجة إلى الصلاحيات المطلوبة.</li><li>مدة العضوية المناسبة وعدد الأجهزة.</li><li>تحديد الدور: عضو، مراجع، إدارة محتوى، تجربة.</li><li>تسجيل كل قبول أو رفض في Audit Log.</li></ul><div class="settings-alert">لا ترفع صور بطاقات أو مستندات حساسة داخل هذه المرحلة. يتم التحقق الإداري من خلال البيانات والاتصال المباشر عند الحاجة.</div></aside></div>`, '', false);
   }
   function mountRegisterApi(){
-    const username=byId('regUsername'), pass=byId('regPassword'), form=byId('sandApiRegisterForm'); let timer=null; let selectedAvatar=null;
-    const avatarState={ img:null, zoom:1.1, rotate:0, brightness:1, contrast:1 };
+    const username=byId('regUsername'), pass=byId('regPassword'), form=byId('sandApiRegisterForm'); let timer=null; let selectedAvatar=null; let selectedAvatarThumb=null;
     username?.addEventListener('input',()=>{ clearTimeout(timer); const v=username.value.trim(); byId('regUsernameInfo').textContent=''; byId('regUsernameError').textContent=''; if(v.length<3) return; byId('regUsernameInfo').textContent='جاري التحقق من السيرفر...'; timer=setTimeout(async()=>{ try{ const r=await api().checkUsername(v); byId('regUsernameInfo').textContent = r.exists ? '' : '✓ اسم المستخدم متاح'; byId('regUsernameError').textContent = r.exists ? 'اسم المستخدم مستخدم بالفعل' : ''; }catch(e){ byId('regUsernameInfo').textContent=''; byId('regUsernameError').textContent=e.message; } }, 450); });
     pass?.addEventListener('input',()=>{ const s=passwordStrength(pass.value); byId('regPasswordStrength').innerHTML=`<div class="strength-bar"><div class="strength-fill strength-${s.level}" style="width:${s.width}%"></div></div><span class="strength-label">${s.label}</span>`; });
 
-    function setPhotoToolsVisible(show){
-      ['regAvatarRemove','regAvatarReset','regAvatarControls'].forEach(id=>{ const el=byId(id); if(el) el.style.display = show ? (id==='regAvatarControls'?'grid':'inline-flex') : 'none'; });
-      const ph=byId('regAvatarPlaceholder'); if(ph) ph.style.display = show ? 'none' : 'flex';
+    function updateAvatarPreview(imageDataUrl, thumbDataUrl){
+      selectedAvatar=imageDataUrl || null;
+      selectedAvatarThumb=thumbDataUrl || imageDataUrl || null;
+      const prev=byId('regAvatarPreview');
+      if(prev){
+        prev.innerHTML = selectedAvatar
+          ? `<img src="${selectedAvatarThumb || selectedAvatar}" alt="صورة العضو"><small>تم اعتماد الصورة</small>`
+          : '<span>👤</span><small>لم يتم اختيار صورة</small>';
+      }
+      const rm=byId('regAvatarRemove'), ch=byId('regAvatarChange');
+      if(rm) rm.style.display = selectedAvatar ? 'inline-flex' : 'none';
+      if(ch) ch.style.display = selectedAvatar ? 'inline-flex' : 'none';
     }
-    function drawAvatar(){
-      const canvas=byId('regAvatarCanvas'); if(!canvas) return;
-      const ctx=canvas.getContext('2d'); const W=canvas.width, H=canvas.height;
-      ctx.clearRect(0,0,W,H);
-      ctx.fillStyle='rgba(3,8,15,.92)'; ctx.fillRect(0,0,W,H);
-      if(!avatarState.img){ selectedAvatar=null; setPhotoToolsVisible(false); return; }
-      const img=avatarState.img;
-      const cover=Math.max(W/img.width, H/img.height) * avatarState.zoom;
-      const dw=img.width*cover, dh=img.height*cover;
-      ctx.save();
-      ctx.translate(W/2,H/2);
-      ctx.rotate((avatarState.rotate*Math.PI)/180);
-      ctx.filter=`brightness(${avatarState.brightness}) contrast(${avatarState.contrast})`;
-      ctx.drawImage(img,-dw/2,-dh/2,dw,dh);
-      ctx.restore();
-      ctx.strokeStyle='rgba(218,165,32,.55)'; ctx.lineWidth=10; ctx.strokeRect(5,5,W-10,H-10);
-      selectedAvatar = canvas.toDataURL('image/jpeg',0.82);
-      setPhotoToolsVisible(true);
-    }
-    function resetAvatarAdjustments(){
-      avatarState.zoom=1.1; avatarState.rotate=0; avatarState.brightness=1; avatarState.contrast=1;
-      const z=byId('regAvatarZoom'), b=byId('regAvatarBrightness'), c=byId('regAvatarContrast');
-      if(z) z.value=avatarState.zoom; if(b) b.value=avatarState.brightness; if(c) c.value=avatarState.contrast;
-      drawAvatar();
-    }
+
     byId('regAvatar')?.addEventListener('change', async (e)=>{
       const file=e.target.files?.[0]; const err=byId('regAvatarError'); if(err) err.textContent='';
       if(!file) return;
-      if(!file.type.startsWith('image/')){ if(err) err.textContent='الملف المختار يجب أن يكون صورة فقط'; e.target.value=''; selectedAvatar=null; return; }
-      if(file.size > 5*1024*1024){ if(err) err.textContent='حجم الصورة كبير. اختر صورة أقل من 5MB'; e.target.value=''; selectedAvatar=null; return; }
-      const dataUrl = await new Promise((resolve,reject)=>{ const r=new FileReader(); r.onload=()=>resolve(String(r.result||'')); r.onerror=reject; r.readAsDataURL(file); });
-      const img = new Image();
-      img.onload=()=>{ avatarState.img=img; resetAvatarAdjustments(); };
-      img.onerror=()=>{ if(err) err.textContent='تعذر قراءة الصورة المختارة'; selectedAvatar=null; };
-      img.src=dataUrl;
+      try{
+        if(!window.NovAvatarEditor?.editFile) throw new Error('محرر الصورة غير محمل. حدّث الصفحة ثم حاول مرة أخرى.');
+        const result = await window.NovAvatarEditor.editFile(file);
+        if(result?.imageDataUrl){
+          updateAvatarPreview(result.imageDataUrl, result.thumbnailDataUrl);
+        } else {
+          e.target.value='';
+        }
+      }catch(ex){
+        updateAvatarPreview(null,null);
+        if(err) err.textContent = ex.message || 'تعذر ضبط الصورة المختارة';
+        e.target.value='';
+      }
     });
-    byId('regAvatarZoom')?.addEventListener('input',e=>{ avatarState.zoom=Number(e.target.value||1.1); drawAvatar(); });
-    byId('regAvatarBrightness')?.addEventListener('input',e=>{ avatarState.brightness=Number(e.target.value||1); drawAvatar(); });
-    byId('regAvatarContrast')?.addEventListener('input',e=>{ avatarState.contrast=Number(e.target.value||1); drawAvatar(); });
-    byId('regAvatarRotateLeft')?.addEventListener('click',()=>{ avatarState.rotate-=90; drawAvatar(); });
-    byId('regAvatarRotateRight')?.addEventListener('click',()=>{ avatarState.rotate+=90; drawAvatar(); });
-    byId('regAvatarReset')?.addEventListener('click',resetAvatarAdjustments);
-    byId('regAvatarRemove')?.addEventListener('click',()=>{ selectedAvatar=null; avatarState.img=null; const inp=byId('regAvatar'); if(inp) inp.value=''; const canvas=byId('regAvatarCanvas'); if(canvas) canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height); setPhotoToolsVisible(false); const err=byId('regAvatarError'); if(err) err.textContent=''; });
-    setPhotoToolsVisible(false);
+
+    byId('regAvatarRemove')?.addEventListener('click',()=>{
+      updateAvatarPreview(null,null);
+      const inp=byId('regAvatar'); if(inp) inp.value='';
+      const err=byId('regAvatarError'); if(err) err.textContent='';
+    });
+    updateAvatarPreview(null,null);
     form?.addEventListener('submit',async e=>{ e.preventDefault(); document.querySelectorAll('.form-error').forEach(x=>x.textContent='');
       const fullName=byId('regFullName').value.trim();
       const usernameVal=byId('regUsername').value.trim();
@@ -183,7 +172,7 @@
       const judicialProfile = {
         phone, judicialTitle, prosecutionOffice, parentProsecution, judicialDistrict,
         employeeCode, officialEmail, requestReason, requestedAccess, referenceName,
-        verificationContact, notes, memberPhoto: selectedAvatar, memberPhotoSubmitted: true, submittedAt: new Date().toISOString()
+        verificationContact, notes, memberPhoto: selectedAvatar, memberPhotoThumb: selectedAvatarThumb, memberPhotoSubmitted: true, submittedAt: new Date().toISOString()
       };
       const btn=byId('regSubmitBtn'); btn.disabled=true; btn.textContent='جاري إرسال الطلب...';
       try{ const res=await api().register({ fullName, username:usernameVal, email:email||null, organization: prosecutionOffice, judicialProfile, password, termsAccepted:true, dataAccuracyAccepted:true });
