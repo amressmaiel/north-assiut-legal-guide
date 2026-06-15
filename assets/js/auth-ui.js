@@ -13,9 +13,20 @@
       chip.innerHTML = u ? `<span>جلسة مفعلة</span><b>${escapeHtml(name)}</b>` : `<span>غير مسجل</span><b>زائر</b>`;
     }
     setDisplay('.auth-login-action', !u);
-    setDisplay('.auth-register-action', !u);
+    // Public visitor mode: only login is visible before authentication.
+    setDisplay('.auth-register-action', false);
     setDisplay('.auth-logout-action', !!u);
     setDisplay('.auth-sidebar-logout', !!u);
+    setDisplay('.top-action-start', !!u);
+    setDisplay('.top-action-sand', !!u);
+    setDisplay('.bot-trigger', !!u);
+    setDisplay('.search-wrap', !!u);
+    document.querySelectorAll('aside.sidebar .nav-title, aside.sidebar .nav-btn, aside.sidebar .sidebar-note').forEach(el=>{
+      const isLogin = el.matches('[data-nav="auth-login"]');
+      const isLogout = el.classList.contains('auth-sidebar-logout');
+      el.style.display = u ? '' : (isLogin ? '' : 'none');
+      if(isLogout) el.style.display = u ? '' : 'none';
+    });
   };
   function escapeHtml(v){ return String(v||'').replace(/[&<>"]/g, s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[s])); }
   window.addEventListener('sand:auth-session-updated', window.refreshInstitutionalAuthBar);

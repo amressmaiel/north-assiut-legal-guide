@@ -52,6 +52,34 @@ function goHome(){
   const authUser = window.SandAuthApi && SandAuthApi.currentUser ? SandAuthApi.currentUser() : null;
   const authReady = window.SandAuthApi && SandAuthApi.isConfigured ? SandAuthApi.isConfigured() : false;
   const ownerName = authUser ? (authUser.fullName || authUser.full_name || authUser.username || 'مستخدم') : '';
+  if(!authUser){
+    page(`
+      <section class="institutional-guest-gate" aria-label="بوابة الدخول المؤسسية">
+        <div class="guest-gate-crest">
+          <div class="hero-crest-frame compact">
+            <span class="hero-crest-halo"></span>
+            <img src="./assets/images/logo.png" alt="شعار النيابة العامة" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback')">
+          </div>
+        </div>
+        <div class="guest-gate-content">
+          <span class="institutional-kicker">بوابة استخدام مؤسسية مغلقة</span>
+          <h2>الدليل القضائي الذكي لأعضاء النيابة العامة</h2>
+          <p>هذه المنصة مخصصة للأعضاء المصرح لهم فقط. يرجى تسجيل الدخول للانتقال إلى أدوات سَنَد، مكتبة القوانين، التحليل، التقارير، والمسودات.</p>
+          <div class="guest-login-only-actions">
+            <button class="gold-btn large-action" onclick="openSandAuthLogin && openSandAuthLogin()">🔐 تسجيل الدخول</button>
+          </div>
+          <small>تقديم طلب العضوية يتم من داخل بوابة تسجيل الدخول، ولا يمنح أي صلاحية إلا بعد مراجعة الإدارة واعتماد المدة والصلاحيات.</small>
+        </div>
+      </section>
+      <section class="institutional-leadership-strip guest-only" aria-label="بيانات الاعتماد والإشراف">
+        <article><span>بتوجيه وإشراف</span><b>معالي السيد الأستاذ المستشار / أحمد فاروق</b><small>المحامي العام لنيابة شمال أسيوط الكلية</small></article>
+        <article><span>إعداد المحتوى والإشراف التنفيذي</span><b>الأستاذ / أحمد علي عبد العال</b><small>رئيس النيابة بنيابة شمال أسيوط الكلية</small></article>
+        <article><span>تصميم وبرمجة وتطوير</span><b>عمرو إسماعيل</b><small>Manfalut Partial Prosecution 2026</small></article>
+      </section>
+    `);
+    if(typeof window.refreshInstitutionalAuthBar==='function') window.refreshInstitutionalAuthBar();
+    return;
+  }
   page(`
     <section class="judicial-home-hero" aria-label="واجهة المنصة الرئيسية">
       <div class="hero-crest-column">
