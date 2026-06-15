@@ -284,3 +284,41 @@ wrangler d1 execute north_assiut_auth_db --remote --file=backend/d1/migration-5.
 ```
 
 The account remains `pending_approval` until reviewed and approved by the Super Owner/admin.
+
+## Phase 5.8 — Professional Judicial Membership Review
+
+تمت إضافة لوحة مراجعة احترافية لطلبات العضوية القضائية تشمل صورة العضو، بيانات الصفة والنيابة، درجة اكتمال البيانات، بطاقة مراجعة تفصيلية، قبول/رفض/طلب استكمال، وتسجيل قرارات المراجعة في سجل العمليات.
+
+يلزم تنفيذ migration التالي ونشر Worker المحدث:
+
+```powershell
+wrangler d1 execute north_assiut_auth_db --remote --file=backend/d1/migration-5.8-membership-review.sql
+copy .\backend\cloudflare-worker-auth-api.js .\auth-worker\cloudflare-worker-auth-api.js
+cd .\auth-worker
+wrangler deploy
+```
+
+
+## المرحلة 5.9 — إدارة التراخيص والأجهزة
+
+أضيفت شاشة مستقلة لإدارة التراخيص والأجهزة ومدة العضوية، تشمل تعديل تاريخ انتهاء العضوية، عدد الأجهزة، تصفير أجهزة المستخدم، إيقاف/تفعيل الأجهزة، وإدارة حالة التراخيص.
+
+ملف Backend المحدث: `backend/cloudflare-worker-auth-api.js` ويجب نشره على Cloudflare Worker.
+
+## Phase 5.10 و 5.11 — الصلاحيات والسجل الأمني
+
+أضيفت طبقة إنفاذ صلاحيات أمامية لتنظيم ظهور الشاشات حسب صلاحيات الجلسة، مع مركز مراجعة يوضح ما هو متاح أو محجوب للمستخدم الحالي. كما أضيف مركز أمن وسجل عمليات يعرض Audit Log من Auth API مع فلاتر وتصدير JSON ونسخة احتياطية محلية لإعدادات الواجهة.
+
+> ملاحظة أمنية: إخفاء الواجهة ليس بديلًا عن حماية السيرفر. يجب أن يستمر Cloudflare Worker في رفض أي Endpoint غير مصرح به.
+
+## Phase 5.12 — مركز حسابي والجلسات وكلمة المرور
+
+أضيفت شاشة **👤 حسابي** للمستخدمين المسجلين، وتشمل:
+
+- بيانات العضوية والدور وحالة الحساب.
+- مدة العضوية والأيام المتبقية.
+- الصلاحيات الحالية.
+- الأجهزة المسجلة والجلسات النشطة.
+- تغيير كلمة المرور مع خيار إنهاء الجلسات الأخرى.
+
+يتطلب تفعيل تغيير كلمة المرور والجلسات نشر ملف `backend/cloudflare-worker-auth-api.js` المحدث على Cloudflare Worker. لا توجد Migration جديدة مطلوبة.

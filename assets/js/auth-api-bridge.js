@@ -17,6 +17,15 @@
   function closeNav(){ if(typeof closeSidebar==='function') closeSidebar(); }
   function updateNav(key){ document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.querySelector(`[data-nav="${key}"]`)?.classList.add('active'); }
   function configured(){ return !!api()?.isConfigured?.(); }
+  function canManageMemberships(){ return !!api()?.hasPermission?.('users.manage') || !!api()?.hasPermission?.('roles.manage') || !!api()?.hasPermission?.('licenses.manage'); }
+  function routeAfterLogin(){
+    try {
+      if (canManageMemberships()) { window.openMembershipAdmin && window.openMembershipAdmin(); return; }
+      if (typeof goHome === 'function') { goHome(); return; }
+    } catch(_) {}
+    const v = appView();
+    if (v) v.innerHTML = shell('✅ تم تسجيل الدخول','تم تفعيل الجلسة بنجاح. يمكنك الآن استخدام الأدوات المصرح بها لحسابك.', `<div class="settings-card success-card"><h3>مرحبًا بك</h3><p>تم تسجيل الدخول، وتظهر لك الأدوات وفق الصلاحيات المعتمدة لحسابك.</p><button class="gold-btn" onclick="goHome && goHome()">الانتقال للرئيسية</button></div>`, '', false);
+  }
   function roleLabel(r){ return r?.display_name || r?.role_display_name || r?.name || r?.id || 'غير محدد'; }
   function statusLabel(s){ return ({active:'نشط',pending_approval:'بانتظار الموافقة',suspended:'موقوف',expired:'منتهي',blocked:'محظور',rejected:'مرفوض'})[s] || s || 'غير محدد'; }
   function statusBadge(s){ return `<span class="auth-status auth-${esc(s||'unknown')}">${esc(statusLabel(s))}</span>`; }
@@ -186,7 +195,7 @@
   }
   function mountLoginApi(){
     byId('sandApiLoginForm')?.addEventListener('submit', async e=>{ e.preventDefault(); byId('loginError').textContent=''; const btn=byId('loginBtn'); btn.disabled=true; btn.textContent='جاري الدخول...';
-      try{ const res=await api().login(byId('loginUsername').value.trim(), byId('loginPassword').value); toast('تم تسجيل الدخول بنجاح.'); window.openMembershipAdmin(); }
+      try{ const res=await api().login(byId('loginUsername').value.trim(), byId('loginPassword').value); toast('تم تسجيل الدخول بنجاح.'); routeAfterLogin(); }
       catch(err){ byId('loginError').textContent=err.message; btn.disabled=false; btn.textContent='دخول'; }
     });
   }
@@ -213,9 +222,76 @@
     catch(_) { return {}; }
   }
   function profileLine(label, value){ return value ? `<div><span>${label}</span><strong>${esc(value)}</strong></div>` : ''; }
-  function renderPending(list, roles){
+  function membershipReviewScore(profile){
+    const checks = [
+      profile.memberPhoto || profile.memberPhotoThumb,
+      profile.judicialTitle,
+      profile.prosecutionOffice,
+      profile.parentProsecution,
+      profile.judicialDistrict,
+      profile.phone,
+      profile.officialEmail,
+      profile.requestReason,
+      profile.referenceName || profile.verificationContact
+    ];
+    const score = Math.round(checks.filter(Boolean).length / checks.length * 100);
+    return score;
+  }
+  function reviewBadge(score){
+    const label = score >= 80 ? 'بيانات قوية' : score >= 55 ? 'تحتاج مراجعة' : 'بيانات ناقصة';
+    const cls = score >= 80 ? 'strong' : score >= 55 ? 'medium' : 'weak';
+    return `<span class="review-score ${cls}">${score}% — ${label}</span>`;
+  }
+  function buildPendingCard(u, roles){
+    const p = parseProfile(u);
+    const score = membershipReviewScore(p);
     const roleOptions=roles.map(r=>`<option value="${esc(r.id)}">${esc(roleLabel(r))}</option>`).join('') || '<option value="role_member">عضو</option>';
-    return `<div class="auth-panel active" data-api-panel="pending"><div class="settings-card"><h3>طلبات العضوية من D1</h3><p class="muted-text">تعرض هذه الشاشة البيانات القضائية التي قدمها طالب العضوية لمساعدتك في التحقق من صفته قبل القبول.</p>${list.length?`<div class="membership-request-list">${list.map(u=>{ const p=parseProfile(u); return `<article class="membership-request-card"><div class="request-head"><div class="request-member-head">${p.memberPhoto?`<img class="request-member-photo" src="${esc(p.memberPhoto)}" alt="صورة العضو">`:'<div class="request-member-photo placeholder">👤</div>'}<div><h4>${esc(u.full_name)}</h4><small dir="ltr">${esc(u.username)} — ${esc(u.email||'بدون بريد')}</small></div></div><span class="auth-status auth-pending_approval">بانتظار المراجعة</span></div><div class="judicial-profile-grid">${profileLine('الصفة',p.judicialTitle)}${profileLine('النيابة',p.prosecutionOffice)}${profileLine('النيابة الكلية / الجهة الأعلى',p.parentProsecution)}${profileLine('المحافظة / الدائرة',p.judicialDistrict)}${profileLine('الهاتف',p.phone)}${profileLine('البريد الرسمي',p.officialEmail)}${profileLine('الكود الداخلي',p.employeeCode)}${profileLine('سبب الطلب',p.requestReason)}${profileLine('نوع العضوية المطلوبة',p.requestedAccess)}${profileLine('مرجع للتحقق',p.referenceName)}${profileLine('وسيلة تحقق إضافية',p.verificationContact)}</div>${p.notes?`<div class="request-notes"><strong>ملاحظات الطالب:</strong><br>${esc(p.notes)}</div>`:''}<div class="approval-box professional-approval"><label>الدور<select id="role_${esc(u.id)}">${roleOptions}</select></label><label>تاريخ انتهاء العضوية<input id="valid_${esc(u.id)}" type="date" value="${new Date(Date.now()+365*864e5).toISOString().slice(0,10)}"></label><label>عدد الأجهزة<input id="dev_${esc(u.id)}" type="number" min="1" max="10" value="1"></label><button class="gold-btn" onclick="approveApiUser('${esc(u.id)}')">قبول وتفعيل</button><button class="danger-soft-btn" onclick="rejectApiUser('${esc(u.id)}')">رفض</button></div></article>`; }).join('')}</div>`:'<p>لا توجد طلبات عضوية معلقة.</p>'}</div></div>`;
+    const created = (u.created_at || '').replace('T',' ').slice(0,19) || '—';
+    return `<article class="membership-request-card pro-review-card" id="request_${esc(u.id)}">
+      <div class="request-head pro-review-head">
+        <div class="request-member-head">
+          ${p.memberPhotoThumb || p.memberPhoto ? `<img class="request-member-photo" src="${esc(p.memberPhotoThumb || p.memberPhoto)}" alt="صورة العضو">` : '<div class="request-member-photo placeholder">👤</div>'}
+          <div>
+            <h4>${esc(u.full_name)}</h4>
+            <small dir="ltr">${esc(u.username)} — ${esc(u.email||'بدون بريد')}</small>
+            <div class="review-meta-line"><span>تاريخ الطلب: ${esc(created)}</span>${reviewBadge(score)}</div>
+          </div>
+        </div>
+        <span class="auth-status auth-pending_approval">بانتظار المراجعة</span>
+      </div>
+      <div class="judicial-profile-grid compact-profile-grid">
+        ${profileLine('الصفة القضائية',p.judicialTitle)}${profileLine('النيابة التابع لها',p.prosecutionOffice)}${profileLine('النيابة الكلية / الجهة الأعلى',p.parentProsecution)}${profileLine('المحافظة / الدائرة',p.judicialDistrict)}${profileLine('الهاتف',p.phone)}${profileLine('البريد الرسمي',p.officialEmail)}${profileLine('الكود الداخلي',p.employeeCode)}${profileLine('سبب الطلب',p.requestReason)}${profileLine('نوع العضوية',p.requestedAccess)}${profileLine('مرجع للتحقق',p.referenceName)}${profileLine('وسيلة تحقق إضافية',p.verificationContact)}
+      </div>
+      ${p.notes?`<div class="request-notes"><strong>ملاحظات الطالب:</strong><br>${esc(p.notes)}</div>`:''}
+      <div class="review-actions-row">
+        <button class="gold-btn" onclick="openMembershipReviewDialog('${esc(u.id)}')">فتح بطاقة المراجعة</button>
+        <button class="soft-btn" onclick="copyMembershipRequestData('${esc(u.id)}')">نسخ البيانات</button>
+        <button class="danger-soft-btn" onclick="rejectApiUserProfessional('${esc(u.id)}')">رفض</button>
+      </div>
+      <div class="approval-box professional-approval quick-approval-box">
+        <label>الدور<select id="role_${esc(u.id)}">${roleOptions}</select></label>
+        <label>بداية العضوية<input id="from_${esc(u.id)}" type="date" value="${new Date().toISOString().slice(0,10)}"></label>
+        <label>نهاية العضوية<input id="valid_${esc(u.id)}" type="date" value="${new Date(Date.now()+365*864e5).toISOString().slice(0,10)}"></label>
+        <label>عدد الأجهزة<input id="dev_${esc(u.id)}" type="number" min="1" max="10" value="1"></label>
+        <label class="checkbox-label inline-check"><input id="must_${esc(u.id)}" type="checkbox" checked> <span>إلزام تغيير كلمة المرور عند أول دخول</span></label>
+        <button class="gold-btn" onclick="approveApiUserProfessional('${esc(u.id)}')">قبول وتفعيل</button>
+        <button class="soft-btn" onclick="requestMembershipCompletion('${esc(u.id)}')">طلب استكمال بيانات</button>
+      </div>
+    </article>`;
+  }
+  function renderPending(list, roles){
+    const strong=list.filter(u=>membershipReviewScore(parseProfile(u))>=80).length;
+    const mid=list.filter(u=>{const s=membershipReviewScore(parseProfile(u)); return s>=55&&s<80}).length;
+    const weak=list.length-strong-mid;
+    return `<div class="auth-panel active" data-api-panel="pending">
+      <div class="settings-card membership-review-dashboard">
+        <div class="review-board-head">
+          <div><h3>لوحة مراجعة طلبات العضوية القضائية</h3><p class="muted-text">مركز مراجعة احترافي للطلبات قبل التفعيل، مع صورة العضو والبيانات القضائية وقرار القبول أو الرفض أو طلب الاستكمال.</p></div>
+          <div class="review-stats"><span>الإجمالي <b>${list.length}</b></span><span>قوية <b>${strong}</b></span><span>مراجعة <b>${mid}</b></span><span>ناقصة <b>${weak}</b></span></div>
+        </div>
+        ${list.length?`<div class="membership-request-list professional-review-list">${list.map(u=>buildPendingCard(u, roles)).join('')}</div>`:'<div class="empty-state"><h4>لا توجد طلبات عضوية معلقة</h4><p>عند تقديم طلب عضوية جديد سيظهر هنا للمراجعة قبل التفعيل.</p></div>'}
+      </div>
+    </div>`;
   }
   function renderUsers(list){
     return `<div class="auth-panel" data-api-panel="users"><div class="settings-card"><h3>المستخدمون النشطون والمسجلون</h3><div class="table-wrap"><table class="admin-table"><thead><tr><th>المستخدم</th><th>الدور</th><th>الحالة</th><th>الصلاحية</th><th>آخر دخول</th><th>إجراء</th></tr></thead><tbody>${list.map(u=>`<tr><td><strong>${esc(u.full_name||u.fullName)}</strong><br><small dir="ltr">${esc(u.username)}</small></td><td>${esc(roleLabel(u))}</td><td>${statusBadge(u.status)}</td><td>${niceDate(u.valid_until)}</td><td>${niceDate(u.last_login_at)}</td><td>${u.is_super_owner?'مالك النظام':`<button class="soft-btn" onclick="updateApiUserStatus('${esc(u.id)}','active')">تفعيل</button><button class="danger-soft-btn" onclick="updateApiUserStatus('${esc(u.id)}','suspended')">إيقاف</button>`}</td></tr>`).join('') || '<tr><td colspan="6">لا توجد بيانات.</td></tr>'}</tbody></table></div></div></div>`;
@@ -233,15 +309,75 @@
     const v=appView(); if(!v)return; updateNav('membership-admin'); closeNav();
     if(!configured()) { v.innerHTML=shell('👥 العضويات والصلاحيات','يلزم ضبط رابط Auth API قبل تشغيل الإدارة الإنتاجية.', `<div class="settings-grid">${renderBaseConfigBox()}<article class="settings-card"><h3>وضع محلي احتياطي</h3><p>يمكن الرجوع مؤقتًا لواجهة 5.5.1 المحلية، لكن الصلاحيات الحقيقية تعمل عبر Worker + D1.</p><button class="soft-btn" onclick="openLocalMembershipAdminFallback()">فتح الإدارة المحلية المؤقتة</button></article></div>`); return; }
     if(!api().isLoggedIn()) { v.innerHTML=shell('👥 العضويات والصلاحيات','تسجيل الدخول مطلوب للوصول إلى إدارة العضويات.', `<div class="settings-card"><p>سجّل الدخول بحساب مالك النظام أو مدير لديه صلاحية users.manage.</p><button class="gold-btn" onclick="openSandAuthLogin()">تسجيل الدخول</button></div>`); return; }
+    if(!canManageMemberships()) { v.innerHTML=shell('⛔ غير مصرح','هذه اللوحة مخصصة لمالك النظام أو مدير العضويات فقط.', `<div class="settings-card"><p>حسابك مفعل، لكن لا يملك صلاحية إدارة العضويات والصلاحيات.</p><button class="gold-btn" onclick="goHome && goHome()">العودة للرئيسية</button></div>`, '', false); return; }
     v.innerHTML=shell('👥 العضويات والصلاحيات','إدارة فعلية من Cloudflare D1 عبر Worker Auth API.', `<div class="loading-card">جاري تحميل بيانات العضويات من السيرفر...</div>`);
     try{ const data=await fetchAdminData();
       v.innerHTML=shell('👥 العضويات والصلاحيات','إدارة فعلية من Cloudflare D1 عبر Worker Auth API.', `${data.errors.length?`<div class="settings-alert danger-soft">${data.errors.map(esc).join('<br>')}</div>`:''}${tabs(active)}<div class="auth-panels">${renderPending(data.pending,data.roles)}${renderUsers(data.users)}${renderDevices(data.devices)}${renderAudit(data.audit)}${renderBootstrap()}</div>`);
       setAuthApiTab(active);
     }catch(e){ v.innerHTML=shell('👥 العضويات والصلاحيات','تعذر تحميل لوحة الإدارة.', `<div class="settings-card"><p class="form-error">${esc(e.message)}</p><button class="gold-btn" onclick="openSandAuthLogin()">تسجيل الدخول</button><button class="soft-btn" onclick="openMembershipAdmin()">إعادة المحاولة</button></div>`); }
   }
+  function findPendingUser(userId){
+    const el = document.getElementById('request_'+userId);
+    return { el };
+  }
+  window.openMembershipReviewDialog=function(userId){
+    // يعاد تحميل أحدث بيانات الطلب من اللوحة المعروضة؛ فتح البطاقة التفصيلية من DOM كحل واجهة آمن.
+    const card=document.getElementById('request_'+userId);
+    if(!card) return;
+    const html = card.cloneNode(true);
+    html.querySelectorAll('.quick-approval-box,.review-actions-row').forEach(x=>x.remove());
+    const modal=document.createElement('div');
+    modal.className='review-modal-backdrop';
+    modal.innerHTML=`<div class="review-modal"><button class="review-modal-close" onclick="this.closest('.review-modal-backdrop').remove()">×</button><h3>بطاقة مراجعة طلب العضوية</h3><div class="review-modal-body">${html.outerHTML}</div><div class="approval-box modal-approval-box"><label>الدور<select id="modal_role_${esc(userId)}">${document.getElementById('role_'+userId)?.innerHTML||''}</select></label><label>بداية العضوية<input id="modal_from_${esc(userId)}" type="date" value="${document.getElementById('from_'+userId)?.value||new Date().toISOString().slice(0,10)}"></label><label>نهاية العضوية<input id="modal_valid_${esc(userId)}" type="date" value="${document.getElementById('valid_'+userId)?.value||''}"></label><label>عدد الأجهزة<input id="modal_dev_${esc(userId)}" type="number" min="1" max="10" value="${document.getElementById('dev_'+userId)?.value||1}"></label><textarea id="modal_note_${esc(userId)}" placeholder="ملاحظات المراجعة الداخلية / سبب القرار"></textarea><div class="form-actions"><button class="gold-btn" onclick="approveApiUserProfessional('${esc(userId)}', true)">قبول وتفعيل</button><button class="soft-btn" onclick="requestMembershipCompletion('${esc(userId)}', true)">طلب استكمال</button><button class="danger-soft-btn" onclick="rejectApiUserProfessional('${esc(userId)}', true)">رفض الطلب</button></div></div></div>`;
+    document.body.appendChild(modal);
+  };
+  window.copyMembershipRequestData=function(userId){
+    const card=document.getElementById('request_'+userId);
+    if(!card) return;
+    const text=card.innerText.replace(/\n{3,}/g,'\n\n');
+    navigator.clipboard?.writeText(text).then(()=>toast('تم نسخ بيانات الطلب.')).catch(()=>toast(text));
+  };
+  window.approveApiUserProfessional=async function(userId, fromModal=false){
+    try{
+      const prefix=fromModal?'modal_':'';
+      const roleId=byId(prefix+'role_'+userId)?.value || byId('role_'+userId)?.value || 'role_member';
+      const validFrom=byId(prefix+'from_'+userId)?.value || byId('from_'+userId)?.value || new Date().toISOString().slice(0,10);
+      const validUntil=byId(prefix+'valid_'+userId)?.value || byId('valid_'+userId)?.value;
+      const maxDevices=Number(byId(prefix+'dev_'+userId)?.value || byId('dev_'+userId)?.value || 1);
+      const reviewNote=byId(prefix+'note_'+userId)?.value || '';
+      if(!validUntil) return toast('حدد تاريخ نهاية العضوية أولًا.','error');
+      if(!confirm('تأكيد قبول وتفعيل العضوية بهذه الصلاحيات والمدة؟')) return;
+      await api().approveUser({ userId, roleId, validFrom, validUntil, maxDevices, reviewNote, mustChangePassword:true });
+      toast('تم قبول العضوية وتفعيل الحساب.');
+      document.querySelector('.review-modal-backdrop')?.remove();
+      renderAdminApi('pending');
+    }catch(e){ toast(e.message,'error'); }
+  };
+  window.rejectApiUserProfessional=async function(userId, fromModal=false){
+    try{
+      const reason = fromModal ? (byId('modal_note_'+userId)?.value || '') : (prompt('اكتب سبب الرفض:') || '');
+      if(!reason.trim()) return toast('سبب الرفض مطلوب لتسجيل القرار في سجل العمليات.','error');
+      if(!confirm('تأكيد رفض طلب العضوية؟')) return;
+      await api().rejectUser({ userId, reason });
+      toast('تم رفض الطلب وتسجيل السبب.');
+      document.querySelector('.review-modal-backdrop')?.remove();
+      renderAdminApi('pending');
+    }catch(e){ toast(e.message,'error'); }
+  };
+  window.requestMembershipCompletion=async function(userId, fromModal=false){
+    try{
+      const reason = fromModal ? (byId('modal_note_'+userId)?.value || '') : (prompt('ما البيانات المطلوب استكمالها؟') || '');
+      if(!reason.trim()) return toast('اكتب البيانات المطلوب استكمالها.','error');
+      if(api().requestCompletion) await api().requestCompletion({ userId, reason });
+      else await api().rejectUser({ userId, reason:'طلب استكمال بيانات: '+reason });
+      toast('تم تسجيل طلب استكمال البيانات في سجل العمليات.');
+      document.querySelector('.review-modal-backdrop')?.remove();
+      renderAdminApi('pending');
+    }catch(e){ toast(e.message,'error'); }
+  };
   window.setAuthApiTab=function(tab){ document.querySelectorAll('[data-api-tab]').forEach(b=>b.classList.toggle('active',b.dataset.apiTab===tab)); document.querySelectorAll('[data-api-panel]').forEach(p=>p.classList.toggle('active',p.dataset.apiPanel===tab)); };
-  window.approveApiUser=async function(userId){ try{ await api().approveUser({ userId, roleId:byId('role_'+userId)?.value || 'role_member', validUntil:byId('valid_'+userId)?.value, maxDevices:Number(byId('dev_'+userId)?.value||1) }); toast('تم قبول العضوية.'); renderAdminApi('pending'); }catch(e){ toast(e.message,'error'); } };
-  window.rejectApiUser=async function(userId){ try{ const reason=prompt('سبب الرفض اختياري:') || ''; await api().rejectUser({ userId, reason }); toast('تم رفض الطلب.'); renderAdminApi('pending'); }catch(e){ toast(e.message,'error'); } };
+  window.approveApiUser=function(userId){ return window.approveApiUserProfessional(userId); };
+  window.rejectApiUser=function(userId){ return window.rejectApiUserProfessional(userId); };
   window.updateApiUserStatus=async function(userId,status){ try{ await api().updateUserStatus({ userId, status }); toast('تم تحديث حالة المستخدم.'); renderAdminApi('users'); }catch(e){ toast(e.message,'error'); } };
   window.updateApiDeviceStatus=async function(deviceId,status){ try{ await api().updateDeviceStatus({ deviceId, status }); toast('تم تحديث حالة الجهاز.'); renderAdminApi('devices'); }catch(e){ toast(e.message,'error'); } };
   window.loadBootstrapApiStatus=async function(){ try{ const r=await api().bootstrapStatus(); byId('bootstrapApiBox').textContent=JSON.stringify(r,null,2); }catch(e){ byId('bootstrapApiBox').textContent=e.message; } };

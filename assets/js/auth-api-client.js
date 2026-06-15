@@ -145,11 +145,19 @@
     pendingUsers: ()=>request('/api/users/pending'),
     approveUser: (payload)=>request('/api/users/approve',{ method:'POST', body: payload }),
     rejectUser: (payload)=>request('/api/users/reject',{ method:'POST', body: payload }),
+    requestCompletion: (payload)=>request('/api/users/request-completion',{ method:'POST', body: payload }),
     updateUserStatus: (payload)=>request('/api/users/update-status',{ method:'POST', body: payload }),
     roles: ()=>request('/api/roles'),
     permissionsList: ()=>request('/api/permissions'),
     devices: ()=>request('/api/devices'),
     updateDeviceStatus: (payload)=>request('/api/devices/update-status',{ method:'POST', body: payload }),
-    audit: (limit=100)=>request('/api/audit?limit='+encodeURIComponent(limit))
+    resetUserDevices: (payload)=>request('/api/devices/reset-user',{ method:'POST', body: payload }),
+    licenses: ()=>request('/api/licenses'),
+    updateLicenseStatus: (payload)=>request('/api/licenses/update-status',{ method:'POST', body: payload }),
+    updateUserAccess: (payload)=>request('/api/users/update-access',{ method:'POST', body: payload }),
+    audit: (limit=100)=>request('/api/audit?limit='+encodeURIComponent(limit)),
+    changePassword: (payload)=>request('/api/auth/change-password',{ method:'POST', body: payload }),
+    mySessions: ()=>request('/api/auth/my-sessions'),
+    myDevices: ()=>request('/api/auth/my-devices')
   };
 })();

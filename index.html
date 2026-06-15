@@ -59,6 +59,9 @@
     <button class="nav-btn" data-nav="guide" onclick="openGuide()">🛡️ الدليل الإجرائي المختصر</button>
     <div class="nav-title">أدوات التنفيذ القضائي</div>
     <button class="nav-btn case-analysis-nav" data-nav="case-analysis" onclick="openCaseAnalysisRoom()">⚖️ سَنَد — غرفة تحليل الواقعة</button>
+    <button class="nav-btn" data-nav="training-center" onclick="openTrainingCenter && openTrainingCenter()">🎥 مركز التدريب المرئي</button>
+    <button class="nav-btn" data-nav="notifications-center" onclick="openNotificationsCenter && openNotificationsCenter()">🔔 مركز الإشعارات والتنبيهات</button>
+    <button class="nav-btn" data-nav="secure-communication-center" onclick="openSecureCommunicationCenter && openSecureCommunicationCenter()">💬 مركز التواصل القضائي</button>
     <button class="nav-btn" data-nav="tools" onclick="openToolsHub()">🧰 مركز الأدوات التنفيذية</button>
     <button class="nav-btn" data-nav="procedural-shield" onclick="openProceduralShield()">🛡️ درع المراجعة الوقائية</button>
     <button class="nav-btn" data-nav="deadlines" onclick="openDeadlineCalculator()">⏱️ حاسبة المواعيد</button>
@@ -77,6 +80,10 @@
     <button class="nav-btn" data-nav="auth-register" onclick="openSandRegister()">📝 طلب عضوية جديدة</button>
     <button class="nav-btn auth-sidebar-logout" onclick="logoutFromAuthApi && logoutFromAuthApi()" style="display:none">🚪 تسجيل خروج</button>
     <button class="nav-btn" data-nav="membership-admin" onclick="openMembershipAdmin()">👥 إدارة العضويات والصلاحيات</button>
+    <button class="nav-btn" data-nav="license-device-admin" onclick="openLicenseDeviceAdmin()">🎫 التراخيص والأجهزة</button>
+    <button class="nav-btn" data-nav="access-control-center" onclick="openAccessControlCenter()">🛡️ إنفاذ الصلاحيات</button>
+    <button class="nav-btn" data-nav="my-account" onclick="openMyAccountCenter && openMyAccountCenter()">👤 حسابي</button>
+    <button class="nav-btn" data-nav="security-audit-center" onclick="openSecurityAuditCenter()">📜 مركز الأمن والسجل</button>
     <div class="sidebar-note">تصنيف المواد إلى معدلة أو مستحدثة بالكامل تصنيف تحريري أولي قابل للمراجعة قبل الاعتماد النهائي.</div>
   </aside>
 
@@ -179,8 +186,17 @@
 <script src="./assets/js/admin-content-manager.js"></script>
 <script src="./assets/js/auth-api-client.js"></script>
 <script src="./assets/js/admin-auth-manager.js"></script>
+<script src="./assets/js/admin-license-devices.js"></script>
 <script src="./assets/js/avatar-editor.js"></script>
 <script src="./assets/js/auth-api-bridge.js"></script>
+<script src="./assets/js/access-control-guard.js"></script>
+<script src="./assets/js/admin-security-audit.js"></script>
 <script src="./assets/js/auth-ui.js"></script>
+<script src="./assets/js/auth-account-center.js"></script>
+<script src="./assets/js/training-center.js"></script>
+<script src="./assets/js/command-center-dashboard.js"></script>
+<script src="./assets/js/notifications-center.js"></script>
+<script src="./assets/js/secure-communication-center.js"></script>
+<script src="./assets/js/secure-communication-realtime.js"></script>
 </body>
 </html>

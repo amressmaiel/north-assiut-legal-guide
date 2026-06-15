@@ -1,25 +1,66 @@
 {
   "name": "north-assiut-legal-guide",
-  "version": "5.2.0-institutional-settings",
-  "phase": "5.5.4",
+  "version": "5.16.2",
+  "phase": "5.16.2",
   "architecture": "modular-institutional-front-end",
   "settings": "config/app-config.js",
   "adminPanel": "assets/js/admin-settings.js",
   "secretsPolicy": "no-secrets-in-frontend",
   "institutionalModules": [
-    "content-admin"
+    "content-admin",
+    "visual-training-center",
+    "command-center-dashboard",
+    "notifications-center",
+    "secure-communication-center",
+    "trusted-colleagues-privacy-layer",
+    "secure-communication-realtime",
+    "communication-worker-sync",
+    "message-pinning",
+    "read-confirmations",
+    "communication-attachments"
   ],
-  "phaseName": "Admin Activation Integration",
+  "phaseName": "مركز التواصل القضائي الحقيقي والتطوير المتقدم",
   "updatedModules": [
     "admin",
     "drafts",
     "sand",
-    "live-voice"
+    "live-voice",
+    "training-center",
+    "home-dashboard",
+    "sidebar-navigation",
+    "command-center-dashboard",
+    "account-session-center",
+    "admin-shortcuts",
+    "notifications-center",
+    "topbar-notification-badge",
+    "secure-communication-center",
+    "trusted-colleagues",
+    "member-search",
+    "connection-requests",
+    "privacy-settings",
+    "official-announcements",
+    "communication-audit-log",
+    "secure-communication-realtime",
+    "communication-worker-api",
+    "cloudflare-worker-comm-realtime",
+    "d1-communication-schema",
+    "message-read-confirmations",
+    "pinned-messages",
+    "message-attachment-metadata",
+    "cross-device-sync-settings"
   ],
   "phase_name": "Auth, Permissions and Licensing Design Alignment",
-  "updated_at": "2026-06-14T00:00:00Z",
+  "updated_at": "2026-06-15T09:25:00Z",
   "notes": [
-    "Added institutional auth/license design based on uploaded reference files."
+    "Added institutional auth/license design based on uploaded reference files.",
+    "Added Phase 5.13 Judicial Visual Training Center with courses, lessons, meetings, local progress, quizzes and training record.",
+    "Added Phase 5.14 visual training admin panel: course CRUD, lesson management, attachments, quizzes, meeting administration, local reports and settings.",
+    "Added Phase 5.14.2: auto Jitsi room generation, instant live meeting, public guest attendance links for non-members, guest-only attendance page, and local guest attendance record.",
+    "Added Phase 5.14.3: redesigned public guest attendance page with institutional black/gold visual identity, platform branding, prestige layout, limited-access notice, meeting details card, and supervision/development footer.",
+    "Added Phase 5.15: smart institutional command center after login with account/session status, training progress, upcoming meetings, workspace resume cards, role-aware admin shortcuts and preliminary operational alerts.",
+    "Added Phase 5.16: world-class institutional notifications center with categories, priorities, read/archive lifecycle, search/filtering, action buttons, topbar badge, settings, and integration with command center dashboard.",
+    "Added Phase 5.16.1: secure judicial communication center with trusted colleagues, mutual connection requests, member search, privacy settings, official announcement channel, safe groups, block controls, local communication audit, and notifications integration.",
+    "Added Phase 5.16.2: realtime-ready secure communication layer with Worker sync endpoint, cross-device configuration, manual/automatic sync, message pinning, read confirmations, attachment metadata, and D1 schema for real multi-device communication."
   ],
   "authFoundation": "secure-bootstrap-digital-license-d1",
   "backend": {
@@ -29,5 +70,199 @@
     "authApiClient": "assets/js/auth-api-client.js"
   },
   "authFrontendIntegration": true,
-  "authBackend": "Cloudflare Worker + D1"
+  "authBackend": "Cloudflare Worker + D1",
+  "lastUpgrade": "Phase 5.16.1 Secure Judicial Communication Center and Trusted Colleagues",
+  "modules": {
+    "accessControl": {
+      "phase": "5.10",
+      "files": [
+        "assets/js/access-control-guard.js"
+      ]
+    },
+    "securityAudit": {
+      "phase": "5.11",
+      "files": [
+        "assets/js/admin-security-audit.js"
+      ]
+    },
+    "accountCenter": {
+      "phase": "5.12",
+      "files": [
+        "assets/js/auth-account-center.js",
+        "backend/cloudflare-worker-auth-api.js"
+      ]
+    },
+    "visualTrainingCenter": {
+      "phase": "5.13",
+      "files": [
+        "assets/js/training-center.js",
+        "assets/css/main.css",
+        "PHASE-5.13-VISUAL-TRAINING-CENTER-NOTES.txt"
+      ],
+      "capabilities": [
+        "training courses",
+        "external meeting links",
+        "local progress record",
+        "training quizzes",
+        "training attendance"
+      ]
+    },
+    "visualTrainingAdmin": {
+      "phase": "5.14",
+      "files": [
+        "assets/js/training-center.js",
+        "assets/css/main.css",
+        "PHASE-5.14-VISUAL-TRAINING-ADMIN-NOTES.txt"
+      ],
+      "capabilities": [
+        "create/edit/delete training courses",
+        "publish/draft courses",
+        "manage lessons and video links",
+        "manage training attachments",
+        "manage quiz questions",
+        "manage meeting links",
+        "local training reports and settings"
+      ]
+    },
+    "visualTrainingLiveMeetingLinks": {
+      "phase": "5.14.2",
+      "files": [
+        "assets/js/training-center.js",
+        "assets/css/main.css",
+        "PHASE-5.14.2-LIVE-MEETING-CREATION-GUEST-LINKS-NOTES.txt"
+      ],
+      "capabilities": [
+        "auto-create Jitsi meeting link",
+        "create instant live meeting",
+        "copy public guest attendance link",
+        "share guest invitation text",
+        "guest-only attendance landing page",
+        "local guest attendance tracking"
+      ]
+    }
+  },
+  "status": "secure-communication-center-ready",
+  "features": [
+    "live meeting room via external links",
+    "meeting provider detection",
+    "copy meeting link",
+    "download meeting calendar file",
+    "meeting attendance join/exit tracking",
+    "auto Jitsi meeting creation",
+    "instant meeting now",
+    "public guest attendance link",
+    "guest-only attendance screen",
+    "prestige guest attendance portal",
+    "platform-branded external invitation experience",
+    "limited-access guest notice",
+    "black/gold judicial guest interface",
+    "smart command center after login",
+    "role-aware dashboard cards",
+    "training progress summary",
+    "upcoming live meetings summary",
+    "recent legal articles and workspace resume",
+    "admin shortcuts by permission",
+    "preliminary operational alerts",
+    "full notifications center",
+    "notification categories and priorities",
+    "unread/read/archive/delete notification states",
+    "notification search filters and bulk actions",
+    "topbar notification bell with unread badge",
+    "actionable notifications linked to platform modules",
+    "notification settings and muted categories",
+    "local operational notification seeding",
+    "admin demo alerts for testing",
+    "secure internal communication center",
+    "trusted colleagues list with mutual approval",
+    "member search with privacy controls",
+    "incoming and outgoing connection requests",
+    "direct chat only after accepted connection",
+    "official announcement channel",
+    "training and support communication groups",
+    "member block and unblock controls",
+    "privacy settings for discoverability and messaging",
+    "communication audit trail",
+    "notifications integration for communication events",
+    "guest exclusion from communication features"
+  ],
+  "phaseModules": {
+    "visualTrainingGuestPrestigePortal": {
+      "phase": "5.14.3",
+      "files": [
+        "assets/js/training-center.js",
+        "assets/css/main.css",
+        "PHASE-5.14.3-GUEST-PRESTIGE-PORTAL-NOTES.txt"
+      ],
+      "capabilities": [
+        "prestige guest attendance landing page",
+        "platform-branded external invitation experience",
+        "limited access legal notice",
+        "meeting details card",
+        "black/gold judicial visual identity"
+      ]
+    },
+    "institutionalCommandCenter": {
+      "phase": "5.15",
+      "files": [
+        "assets/js/command-center-dashboard.js",
+        "assets/css/main.css",
+        "assets/js/bootstrap.js",
+        "index.html",
+        "PHASE-5.15-INSTITUTIONAL-COMMAND-CENTER-NOTES.txt"
+      ],
+      "capabilities": [
+        "logged-in command center dashboard",
+        "account/session status",
+        "training progress and meeting summary",
+        "recent workspace cards",
+        "role-aware admin shortcuts",
+        "initial alert center"
+      ]
+    },
+    "institutionalNotificationsCenter": {
+      "phase": "5.16",
+      "files": [
+        "assets/js/notifications-center.js",
+        "assets/js/command-center-dashboard.js",
+        "assets/css/main.css",
+        "index.html",
+        "PHASE-5.16-NOTIFICATIONS-CENTER-NOTES.txt"
+      ],
+      "capabilities": [
+        "notification categories",
+        "priority levels",
+        "read/unread/archive/delete",
+        "search and filters",
+        "bulk actions",
+        "topbar unread badge",
+        "actionable module links",
+        "settings and muted categories",
+        "local operational seed alerts",
+        "admin test notifications"
+      ]
+    },
+    "secureJudicialCommunicationCenter": {
+      "phase": "5.16.1",
+      "files": [
+        "assets/js/secure-communication-center.js",
+        "assets/js/command-center-dashboard.js",
+        "index.html",
+        "PHASE-5.16.1-SECURE-COMMUNICATION-CENTER-NOTES.txt"
+      ],
+      "capabilities": [
+        "secure internal communication center",
+        "trusted colleagues list with mutual approval",
+        "member search with privacy controls",
+        "incoming and outgoing connection requests",
+        "direct chat only after accepted connection",
+        "official announcement channel",
+        "training and support communication groups",
+        "member block and unblock controls",
+        "privacy settings for discoverability and messaging",
+        "communication audit trail",
+        "notifications integration for communication events",
+        "guest exclusion from communication features"
+      ]
+    }
+  }
 }

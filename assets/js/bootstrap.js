@@ -5,4 +5,4 @@ window.addEventListener("load", function(){
   setTimeout(()=>splash.classList.add("splash-hidden"),7000);
   setTimeout(()=>splash.remove(),7800);
 });
-document.addEventListener("DOMContentLoaded",goHome);
+document.addEventListener("DOMContentLoaded",()=>{ if (typeof window.goHome === "function") window.goHome(); });

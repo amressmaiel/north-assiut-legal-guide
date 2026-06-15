@@ -23,7 +23,7 @@ export default {
 
       // Public auth/bootstrap endpoints
       if (url.pathname === '/api/auth/health' && request.method === 'GET') {
-        return cors(json({ ok: true, phase: '5.5.3', service: 'auth-api' }), 200, env, request);
+        return cors(json({ ok: true, phase: '5.12', service: 'auth-api' }), 200, env, request);
       }
       if (url.pathname === '/api/bootstrap/status' && request.method === 'GET') {
         return cors(await bootstrapStatus(env), 200, env, request);
@@ -57,6 +57,16 @@ export default {
       if (url.pathname === '/api/auth/me' && request.method === 'GET') {
         return cors(json({ ok: true, user: ctx.publicUser, permissions: ctx.permissions }), 200, env, request);
       }
+      if (url.pathname === '/api/auth/change-password' && request.method === 'POST') {
+        const body = await readJson(request);
+        return cors(await changePassword(env, ctx, body), 200, env, request);
+      }
+      if (url.pathname === '/api/auth/my-sessions' && request.method === 'GET') {
+        return cors(await listMySessions(env, ctx), 200, env, request);
+      }
+      if (url.pathname === '/api/auth/my-devices' && request.method === 'GET') {
+        return cors(await listMyDevices(env, ctx), 200, env, request);
+      }
       if (url.pathname === '/api/auth/logout' && request.method === 'POST') {
         return cors(await logout(env, ctx), 200, env, request);
       }
@@ -78,10 +88,35 @@ export default {
         const body = await readJson(request);
         return cors(await rejectUser(env, ctx, body), 200, env, request);
       }
+      if (url.pathname === '/api/users/request-completion' && request.method === 'POST') {
+        await requirePermission(ctx, 'users.manage');
+        const body = await readJson(request);
+        return cors(await requestUserCompletion(env, ctx, body), 200, env, request);
+      }
       if (url.pathname === '/api/users/update-status' && request.method === 'POST') {
         await requirePermission(ctx, 'users.manage');
         const body = await readJson(request);
         return cors(await updateUserStatus(env, ctx, body), 200, env, request);
+      }
+
+      if (url.pathname === '/api/users/update-access' && request.method === 'POST') {
+        await requirePermission(ctx, 'users.manage');
+        const body = await readJson(request);
+        return cors(await updateUserAccess(env, ctx, body), 200, env, request);
+      }
+      if (url.pathname === '/api/devices/reset-user' && request.method === 'POST') {
+        await requirePermission(ctx, 'users.manage');
+        const body = await readJson(request);
+        return cors(await resetUserDevices(env, ctx, body), 200, env, request);
+      }
+      if (url.pathname === '/api/licenses' && request.method === 'GET') {
+        await requirePermission(ctx, 'licenses.manage');
+        return cors(await listLicenses(env), 200, env, request);
+      }
+      if (url.pathname === '/api/licenses/update-status' && request.method === 'POST') {
+        await requirePermission(ctx, 'licenses.manage');
+        const body = await readJson(request);
+        return cors(await updateLicenseStatus(env, ctx, body), 200, env, request);
       }
       if (url.pathname === '/api/roles' && request.method === 'GET') {
         await requirePermission(ctx, 'users.manage');
@@ -355,13 +390,45 @@ async function requireAuth(env, request) {
 async function requirePermission(ctx, key) { if (ctx.user.is_super_owner) return true; if (!ctx.permissions.includes(key)) throw authError('PERMISSION_DENIED', 403, 'ليست لديك صلاحية تنفيذ هذا الإجراء'); }
 async function logout(env, ctx) { await env.AUTH_DB.prepare(`UPDATE active_sessions SET revoked_at=? WHERE id=?`).bind(nowIso(), ctx.sessionId).run(); await audit(env, 'LOGOUT', 'info', {}, ctx.userId, 'session', ctx.sessionId); return json({ ok:true }); }
 
+async function changePassword(env, ctx, body) {
+  const currentPassword = String(body.currentPassword || '');
+  const newPassword = String(body.newPassword || '');
+  const passwordProblem = validatePassword(newPassword);
+  if (passwordProblem) return json({ ok:false, error: passwordProblem }, { status:400 });
+  const row = await env.AUTH_DB.prepare(`SELECT id, username, password_hash, password_salt FROM users WHERE id=?`).bind(ctx.userId).first();
+  if (!row) return json({ ok:false, error:'USER_NOT_FOUND' }, { status:404 });
+  const currentHash = await hashPassword(currentPassword, row.password_salt);
+  if (currentHash !== row.password_hash) {
+    await audit(env, 'CHANGE_PASSWORD_FAILED', 'important', { reason:'bad_current_password' }, ctx.userId, 'user', ctx.userId);
+    return json({ ok:false, error:'INVALID_CURRENT_PASSWORD', message:'كلمة المرور الحالية غير صحيحة' }, { status:401 });
+  }
+  const newSalt = uuid();
+  const newHash = await hashPassword(newPassword, newSalt);
+  await env.AUTH_DB.prepare(`UPDATE users SET password_hash=?, password_salt=?, must_change_password=0 WHERE id=?`).bind(newHash, newSalt, ctx.userId).run();
+  if (body.revokeOtherSessions !== false) {
+    await env.AUTH_DB.prepare(`UPDATE active_sessions SET revoked_at=? WHERE user_id=? AND id<>? AND revoked_at IS NULL`).bind(nowIso(), ctx.userId, ctx.sessionId).run();
+  }
+  await audit(env, 'PASSWORD_CHANGED', 'critical', { revokeOtherSessions: body.revokeOtherSessions !== false }, ctx.userId, 'user', ctx.userId);
+  return json({ ok:true, passwordChanged:true });
+}
+
+async function listMySessions(env, ctx) {
+  const rows = await env.AUTH_DB.prepare(`SELECT s.id, s.created_at, s.last_seen_at, s.expires_at, s.revoked_at, d.device_label, d.status AS device_status FROM active_sessions s LEFT JOIN user_devices d ON d.id=s.device_id WHERE s.user_id=? ORDER BY s.last_seen_at DESC LIMIT 30`).bind(ctx.userId).all();
+  return json({ ok:true, sessions: rows.results || [] });
+}
+
+async function listMyDevices(env, ctx) {
+  const rows = await env.AUTH_DB.prepare(`SELECT id, device_label, status, first_seen_at, last_seen_at FROM user_devices WHERE user_id=? ORDER BY last_seen_at DESC LIMIT 20`).bind(ctx.userId).all();
+  return json({ ok:true, devices: rows.results || [] });
+}
+
 async function listUsers(env) {
   const rows = await env.AUTH_DB.prepare(`SELECT u.id,u.username,u.full_name,u.email,u.status,u.valid_from,u.valid_until,u.max_devices,u.is_super_owner,u.created_at,u.approved_at,u.last_login_at,r.display_name AS role_display_name FROM users u LEFT JOIN roles r ON r.id=u.role_id ORDER BY u.created_at DESC LIMIT 500`).all();
   return json({ ok:true, users: rows.results || [] });
 }
 async function listPendingUsers(env) {
   try {
-    const rows = await env.AUTH_DB.prepare(`SELECT id,username,full_name,email,status,created_at,judicial_profile_json FROM users WHERE status='pending_approval' ORDER BY created_at DESC LIMIT 200`).all();
+    const rows = await env.AUTH_DB.prepare(`SELECT id,username,full_name,email,status,created_at,judicial_profile_json,review_status,review_note,reviewed_at FROM users WHERE status='pending_approval' ORDER BY created_at DESC LIMIT 200`).all();
     return json({ ok:true, requests: rows.results || [] });
   } catch (e) {
     const rows = await env.AUTH_DB.prepare(`SELECT id,username,full_name,email,status,created_at FROM users WHERE status='pending_approval' ORDER BY created_at DESC LIMIT 200`).all();
@@ -377,17 +444,76 @@ async function approveUser(env, ctx, body) {
   const target = await env.AUTH_DB.prepare(`SELECT * FROM users WHERE id=?`).bind(userId).first();
   if (!target) return json({ ok:false, error:'USER_NOT_FOUND' }, { status:404 });
   if (target.is_super_owner && !ctx.user.is_super_owner) return json({ ok:false, error:'CANNOT_MODIFY_SUPER_OWNER' }, { status:403 });
-  await env.AUTH_DB.prepare(`UPDATE users SET status='active', role_id=?, valid_from=?, valid_until=?, max_devices=?, approved_at=?, approved_by=? WHERE id=?`)
-    .bind(roleId, validFrom, validUntil, maxDevices, nowIso(), ctx.userId, userId).run();
+  await env.AUTH_DB.prepare(`UPDATE users SET status='active', role_id=?, valid_from=?, valid_until=?, max_devices=?, approved_at=?, approved_by=?, review_status='approved', review_note=? WHERE id=?`)
+    .bind(roleId, validFrom, validUntil, maxDevices, nowIso(), ctx.userId, safeStr(body.reviewNote, 800), userId).run();
   await audit(env, 'USER_APPROVED', 'important', { roleId, validFrom, validUntil, maxDevices }, ctx.userId, 'user', userId);
   return json({ ok:true });
 }
 async function rejectUser(env, ctx, body) {
   const userId = safeStr(body.userId, 80);
-  await env.AUTH_DB.prepare(`UPDATE users SET status='rejected' WHERE id=? AND is_super_owner=0`).bind(userId).run();
+  await env.AUTH_DB.prepare(`UPDATE users SET status='rejected', review_status='rejected', review_note=?, reviewed_at=? WHERE id=? AND is_super_owner=0`).bind(safeStr(body.reason, 800), nowIso(), userId).run();
   await audit(env, 'USER_REJECTED', 'important', { reason: safeStr(body.reason, 500) }, ctx.userId, 'user', userId);
   return json({ ok:true });
 }
+async function requestUserCompletion(env, ctx, body) {
+  const userId = safeStr(body.userId, 80);
+  const reason = safeStr(body.reason, 1000);
+  if (!reason) return json({ ok:false, error:'REVIEW_NOTE_REQUIRED', message:'سبب طلب الاستكمال مطلوب' }, { status:400 });
+  const target = await env.AUTH_DB.prepare(`SELECT * FROM users WHERE id=?`).bind(userId).first();
+  if (!target) return json({ ok:false, error:'USER_NOT_FOUND' }, { status:404 });
+  if (target.is_super_owner) return json({ ok:false, error:'CANNOT_MODIFY_SUPER_OWNER' }, { status:403 });
+  await env.AUTH_DB.prepare(`UPDATE users SET review_status='needs_completion', review_note=?, reviewed_at=? WHERE id=? AND status='pending_approval'`)
+    .bind(reason, nowIso(), userId).run();
+  await audit(env, 'USER_COMPLETION_REQUESTED', 'important', { reason }, ctx.userId, 'user', userId);
+  return json({ ok:true });
+}
+
+async function updateUserAccess(env, ctx, body) {
+  const userId = safeStr(body.userId, 80);
+  const target = await env.AUTH_DB.prepare(`SELECT * FROM users WHERE id=?`).bind(userId).first();
+  if (!target) return json({ ok:false, error:'USER_NOT_FOUND' }, { status:404 });
+  if (target.is_super_owner && !ctx.user.is_super_owner) return json({ ok:false, error:'CANNOT_MODIFY_SUPER_OWNER' }, { status:403 });
+  const status = safeStr(body.status || target.status, 30);
+  if (!['pending_approval','active','suspended','expired','rejected','blocked'].includes(status)) return json({ ok:false, error:'INVALID_STATUS' }, { status:400 });
+  const validUntil = safeStr(body.validUntil || target.valid_until || '', 30) || null;
+  const validFrom = safeStr(body.validFrom || target.valid_from || nowIso().slice(0,10), 30);
+  const maxDevices = Math.max(1, Math.min(10, Number(body.maxDevices || target.max_devices || 1)));
+  await env.AUTH_DB.prepare(`UPDATE users SET status=?, valid_from=?, valid_until=?, max_devices=? WHERE id=?`)
+    .bind(status, validFrom, validUntil, maxDevices, userId).run();
+  await audit(env, 'USER_ACCESS_UPDATED', 'important', { status, validFrom, validUntil, maxDevices, note:safeStr(body.note, 800) }, ctx.userId, 'user', userId);
+  return json({ ok:true });
+}
+
+async function resetUserDevices(env, ctx, body) {
+  const userId = safeStr(body.userId, 80);
+  const target = await env.AUTH_DB.prepare(`SELECT * FROM users WHERE id=?`).bind(userId).first();
+  if (!target) return json({ ok:false, error:'USER_NOT_FOUND' }, { status:404 });
+  if (target.is_super_owner && !ctx.user.is_super_owner) return json({ ok:false, error:'CANNOT_MODIFY_SUPER_OWNER' }, { status:403 });
+  await env.AUTH_DB.prepare(`UPDATE user_devices SET status='replaced' WHERE user_id=? AND status='active'`).bind(userId).run();
+  await audit(env, 'USER_DEVICES_RESET', 'critical', { username: target.username, note:safeStr(body.note, 800) }, ctx.userId, 'user', userId);
+  return json({ ok:true });
+}
+
+async function listLicenses(env) {
+  const rows = await env.AUTH_DB.prepare(`SELECT * FROM licenses ORDER BY updated_at DESC, created_at DESC LIMIT 500`).all();
+  return json({ ok:true, licenses: rows.results || [] });
+}
+
+async function updateLicenseStatus(env, ctx, body) {
+  const licenseId = safeStr(body.licenseId, 120);
+  const status = safeStr(body.status, 30);
+  if (!['active','suspended','expired','revoked'].includes(status)) return json({ ok:false, error:'INVALID_STATUS' }, { status:400 });
+  const lic = await env.AUTH_DB.prepare(`SELECT * FROM licenses WHERE id=? OR license_id=?`).bind(licenseId, licenseId).first();
+  if (!lic) return json({ ok:false, error:'LICENSE_NOT_FOUND' }, { status:404 });
+  await env.AUTH_DB.prepare(`UPDATE licenses SET status=?, updated_at=? WHERE id=?`).bind(status, nowIso(), lic.id).run();
+  if (status === 'revoked') {
+    await env.AUTH_DB.prepare(`INSERT OR REPLACE INTO revoked_license_cache(license_id, reason, revoked_at) VALUES(?,?,?)`).bind(lic.license_id, safeStr(body.reason || 'revoked_by_owner', 500), nowIso()).run();
+    await env.AUTH_DB.prepare(`UPDATE users SET status='blocked' WHERE license_id=? AND is_super_owner=0`).bind(lic.id).run();
+  }
+  await audit(env, 'LICENSE_STATUS_UPDATED', 'critical', { licenseId: lic.license_id, status, reason:safeStr(body.reason, 500) }, ctx.userId, 'license', lic.id);
+  return json({ ok:true });
+}
+
 async function updateUserStatus(env, ctx, body) {
   const status = safeStr(body.status, 30);
   if (!['active','suspended','expired','blocked'].includes(status)) return json({ ok:false, error:'INVALID_STATUS' }, { status:400 });

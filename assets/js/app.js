@@ -52,6 +52,7 @@ function goHome(){
   const authUser = window.SandAuthApi && SandAuthApi.currentUser ? SandAuthApi.currentUser() : null;
   const authReady = window.SandAuthApi && SandAuthApi.isConfigured ? SandAuthApi.isConfigured() : false;
   const ownerName = authUser ? (authUser.fullName || authUser.full_name || authUser.username || 'مستخدم') : '';
+  const canManageMemberships = !!(window.SandAuthApi && (SandAuthApi.hasPermission?.('users.manage') || SandAuthApi.hasPermission?.('roles.manage') || SandAuthApi.hasPermission?.('licenses.manage')));
   if(!authUser){
     page(`
       <section class="institutional-guest-gate" aria-label="بوابة الدخول المؤسسية">
@@ -97,7 +98,7 @@ function goHome(){
           <button class="gold-btn large-action" onclick="openCaseAnalysisRoom()">⚖️ ابدأ تحليل واقعة</button>
           <button class="soft-btn large-action" onclick="openLawLibrary()">🏛️ مكتبة القوانين</button>
           <button class="soft-btn large-action" onclick="toggleChat(true)">🤖 اسأل سَنَد</button>
-          ${authUser?`<button class="danger-soft-btn large-action" onclick="logoutFromAuthApi && logoutFromAuthApi()">تسجيل خروج</button>`:`<button class="soft-btn large-action" onclick="openSandAuthLogin && openSandAuthLogin()">🔐 تسجيل الدخول</button>`}
+          ${authUser?`<button class="soft-btn large-action" onclick="openMyAccountCenter && openMyAccountCenter()">👤 حسابي</button><button class="danger-soft-btn large-action" onclick="logoutFromAuthApi && logoutFromAuthApi()">تسجيل خروج</button>`:`<button class="soft-btn large-action" onclick="openSandAuthLogin && openSandAuthLogin()">🔐 تسجيل الدخول</button>`}
         </div>
       </div>
       <aside class="hero-auth-card" aria-label="حالة الدخول والعضوية">
@@ -105,7 +106,7 @@ function goHome(){
         <div class="auth-state-pill ${authUser?'on':'off'}">${authUser?'جلسة مفعلة':'زائر / غير مسجل'}</div>
         <p>${authUser?`مرحبًا، <b>${esc(ownerName)}</b>. يتم تفعيل الأدوات حسب صلاحيات حسابك ومدة العضوية.`:'يمكن لأعضاء النيابة تقديم طلب عضوية، ولا يتم التفعيل إلا بعد مراجعة الإدارة وتحديد الصلاحيات والمدة.'}</p>
         <div class="auth-card-actions">
-          ${authUser?`<button class="soft-btn" onclick="openMembershipAdmin()">👥 العضويات</button><button class="danger-soft-btn" onclick="logoutFromAuthApi && logoutFromAuthApi()">خروج</button>`:`<button class="gold-btn" onclick="openSandAuthLogin && openSandAuthLogin()">دخول</button><button class="soft-btn" onclick="openSandRegister && openSandRegister()">طلب عضوية</button>`}
+          ${authUser?`${canManageMemberships?`<button class="soft-btn" onclick="openMembershipAdmin()">👥 العضويات</button>`:''}<button class="soft-btn" onclick="openMyAccountCenter && openMyAccountCenter()">حسابي</button><button class="danger-soft-btn" onclick="logoutFromAuthApi && logoutFromAuthApi()">خروج</button>`:`<button class="gold-btn" onclick="openSandAuthLogin && openSandAuthLogin()">دخول</button>`}
         </div>
         <small>${authReady?'Auth API متصل ومعد للتشغيل.':'يلزم ضبط رابط Auth API من إعدادات المنصة.'}</small>
       </aside>
@@ -137,7 +138,9 @@ function goHome(){
       <article onclick="openCaseAnalysisRoom()"><span>⚖️</span><h4>غرفة تحليل الواقعة</h4><p>حوار صوتي أو نصي، تكييفات محتملة، جودة التكييف، خطة تحقيق، مسودات وتقرير.</p></article>
       <article onclick="openLawLibrary()"><span>🏛️</span><h4>مكتبة القوانين</h4><p>تصفح القوانين والمواد والشرح العملي والمواد المرتبطة.</p></article>
       <article onclick="openToolsHub()"><span>🧰</span><h4>الأدوات التنفيذية</h4><p>حاسبة مواعيد، درع مراجعة، قوائم استيفاء، ومراجعة اختصاص.</p></article>
-      <article onclick="openSandAuthLogin && openSandAuthLogin()"><span>🔐</span><h4>الدخول والعضويات</h4><p>تسجيل الدخول، طلب عضوية، إدارة الطلبات والصلاحيات والتراخيص.</p></article>
+      <article onclick="openTrainingCenter && openTrainingCenter()"><span>🎥</span><h4>مركز التدريب المرئي</h4><p>دورات ومحاضرات واجتماعات تدريبية، سجل إنجاز، اختبارات، ومرفقات مرتبطة بسَنَد.</p></article>
+      <article onclick="openMyAccountCenter && openMyAccountCenter()"><span>👤</span><h4>حسابي وعضويتي</h4><p>مراجعة بيانات العضوية، تغيير كلمة المرور، الجلسات والأجهزة.</p></article>
+      ${canManageMemberships?`<article onclick="openMembershipAdmin && openMembershipAdmin()"><span>👥</span><h4>إدارة العضويات</h4><p>طلبات العضوية والصلاحيات والتراخيص وسجل العمليات.</p></article>`:''}
     </div>
 
     <div class="section-title institutional-section-title"><div><h3>بوابات القانون الحالي</h3><p>القانون الحالي: ${esc(law.title)}.</p></div></div>

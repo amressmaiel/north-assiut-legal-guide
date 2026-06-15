@@ -3,6 +3,12 @@
   function api(){ return window.SandAuthApi || null; }
   function user(){ try { return api() && api().currentUser ? api().currentUser() : null; } catch(_) { return null; } }
   function setDisplay(selector, show){ document.querySelectorAll(selector).forEach(el=>{ el.style.display = show ? '' : 'none'; }); }
+  function canManageMemberships(){
+    try {
+      const a = api();
+      return !!a?.hasPermission?.('users.manage') || !!a?.hasPermission?.('roles.manage') || !!a?.hasPermission?.('licenses.manage');
+    } catch(_) { return false; }
+  }
   function text(el, value){ if(el) el.textContent = value; }
   window.refreshInstitutionalAuthBar = function(){
     const u = user();
@@ -17,13 +23,16 @@
     setDisplay('.auth-register-action', false);
     setDisplay('.auth-logout-action', !!u);
     setDisplay('.auth-sidebar-logout', !!u);
+    setDisplay('[data-nav="membership-admin"]', !!u && canManageMemberships());
     setDisplay('.top-action-start', !!u);
     setDisplay('.top-action-sand', !!u);
     setDisplay('.bot-trigger', !!u);
     setDisplay('.search-wrap', !!u);
     document.querySelectorAll('aside.sidebar .nav-title, aside.sidebar .nav-btn, aside.sidebar .sidebar-note').forEach(el=>{
       const isLogin = el.matches('[data-nav="auth-login"]');
+      const isMembership = el.matches('[data-nav="membership-admin"]');
       const isLogout = el.classList.contains('auth-sidebar-logout');
+      if (isMembership) { el.style.display = (u && canManageMemberships()) ? '' : 'none'; return; }
       el.style.display = u ? '' : (isLogin ? '' : 'none');
       if(isLogout) el.style.display = u ? '' : 'none';
     });
