@@ -73,7 +73,9 @@
     <div class="nav-title">الإدارة المؤسسية</div>
     <button class="nav-btn" data-nav="institutional-settings" onclick="openInstitutionalSettings()">⚙️ إعدادات المنصة</button>
     <button class="nav-btn" data-nav="content-admin" onclick="openInstitutionalContentAdmin()">🧩 إدارة المحتوى المؤسسي</button>
-    <button class="nav-btn" data-nav="auth-register" onclick="openSandRegister()">📝 تسجيل حساب جديد</button>
+    <button class="nav-btn" data-nav="auth-login" onclick="openSandAuthLogin()">🔐 تسجيل الدخول</button>
+    <button class="nav-btn" data-nav="auth-register" onclick="openSandRegister()">📝 طلب عضوية جديدة</button>
+    <button class="nav-btn auth-sidebar-logout" onclick="logoutFromAuthApi && logoutFromAuthApi()" style="display:none">🚪 تسجيل خروج</button>
     <button class="nav-btn" data-nav="membership-admin" onclick="openMembershipAdmin()">👥 إدارة العضويات والصلاحيات</button>
     <div class="sidebar-note">تصنيف المواد إلى معدلة أو مستحدثة بالكامل تصنيف تحريري أولي قابل للمراجعة قبل الاعتماد النهائي.</div>
   </aside>
@@ -85,11 +87,15 @@
         <span class="search-icon">🔍</span>
         <input id="globalSearch" placeholder="ابحث في جميع القوانين برقم المادة أو عنوانها أو مضمونها..." oninput="handleGlobalSearch(this.value)">
       </div>
-      <div class="toolbar top-navigation-actions">
+      <div class="toolbar top-navigation-actions institutional-top-actions">
         <button class="icon-btn" onclick="goHome()">🏠 الرئيسية</button>
-        <button class="icon-btn top-action-start" onclick="openArticleList('all')">📚 ابدأ تصفح المواد</button>
+        <button class="icon-btn top-action-start" onclick="openArticleList('all')">📚 تصفح المواد</button>
         <button class="icon-btn top-action-sand" onclick="toggleChat(true)">🤖 اسأل سَنَد</button>
+        <button class="icon-btn auth-login-action" onclick="openSandAuthLogin && openSandAuthLogin()">🔐 دخول</button>
+        <button class="icon-btn auth-register-action" onclick="openSandRegister && openSandRegister()">📝 عضوية</button>
+        <button class="icon-btn auth-logout-action" onclick="logoutFromAuthApi && logoutFromAuthApi()" style="display:none">خروج</button>
       </div>
+      <div class="topbar-user-chip" id="topbarUserChip">زائر</div>
     </header>
 
     <div id="appView"></div>
@@ -175,5 +181,6 @@
 <script src="./assets/js/admin-auth-manager.js"></script>
 <script src="./assets/js/avatar-editor.js"></script>
 <script src="./assets/js/auth-api-bridge.js"></script>
+<script src="./assets/js/auth-ui.js"></script>
 </body>
 </html>
