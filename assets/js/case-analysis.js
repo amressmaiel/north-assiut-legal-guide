@@ -1561,6 +1561,7 @@ ${lineList(["الاسم الرباعي والرقم القومي أو بيانا
           <button onclick="openDispositionDraftCenter?.()" ${canReport?"":"disabled"}>📝 مسودات التصرف</button>
           <button onclick="copyCaseAnalysisReport?.()" ${canReport?"":"disabled"}>📋 نسخ التقرير</button>
           <button onclick="printCaseAnalysisReport?.()" ${canReport?"":"disabled"}>🖨️ طباعة التقرير</button>
+          <button onclick="openCaseFileCreateFromCurrentAnalysis?.()" ${state.result||state.factsText?"":"disabled"}>📁 حفظ في ملف واقعة</button>
         </div>
       </section>
       <section class="case-side-card">
@@ -1618,6 +1619,23 @@ ${lineList(["الاسم الرباعي والرقم القومي أو بيانا
   }
   renderCaseAnalysisRoom=renderCaseAnalysisCommandRoom;
   window.openCaseAnalysisRoom=renderCaseAnalysisCommandRoom;
+
+  function getCurrentCaseAnalysisSnapshot(){
+    return {
+      sessionId: state.sessionId,
+      startedAt: state.startedAt,
+      analysisType: state.analysisType,
+      privacyMode: state.privacyMode,
+      phase: state.phase,
+      factsText: state.factsText,
+      messages: state.messages,
+      result: state.result,
+      preAnalysis: state.preAnalysis,
+      sources: state.sources,
+      report: state.result ? reportText() : ''
+    };
+  }
+  window.getCurrentCaseAnalysisSnapshot=getCurrentCaseAnalysisSnapshot;
 
   function resetCaseAnalysisRoom(){
     if(state.messages.length&&!confirm("بدء جلسة جديدة ومسح الحوار الحالي؟"))return;

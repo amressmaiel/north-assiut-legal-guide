@@ -59,6 +59,7 @@
     <button class="nav-btn" data-nav="guide" onclick="openGuide()">🛡️ الدليل الإجرائي المختصر</button>
     <div class="nav-title">أدوات التنفيذ القضائي</div>
     <button class="nav-btn case-analysis-nav" data-nav="case-analysis" onclick="openCaseAnalysisRoom()">⚖️ سَنَد — غرفة تحليل الواقعة</button>
+    <button class="nav-btn" data-nav="case-files-center" onclick="openCaseFilesCenter && openCaseFilesCenter()">📁 ملفات الوقائع والتحليلات</button>
     <button class="nav-btn" data-nav="training-center" onclick="openTrainingCenter && openTrainingCenter()">🎥 مركز التدريب المرئي</button>
     <button class="nav-btn" data-nav="notifications-center" onclick="openNotificationsCenter && openNotificationsCenter()">🔔 مركز الإشعارات والتنبيهات</button>
     <button class="nav-btn" data-nav="secure-communication-center" onclick="openSecureCommunicationCenter && openSecureCommunicationCenter()">💬 مركز التواصل القضائي</button>
@@ -74,8 +75,14 @@
     <button class="nav-btn" onclick="toggleChat(true)">🤖 اسأل سَنَد</button>
 
     <div class="nav-title">الإدارة المؤسسية</div>
-    <button class="nav-btn" data-nav="institutional-settings" onclick="openInstitutionalSettings()">⚙️ إعدادات المنصة</button>
+    <button class="nav-btn" data-nav="institutional-settings" onclick="openInstitutionalSettings()">⚙️ الإعدادات العامة المتقدمة</button>
+    <button class="nav-btn" data-nav="official-presentation-mode" onclick="openOfficialPresentationMode && openOfficialPresentationMode()">🎖️ وضع العرض الرسمي</button>
     <button class="nav-btn" data-nav="content-admin" onclick="openInstitutionalContentAdmin()">🧩 إدارة المحتوى المؤسسي</button>
+    <button class="nav-btn" data-nav="legal-content-manager" onclick="openLegalContentManager && openLegalContentManager()">📚 إدارة المحتوى القانوني</button>
+    <button class="nav-btn" data-nav="institutional-reports-center" onclick="openInstitutionalReportsCenter && openInstitutionalReportsCenter()">📊 التقارير والتحليلات المؤسسية</button>
+    <button class="nav-btn" data-nav="backup-restore-center" onclick="openBackupRestoreCenter && openBackupRestoreCenter()">💾 النسخ الاحتياطي والاستعادة</button>
+    <button class="nav-btn" data-nav="performance-maintenance-center" onclick="openPerformanceMaintenanceCenter && openPerformanceMaintenanceCenter()">🚀 تحسين الأداء والصيانة</button>
+    <button class="nav-btn" data-nav="security-audit-center" onclick="openSecurityAuditCenter && openSecurityAuditCenter()">🛡️ المراجعة الأمنية الشاملة</button>
     <button class="nav-btn" data-nav="auth-login" onclick="openSandAuthLogin()">🔐 تسجيل الدخول</button>
     <button class="nav-btn" data-nav="auth-register" onclick="openSandRegister()">📝 طلب عضوية جديدة</button>
     <button class="nav-btn auth-sidebar-logout" onclick="logoutFromAuthApi && logoutFromAuthApi()" style="display:none">🚪 تسجيل خروج</button>
@@ -83,7 +90,6 @@
     <button class="nav-btn" data-nav="license-device-admin" onclick="openLicenseDeviceAdmin()">🎫 التراخيص والأجهزة</button>
     <button class="nav-btn" data-nav="access-control-center" onclick="openAccessControlCenter()">🛡️ إنفاذ الصلاحيات</button>
     <button class="nav-btn" data-nav="my-account" onclick="openMyAccountCenter && openMyAccountCenter()">👤 حسابي</button>
-    <button class="nav-btn" data-nav="security-audit-center" onclick="openSecurityAuditCenter()">📜 مركز الأمن والسجل</button>
     <div class="sidebar-note">تصنيف المواد إلى معدلة أو مستحدثة بالكامل تصنيف تحريري أولي قابل للمراجعة قبل الاعتماد النهائي.</div>
   </aside>
 
@@ -114,9 +120,11 @@
 
 <nav class="mobile-shortcuts" aria-label="اختصارات الهاتف">
   <button onclick="goHome()"><span>🏠</span>الرئيسية</button>
+  <button onclick="openOfficialPresentationMode && openOfficialPresentationMode()"><span>🎖️</span>العرض</button>
   <button onclick="openLawLibrary()"><span>🏛️</span>القوانين</button>
   <button onclick="openFavoritesCenter()"><span>⭐</span>المفضلة</button>
   <button onclick="openCaseAnalysisRoom()"><span>⚖️</span>حلّل واقعة</button>
+  <button onclick="openCaseFilesCenter && openCaseFilesCenter()"><span>📁</span>ملفاتي</button>
   <button onclick="toggleChat(true)"><span>🤖</span>سَنَد</button>
 </nav>
 
@@ -181,6 +189,7 @@
 <script src="./assets/js/document-intake.js"></script>
 <script src="./assets/js/case-classification-engine.js"></script>
 <script src="./assets/js/case-analysis.js"></script>
+<script src="./assets/js/case-files-center.js"></script>
 <script src="./assets/js/bootstrap.js"></script>
 <script src="./assets/js/admin-settings.js"></script>
 <script src="./assets/js/admin-content-manager.js"></script>
@@ -198,5 +207,11 @@
 <script src="./assets/js/notifications-center.js"></script>
 <script src="./assets/js/secure-communication-center.js"></script>
 <script src="./assets/js/secure-communication-realtime.js"></script>
+<script src="./assets/js/institutional-reports-center.js"></script>
+<script src="./assets/js/legal-content-manager.js"></script>
+<script src="./assets/js/backup-restore-center.js"></script>
+<script src="./assets/js/performance-maintenance-center.js"></script>
+<script src="./assets/js/security-hardening-center.js"></script>
+<script src="./assets/js/official-presentation-mode.js"></script>
 </body>
 </html>

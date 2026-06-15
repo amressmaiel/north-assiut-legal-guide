@@ -5,7 +5,7 @@
  */
 (function(){
   const DEFAULT_CONFIG = {
-    version: "5.7.1-auth-api-default-url-fix",
+    version: "5.24-advanced-general-settings",
     app: {
       name: "الدليل القضائي الذكي لأعضاء النيابة العامة",
       shortName: "الدليل القضائي الذكي",
@@ -13,18 +13,24 @@
       direction: "rtl",
       language: "ar-EG",
       defaultFont: "Cairo",
-      splashDurationMs: 7000
+      splashDurationMs: 7000,
+      presentationMode: false,
+      demoMode: false,
+      maintenanceBanner: ""
     },
     institutionalIdentity: {
       guidance: "بتوجيه من معالي السيد الأستاذ المستشار / أحمد فاروق المحامي العام لنيابة شمال أسيوط الكلية",
       supervision: "بإشراف الأستاذ أحمد علي عبد العال رئيس النيابة",
       development: "Programming and Development: Amr essmaiel — Manfalut Partial Prosecution 2026",
+      preparation: "إعداد الأستاذ / أحمد علي عبد العال رئيس النيابة بنيابة شمال أسيوط الكلية",
+      footerCredit: "Programming and Development: Amr Ismaiel — Manfalut Partial Prosecution 2026",
       office: "نيابة شمال أسيوط الكلية"
     },
     assets: {
       logo: "assets/images/logo.png",
       sandAvatar: "assets/images/avatar-3d.png",
-      attorneyGeneral: "assets/images/attorney-general.PNG"
+      attorneyGeneral: "assets/images/attorney-general.PNG",
+      platformIcon: "assets/images/logo.png"
     },
     backend: {
       provider: "cloudflare-worker",
@@ -32,6 +38,15 @@
       liveTokenPath: "/live-token",
       authApiUrl: "https://north-assiut-legal-auth-api.amressmaiel.workers.dev",
       authApiMode: "worker-d1",
+      communicationApiUrl: "",
+      caseFilesApiUrl: "",
+      caseSharingApiUrl: "",
+      legalContentApiUrl: "",
+      reportsApiUrl: "",
+      backupApiUrl: "",
+      maintenanceSecurityApiUrl: "",
+      requestTimeoutMs: 25000,
+      retryCount: 1,
       secretsPolicy: "no-secrets-in-frontend"
     },
     sand: {
@@ -42,7 +57,9 @@
       voiceOptions: ["Charon","Orus","Gacrux","Alnilam","Iapetus"],
       defaultInteractionMode: "ptt",
       style: "legal-egyptian-professional",
-      safetyNote: "مخرجات سَنَد للمراجعة المهنية وليست قرارًا قضائيًا ملزمًا."
+      safetyNote: "مخرجات سَنَد للمراجعة المهنية وليست قرارًا قضائيًا ملزمًا.",
+      autoSuggestQuestions: true,
+      professionalDisclaimerVisible: true
     },
     features: {
       lawsLibrary: true,
@@ -53,6 +70,17 @@
       draftCenter: true,
       exportWordHtmlPrintPdf: true,
       institutionalSettingsPanel: true,
+      caseFilesCenter: true,
+      caseFileSharing: true,
+      visualTrainingCenter: true,
+      trainingAdmin: true,
+      notificationsCenter: true,
+      secureCommunicationCenter: true,
+      legalContentManager: true,
+      institutionalReports: true,
+      backupRestore: true,
+      maintenanceCenter: true,
+      securityAudit: true,
       adminWorkspace: true,
       institutionalScaffold: true
     },
@@ -60,7 +88,48 @@
       mode: "local-first",
       localSettingsKey: "northAssiutLegalGuide.settings.v1",
       sensitiveDataPolicy: "avoid-or-anonymize",
-      plannedBackendStorage: "Cloudflare D1/KV or Node API"
+      plannedBackendStorage: "Cloudflare D1/KV or Node API",
+      syncPolicy: "manual",
+      smartCleanupDays: 60,
+      maxLocalCaseFiles: 500,
+      attachmentsPolicy: "metadata_only",
+      backupReminderDays: 7
+    },
+    ui: {
+      theme: "judicial-dark-gold",
+      density: "comfortable",
+      animationLevel: "balanced",
+      showCommandCenterAfterLogin: true,
+      sidebarAutoHide: true,
+      guestPrestigeMode: true
+    },
+    training: {
+      allowGuestLinks: true,
+      defaultMeetingProvider: "jitsi",
+      guestLinkExpiryHours: 24,
+      requireAttendanceName: true,
+      recordAttendance: true
+    },
+    communication: {
+      realtimeMode: "local-first",
+      autoSyncMinutes: 5,
+      requireTrustedColleague: true,
+      allowOfficialAnnouncements: true,
+      allowAttachmentsMetadata: true
+    },
+    notifications: {
+      enabled: true,
+      soundEnabled: false,
+      showTopbarBadge: true,
+      seedOperationalAlerts: true
+    },
+    security: {
+      guestIsolation: true,
+      hideAdminForUnauthorized: true,
+      auditImportantActions: true,
+      requireReviewForLegalContent: true,
+      safeMode: true,
+      preventSecretsInFrontend: true
     }
   };
 

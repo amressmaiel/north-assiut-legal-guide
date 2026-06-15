@@ -1,7 +1,7 @@
 {
   "name": "north-assiut-legal-guide",
-  "version": "5.16.3",
-  "phase": "5.16.4",
+  "version": "5.25",
+  "phase": "5.25",
   "architecture": "modular-institutional-front-end",
   "settings": "config/app-config.js",
   "adminPanel": "assets/js/admin-settings.js",
@@ -20,9 +20,48 @@
     "communication-attachments",
     "professional-case-analysis-command-room",
     "case-analysis-redesign",
-    "case-analysis-executive-dashboard"
+    "case-analysis-executive-dashboard",
+    "case-files-center",
+    "case-files-smart-storage",
+    "case-analysis-to-file-save",
+    "case-files-d1-schema",
+    "legal-content-manager",
+    "legal-laws-admin",
+    "legal-articles-admin",
+    "content-review-workflow",
+    "legal-content-worker",
+    "legal-content-d1-schema",
+    "institutional-reports-center",
+    "institutional-analytics-dashboard",
+    "platform-health-score",
+    "reports-export-json",
+    "reports-print-view",
+    "institutional-reports-worker",
+    "institutional-reports-d1-schema",
+    "performance-maintenance-center",
+    "local-storage-maintenance",
+    "smart-data-cleanup",
+    "lightweight-search-index",
+    "comprehensive-security-hardening",
+    "pre-presentation-security-audit",
+    "security-readiness-score",
+    "advanced-general-settings-center",
+    "platform-identity-manager",
+    "workers-links-manager",
+    "platform-policy-center",
+    "presentation-mode-settings",
+    "guest-training-settings",
+    "settings-audit-log",
+    "platform-settings-worker",
+    "platform-settings-d1-schema",
+    "official-presentation-mode",
+    "executive-demo-route",
+    "presentation-storyboard",
+    "presentation-demo-data",
+    "presentation-outline-export",
+    "presentation-polish-layer"
   ],
-  "phaseName": "Law Library Navigation Fix",
+  "phaseName": "Official Presentation Mode and Executive Demo Route",
   "updatedModules": [
     "admin",
     "drafts",
@@ -55,10 +94,47 @@
     "case-analysis-command-layout",
     "case-analysis-metrics",
     "case-analysis-quick-actions",
-    "case-analysis-professional-ui"
+    "case-analysis-professional-ui",
+    "case-analysis",
+    "mobile-shortcuts",
+    "case-files-center",
+    "smart-storage",
+    "d1-migrations",
+    "legal-content-manager",
+    "legal-laws-admin",
+    "legal-articles-admin",
+    "content-review-workflow",
+    "legal-content-worker",
+    "legal-content-d1-schema",
+    "institutional-admin",
+    "reports-center",
+    "analytics-center",
+    "security-audit",
+    "performance-maintenance-center",
+    "security-hardening-center",
+    "admin-security-audit",
+    "local-storage-cleanup",
+    "index-rebuild",
+    "security-checklist",
+    "platform-manifest",
+    "advanced-settings",
+    "admin-settings",
+    "app-config",
+    "cloudflare-worker-platform-settings",
+    "d1-platform-settings-schema",
+    "visual-identity",
+    "worker-links",
+    "storage-policies",
+    "security-policies",
+    "training-settings",
+    "communication-settings",
+    "notification-settings",
+    "presentation-mode",
+    "official-demo-flow",
+    "main-css"
   ],
   "phase_name": "Auth, Permissions and Licensing Design Alignment",
-  "updated_at": "2026-06-15T09:55:00Z",
+  "updated_at": "2026-06-15T13:55:00Z",
   "notes": [
     "Added institutional auth/license design based on uploaded reference files.",
     "Added Phase 5.13 Judicial Visual Training Center with courses, lessons, meetings, local progress, quizzes and training record.",
@@ -70,7 +146,10 @@
     "Added Phase 5.16.1: secure judicial communication center with trusted colleagues, mutual connection requests, member search, privacy settings, official announcement channel, safe groups, block controls, local communication audit, and notifications integration.",
     "Added Phase 5.16.2: realtime-ready secure communication layer with Worker sync endpoint, cross-device configuration, manual/automatic sync, message pinning, read confirmations, attachment metadata, and D1 schema for real multi-device communication.",
     "Added Phase 5.16.3: professional redesign of the case analysis room into a judicial command room with executive hero, session metrics, result preview, quick actions side panel, enhanced black/gold institutional styling, and better integration with drafts, deadlines, secure communication, document intake and voice input.",
-    "Fixed law library open button to navigate directly to selected law articles instead of home/dashboard."
+    "Fixed law library open button to navigate directly to selected law articles instead of home/dashboard.",
+    "Added Phase 5.22 performance maintenance center for local storage scan, cleanup, compaction, log trimming and lightweight search index rebuild.",
+    "Added Phase 5.23 comprehensive security hardening center for admin-only pre-presentation security checks, readiness score, review approvals and exportable audit report.",
+    "Added Phase 5.24: advanced general platform settings center for identity, assets, Worker links, storage/training/communication/notification/security policies, module toggles, presentation mode, import/export, connection tests, and local settings audit without frontend secrets."
   ],
   "authFoundation": "secure-bootstrap-digital-license-d1",
   "backend": {
@@ -148,6 +227,50 @@
         "share guest invitation text",
         "guest-only attendance landing page",
         "local guest attendance tracking"
+      ]
+    },
+    "secureCaseFileSharingCollaboration": {
+      "phase": "5.18",
+      "files": [
+        "assets/js/case-files-center.js",
+        "assets/css/main.css",
+        "backend/cloudflare-worker-case-files-sharing.js",
+        "backend/d1/migration-5.18-case-file-sharing.sql",
+        "PHASE-5.18-CASE-FILES-SHARING-COLLABORATION-NOTES.txt"
+      ],
+      "capabilities": [
+        "secure case-file sharing with trusted colleagues",
+        "permission levels for read/comment/review/edit",
+        "share expiry and revocation",
+        "internal communication message for shared files",
+        "notifications integration",
+        "case review notes with accept/reject workflow",
+        "share activity log per case file",
+        "guest exclusion and local-first design",
+        "D1 migration and Worker skeleton for future sync"
+      ]
+    },
+    "backupRestoreCenter": {
+      "phase": "5.21",
+      "files": [
+        "assets/js/backup-restore-center.js",
+        "backend/cloudflare-worker-backup-restore.js",
+        "backend/d1/migration-5.21-backup-restore.sql",
+        "PHASE-5.21-BACKUP-RESTORE-CENTER-NOTES.txt",
+        "index.html",
+        "assets/css/main.css"
+      ],
+      "capabilities": [
+        "full and partial JSON backup export",
+        "module selection",
+        "backup metadata and checksum",
+        "restore preview",
+        "merge restore",
+        "replace restore",
+        "local backup audit history",
+        "admin-only access",
+        "cloud backup placeholder worker",
+        "D1 audit migration"
       ]
     }
   },
@@ -275,5 +398,56 @@
       ]
     }
   },
-  "lastUpdate": "2026-06-15"
+  "lastUpdate": "2026-06-15",
+  "lastPhaseNotes": "PHASE-5.25-OFFICIAL-PRESENTATION-MODE-NOTES.txt",
+  "phaseDetails": {
+    "advancedGeneralSettingsCenter": {
+      "phase": "5.24",
+      "files": [
+        "assets/js/admin-settings.js",
+        "config/app-config.js",
+        "assets/css/main.css",
+        "index.html",
+        "backend/cloudflare-worker-platform-settings.js",
+        "backend/d1/migration-5.24-platform-settings.sql",
+        "PHASE-5.24-ADVANCED-GENERAL-SETTINGS-NOTES.txt"
+      ],
+      "capabilities": [
+        "advanced platform identity settings",
+        "platform assets paths",
+        "Worker links management",
+        "connection tests",
+        "storage policies",
+        "training and guest policies",
+        "communication and notification policies",
+        "module feature toggles",
+        "security policies",
+        "presentation mode settings",
+        "settings import/export",
+        "settings audit log",
+        "D1-backed settings scaffold"
+      ]
+    },
+    "officialPresentationMode": {
+      "phase": "5.25",
+      "files": [
+        "assets/js/official-presentation-mode.js",
+        "assets/css/main.css",
+        "index.html",
+        "platform.manifest.json",
+        "PHASE-5.25-OFFICIAL-PRESENTATION-MODE-NOTES.txt"
+      ],
+      "capabilities": [
+        "cinematic official presentation landing",
+        "guided executive demo route",
+        "step-by-step presenter script",
+        "module launch actions from each slide",
+        "safe demo data toggle",
+        "presentation outline JSON export",
+        "mobile presentation shortcut",
+        "presentation visual polish layer",
+        "exit to normal platform mode"
+      ]
+    }
+  }
 }
