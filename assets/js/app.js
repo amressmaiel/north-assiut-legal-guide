@@ -47,50 +47,81 @@ function goHome(){
   state.view="home"; state.query=""; state.searchLawFilter="all";
   const search=document.getElementById("globalSearch"); if(search) search.value="";
   setActiveNav("home"); updateLawAwareNavigation();
+  if(typeof window.refreshInstitutionalAuthBar==='function') window.refreshInstitutionalAuthBar();
   const m=meta(); const law=activeLaw();
+  const authUser = window.SandAuthApi && SandAuthApi.currentUser ? SandAuthApi.currentUser() : null;
+  const authReady = window.SandAuthApi && SandAuthApi.isConfigured ? SandAuthApi.isConfigured() : false;
+  const ownerName = authUser ? (authUser.fullName || authUser.full_name || authUser.username || 'مستخدم') : '';
   page(`
-    <section class="hero">
-      <div class="platform-title-band">
-        <div class="platform-logo-shell" aria-label="شعار المنصة">
-          <div class="platform-logo-orbit"></div>
-          <img src="./assets/images/logo.png" alt="شعار المنصة القضائية الذكية" class="platform-main-logo" onerror="this.style.display='none'; this.parentElement.classList.add('logo-fallback');">
+    <section class="judicial-home-hero" aria-label="واجهة المنصة الرئيسية">
+      <div class="hero-crest-column">
+        <div class="hero-crest-frame">
+          <span class="hero-crest-halo"></span>
+          <img src="./assets/images/logo.png" alt="شعار النيابة العامة" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback')">
         </div>
-        <div class="platform-title-copy">
-          <span class="platform-title-kicker">المنصة القضائية الرقمية المتكاملة</span>
-          <h2 class="platform-main-title">الدليل القضائي الذكي لأعضاء النيابة العامة</h2>
+        <div class="hero-seal-text">نيابة شمال أسيوط الكلية</div>
+      </div>
+      <div class="hero-command-content">
+        <span class="institutional-kicker">منظومة قضائية مؤسسية — إصدار تشغيل داخلي</span>
+        <h2>الدليل القضائي الذكي لأعضاء النيابة العامة</h2>
+        <p class="hero-command-lead">واجهة تنفيذية موحدة تجمع القوانين، تحليل الواقعة، سَنَد، التقارير، المسودات، وإدارة العضويات في بيئة واحدة منظمة تصلح للعرض والاستخدام المؤسسي.</p>
+        <div class="hero-command-actions">
+          <button class="gold-btn large-action" onclick="openCaseAnalysisRoom()">⚖️ ابدأ تحليل واقعة</button>
+          <button class="soft-btn large-action" onclick="openLawLibrary()">🏛️ مكتبة القوانين</button>
+          <button class="soft-btn large-action" onclick="toggleChat(true)">🤖 اسأل سَنَد</button>
+          ${authUser?`<button class="danger-soft-btn large-action" onclick="logoutFromAuthApi && logoutFromAuthApi()">تسجيل خروج</button>`:`<button class="soft-btn large-action" onclick="openSandAuthLogin && openSandAuthLogin()">🔐 تسجيل الدخول</button>`}
         </div>
       </div>
-      <div class="hero-intro-stack">
-        <div class="eyebrow hero-wide-band hero-purpose-band">⚖️ منصة قضائية رقمية متكاملة لدعم العمل القانوني والإجرائي لأعضاء النيابة العامة</div>
-        <div class="hero-wide-band hero-summary-band">منظومة معرفية تنفيذية قابلة للتطوير المستمر، تجمع الأدلة القانونية والإجرائية في واجهة واحدة، وتسهّل الوصول إلى النصوص والتحليلات العملية والتصرفات الصحيحة والتنبيهات المهمة — مع مساعد قضائي ذكي يربط السؤال بالمعلومة الأقرب تلقائيًا.</div>
-        <div class="active-law-strip"><div><span>القانون المعروض حاليًا</span><b>${esc(law.title)}</b><small>${esc(law.number||"")}</small></div><button onclick="openLawLibrary()">🏛️ تغيير القانون</button></div>
+      <aside class="hero-auth-card" aria-label="حالة الدخول والعضوية">
+        <div class="auth-card-title">حالة التشغيل المؤسسي</div>
+        <div class="auth-state-pill ${authUser?'on':'off'}">${authUser?'جلسة مفعلة':'زائر / غير مسجل'}</div>
+        <p>${authUser?`مرحبًا، <b>${esc(ownerName)}</b>. يتم تفعيل الأدوات حسب صلاحيات حسابك ومدة العضوية.`:'يمكن لأعضاء النيابة تقديم طلب عضوية، ولا يتم التفعيل إلا بعد مراجعة الإدارة وتحديد الصلاحيات والمدة.'}</p>
+        <div class="auth-card-actions">
+          ${authUser?`<button class="soft-btn" onclick="openMembershipAdmin()">👥 العضويات</button><button class="danger-soft-btn" onclick="logoutFromAuthApi && logoutFromAuthApi()">خروج</button>`:`<button class="gold-btn" onclick="openSandAuthLogin && openSandAuthLogin()">دخول</button><button class="soft-btn" onclick="openSandRegister && openSandRegister()">طلب عضوية</button>`}
+        </div>
+        <small>${authReady?'Auth API متصل ومعد للتشغيل.':'يلزم ضبط رابط Auth API من إعدادات المنصة.'}</small>
+      </aside>
+    </section>
+
+    <section class="institutional-leadership-strip" aria-label="بيانات الاعتماد والإشراف">
+      <article><span>بتوجيه وإشراف</span><b>معالي السيد الأستاذ المستشار / أحمد فاروق</b><small>المحامي العام لنيابة شمال أسيوط الكلية</small></article>
+      <article><span>إعداد المحتوى والإشراف التنفيذي</span><b>الأستاذ / أحمد علي عبد العال</b><small>رئيس النيابة بنيابة شمال أسيوط الكلية</small></article>
+      <article><span>تصميم وبرمجة وتطوير</span><b>عمرو إسماعيل</b><small>Manfalut Partial Prosecution 2026</small></article>
+    </section>
+
+    <section class="institutional-dashboard-grid">
+      <div class="institutional-panel span-2">
+        <div class="panel-heading"><span>القانون المعروض حاليًا</span><button onclick="openLawLibrary()">تغيير القانون</button></div>
+        <h3>${esc(law.title)}</h3>
+        <p>${esc(law.number||'')} — يمكن البحث في جميع القوانين المحملة من شريط البحث أو من شاشة البحث الموحد.</p>
+        <div class="stats-grid compact-stats">${lawStatsMarkup(law,m)}</div>
       </div>
-      <div class="hero-grid">
-        <div>
-          <section class="leadership-panel" aria-label="بيانات التوجيه والإشراف والإعداد">
-            <div class="leadership-heading">✦ التوجيه والإشراف والإعداد</div>
-            <div class="leadership-grid">
-              <div class="leadership-card supervision"><span class="leadership-label">بتوجيه وإشراف معالي السيد الأستاذ المستشار</span><strong class="leadership-name">أحمد فاروق المحامي العام لنيابة شمال أسيوط الكلية</strong><span class="leadership-sub">إشراف قضائي على إعداد الدليل التنفيذي والمنصة التفاعلية</span></div>
-              <div class="leadership-card preparation"><span class="leadership-label">إعداد المحتوى القانوني والإشراف التنفيذي</span><strong class="leadership-name">أحمد علي عبد العال</strong><span class="leadership-sub">رئيس النيابة بنيابة شمال أسيوط الكلية</span></div>
-              <div class="leadership-card development"><span class="leadership-label">تصميم وبرمجة وتطوير المنصة</span><strong class="leadership-name">عمرو إسماعيل</strong><span class="leadership-sub">منظومة رقمية تفاعلية لخدمة العمل القضائي</span></div>
-            </div>
-          </section>
-          <div class="stats-grid stats-grid-under-leadership">${lawStatsMarkup(law,m)}</div>
-        </div>
-        <div class="sand-hero-zone" aria-label="سَنَد — المساعد القضائي الذكي">
-          <div class="sand-energy-ring ring-one"></div><div class="sand-energy-ring ring-two"></div><div class="sand-ground-shadow"></div>
-          <img src="./assets/images/avatar-3d.png" alt="صورة سَنَد — المساعد القضائي الذكي" class="sand-hero-avatar" onerror="this.style.display='none'; document.getElementById('sandHeroError').style.display='block';">
-          <div id="sandHeroError" class="logo-error-note" style="display:none;">تعذر تحميل ملف avatar-3d.png</div>
-          <div class="sand-hero-caption"><strong>أنا سَنَد</strong><span>المساعد القضائي الذكي — تحت أمرك في أي استفسار</span></div>
-        </div>
+      <div class="institutional-panel sand-panel-card">
+        <div class="sand-mini-visual"><img src="./assets/images/avatar-3d.png" alt="سَنَد" onerror="this.style.display='none'"></div>
+        <h3>سَنَد</h3>
+        <p>مساعد قضائي تفاعلي للتحليل، الترجيح المبدئي، الاستيفاءات، ومراجعة جودة التكييف.</p>
+        <button class="gold-btn" onclick="toggleChat(true)">بدء محادثة</button>
       </div>
     </section>
-    <div class="section-title"><div><h3>بوابات الانتقال السريع</h3><p>القانون الحالي: ${esc(law.title)} — ويمكن تغييره من مكتبة القوانين.</p></div></div>
-    <div class="card-grid">${homePortalMarkup(law,m)}</div>
-    <div class="section-title"><div><h3>سَنَد في صميم المنصة</h3><p>سَنَد يبحث تلقائيًا في جميع القوانين المحملة داخل المنصة، ويعرض المواد التي استند إليها مع كل إجابة.</p></div></div>
-    <div class="ai-feature"><div><h4>🤖 سَنَد — مساعد قضائي تفاعلي داخل المكتبة القانونية</h4><p>يمكنك اختيار نمط الإجابة المناسب، وفتح المادة من داخل رد سَنَد، أو سؤال المساعد مباشرة عن المادة المفتوحة.</p></div><button class="ai-badge" onclick="toggleChat(true)">اسأل سَنَد الآن</button></div>
-    <div class="case-analysis-home-feature"><div><span>الميزة الأحدث داخل المنصة</span><h4>⚖️ سَنَد — غرفة تحليل الواقعة</h4><p>احكي الواقعة بطريقتك، وسَنَد يرتب عناصرها، يسأل عن النواقص المؤثرة، ويعرض التكييفات القانونية المحتملة وأسبابها والمواد المرتبطة والاستيفاءات المقترحة.</p></div><button onclick="openCaseAnalysisRoom()">ابدأ جلسة تحليل واقعة</button></div>
+
+    <div class="section-title institutional-section-title"><div><h3>مراكز العمل الرئيسية</h3><p>انتقال سريع إلى أهم مناطق العمل داخل المنصة.</p></div></div>
+    <div class="institutional-action-grid">
+      <article onclick="openCaseAnalysisRoom()"><span>⚖️</span><h4>غرفة تحليل الواقعة</h4><p>حوار صوتي أو نصي، تكييفات محتملة، جودة التكييف، خطة تحقيق، مسودات وتقرير.</p></article>
+      <article onclick="openLawLibrary()"><span>🏛️</span><h4>مكتبة القوانين</h4><p>تصفح القوانين والمواد والشرح العملي والمواد المرتبطة.</p></article>
+      <article onclick="openToolsHub()"><span>🧰</span><h4>الأدوات التنفيذية</h4><p>حاسبة مواعيد، درع مراجعة، قوائم استيفاء، ومراجعة اختصاص.</p></article>
+      <article onclick="openSandAuthLogin && openSandAuthLogin()"><span>🔐</span><h4>الدخول والعضويات</h4><p>تسجيل الدخول، طلب عضوية، إدارة الطلبات والصلاحيات والتراخيص.</p></article>
+    </div>
+
+    <div class="section-title institutional-section-title"><div><h3>بوابات القانون الحالي</h3><p>القانون الحالي: ${esc(law.title)}.</p></div></div>
+    <div class="card-grid refined-card-grid">${homePortalMarkup(law,m)}</div>
+
+    <section class="institutional-assurance">
+      <div><b>مبدأ التشغيل</b><span>كل طلب عضوية يظل معلقًا حتى مراجعة الإدارة، وتحديد الدور، مدة العضوية، وعدد الأجهزة، والصلاحيات.</span></div>
+      <div><b>أمان المنصة</b><span>لا توجد مفاتيح API داخل الواجهة، والاتصال بالمساعد والعضويات يتم عبر Cloudflare Workers.</span></div>
+      <div><b>تنبيه مهني</b><span>مخرجات سَنَد مساعدة للمراجعة القانونية ولا تغني عن التقدير القضائي المختص.</span></div>
+    </section>
   `);
+  if(typeof window.refreshInstitutionalAuthBar==='function') window.refreshInstitutionalAuthBar();
 }
 
 function portalCard(icon,title,count,desc,action){return `<article class="portal-card" onclick="${action}"><div class="icon">${icon}</div><b>${count}</b><h4>${title}</h4><p>${desc}</p></article>`;}
