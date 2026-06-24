@@ -1,95 +1,178 @@
-/* =========================================================
-   Phase 5.26.1.1 — Premium UI & Motion Layer
-   Judicial Premium Design System / App Shell Visual Upgrade
-   ========================================================= */
-:root{
-  --jp-bg:#050507;
-  --jp-panel:rgba(18,18,22,.84);
-  --jp-panel-2:rgba(30,26,18,.74);
-  --jp-gold:#d8b45d;
-  --jp-gold-2:#f4dc9a;
-  --jp-ink:#f8f3e6;
-  --jp-muted:rgba(248,243,230,.68);
-  --jp-line:rgba(216,180,93,.22);
-  --jp-glow:0 0 42px rgba(216,180,93,.24);
-  --jp-radius:24px;
-  --jp-shadow:0 22px 80px rgba(0,0,0,.42);
-  --jp-fast:180ms;
-  --jp-smooth:520ms;
-  --jp-ease:cubic-bezier(.2,.8,.2,1);
-}
-body.premium-ui-ready{
-  background:
-    radial-gradient(circle at 18% 10%, rgba(216,180,93,.10), transparent 30%),
-    radial-gradient(circle at 80% 0%, rgba(90,66,22,.14), transparent 28%),
-    linear-gradient(145deg,#030305,#0b0b0e 48%,#080604);
-}
-body.premium-ui-ready .app-shell:before{
-  content:"";
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-  background-size:36px 36px;
-  mask-image:radial-gradient(circle at center,black 0%,transparent 76%);
-}
-.premium-ui-ready .content-card,
-.premium-ui-ready .stat-card,
-.premium-ui-ready .dashboard-card,
-.premium-ui-ready .case-file-card,
-.premium-ui-ready .training-card,
-.premium-ui-ready .settings-card,
-.premium-ui-ready .report-card,
-.premium-ui-ready .tool-card{
-  border:1px solid var(--jp-line)!important;
-  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018))!important;
-  box-shadow:var(--jp-shadow);
-  backdrop-filter:blur(16px) saturate(145%);
-  border-radius:var(--jp-radius)!important;
-  transition:transform var(--jp-fast) var(--jp-ease), box-shadow var(--jp-fast) var(--jp-ease), border-color var(--jp-fast) var(--jp-ease);
-}
-.premium-ui-ready .content-card:hover,
-.premium-ui-ready .stat-card:hover,
-.premium-ui-ready .dashboard-card:hover,
-.premium-ui-ready .case-file-card:hover,
-.premium-ui-ready .training-card:hover,
-.premium-ui-ready .tool-card:hover{
-  transform:translateY(-4px);
-  border-color:rgba(244,220,154,.45)!important;
-  box-shadow:0 26px 90px rgba(0,0,0,.48), var(--jp-glow);
-}
-.premium-ui-ready .nav-btn,
-.premium-ui-ready button,
-.premium-ui-ready .primary-btn,
-.premium-ui-ready .secondary-btn{
-  transition:transform var(--jp-fast) var(--jp-ease), box-shadow var(--jp-fast) var(--jp-ease), filter var(--jp-fast) var(--jp-ease);
-}
-.premium-ui-ready .nav-btn:hover,
-.premium-ui-ready button:hover,
-.premium-ui-ready .primary-btn:hover,
-.premium-ui-ready .secondary-btn:hover{
-  transform:translateY(-1px);
-  filter:saturate(1.12) brightness(1.04);
-}
-.premium-shine{
-  position:relative;overflow:hidden;
-}
-.premium-shine:after{
-  content:"";position:absolute;inset:-120% -60%;pointer-events:none;
-  background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.18),transparent 65%);
-  transform:translateX(-80%) rotate(10deg);
-  animation:premiumShine 4.8s var(--jp-ease) infinite;
-}
-@keyframes premiumShine{0%,58%{transform:translateX(-85%) rotate(10deg)}78%,100%{transform:translateX(85%) rotate(10deg)}}
-.jp-toast-stack{position:fixed;left:22px;bottom:22px;z-index:99999;display:grid;gap:10px;max-width:min(420px,calc(100vw - 32px));direction:rtl}
-.jp-toast{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:1px solid var(--jp-line);border-radius:18px;background:rgba(12,12,15,.92);color:var(--jp-ink);box-shadow:0 16px 52px rgba(0,0,0,.45);backdrop-filter:blur(16px);animation:toastIn .32s var(--jp-ease) both}
-.jp-toast .jp-toast-icon{font-size:20px;line-height:1.2}.jp-toast-title{font-weight:800;color:var(--jp-gold-2);margin-bottom:3px}.jp-toast-message{font-size:13px;color:var(--jp-muted)}
-.jp-toast.success{border-color:rgba(95,210,142,.32)}.jp-toast.warn{border-color:rgba(244,190,90,.42)}.jp-toast.danger{border-color:rgba(255,105,105,.42)}
-@keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.jp-confirm-backdrop{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.58);display:grid;place-items:center;padding:22px;backdrop-filter:blur(10px);animation:fadeIn .2s ease both}.jp-confirm{width:min(520px,100%);border:1px solid var(--jp-line);border-radius:28px;background:linear-gradient(145deg,rgba(22,22,26,.96),rgba(11,11,13,.96));box-shadow:0 24px 100px rgba(0,0,0,.58);padding:24px;color:var(--jp-ink)}.jp-confirm h3{margin:0 0 8px;color:var(--jp-gold-2);font-size:22px}.jp-confirm p{margin:0 0 20px;color:var(--jp-muted);line-height:1.8}.jp-confirm-actions{display:flex;gap:10px;justify-content:flex-start;flex-wrap:wrap}.jp-btn{border:1px solid var(--jp-line);border-radius:16px;padding:10px 16px;background:rgba(255,255,255,.06);color:var(--jp-ink);cursor:pointer}.jp-btn.primary{background:linear-gradient(135deg,#9b7726,#efd58a);color:#191103;font-weight:900}.jp-btn.danger{background:linear-gradient(135deg,#6b1d1d,#d45b5b);color:#fff}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.jp-tooltip{position:fixed;z-index:99997;max-width:300px;padding:10px 12px;border-radius:14px;border:1px solid var(--jp-line);background:rgba(10,10,12,.94);color:var(--jp-ink);font-size:12px;line-height:1.7;box-shadow:0 14px 48px rgba(0,0,0,.45);pointer-events:none;transform:translate(-50%,-110%);opacity:0;transition:opacity .15s ease}.jp-tooltip.show{opacity:1}
-.jp-skeleton{position:relative;overflow:hidden;border-radius:16px;background:rgba(255,255,255,.07);min-height:18px}.jp-skeleton:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);animation:skeletonMove 1.4s infinite}@keyframes skeletonMove{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
-.jp-empty-state{border:1px dashed rgba(216,180,93,.28);border-radius:24px;padding:28px;text-align:center;background:rgba(255,255,255,.035);color:var(--jp-muted)}.jp-empty-state .icon{font-size:38px;margin-bottom:12px}.jp-empty-state strong{display:block;color:var(--jp-gold-2);font-size:18px;margin-bottom:6px}
-.jp-page-enter{animation:jpPageEnter .45s var(--jp-ease) both}@keyframes jpPageEnter{from{opacity:0;transform:translateY(16px) scale(.992);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
-.app-splash-screen.premium-splash .splash-logo{filter:drop-shadow(0 0 32px rgba(244,220,154,.38));animation:premiumLogoPulse 3s ease-in-out infinite}.app-splash-screen.premium-splash .splash-title{letter-spacing:.3px;text-shadow:0 0 24px rgba(216,180,93,.28)}@keyframes premiumLogoPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.035)}}
-.jp-motion-low *, .jp-motion-low *:before, .jp-motion-low *:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
-@media (max-width:700px){.jp-toast-stack{left:12px;right:12px;bottom:14px;max-width:none}.jp-toast{padding:12px}.jp-confirm{padding:20px;border-radius:22px}}
+     /* =========================================================
+           Phase 5.26.1.1 — Premium UI & Motion Layer
+           Judicial Premium Design System / App Shell Visual Upgrade
+           ========================================================= */
+        :root {
+            --jp-bg: #050507;
+            --jp-panel: rgba(18, 18, 22, 0.84);
+            --jp-panel-2: rgba(30, 26, 18, 0.74);
+            --jp-gold: #d8b45d;
+            --jp-gold-2: #f4dc9a;
+            --jp-ink: #f8f3e6;
+            --jp-muted: rgba(248, 243, 230, 0.68);
+            --jp-line: rgba(216, 180, 93, 0.22);
+            --jp-glow: 0 0 42px rgba(216, 180, 93, 0.24);
+            --jp-radius: 24px;
+            --jp-shadow: 0 22px 80px rgba(0, 0, 0, 0.42);
+            --jp-fast: 180ms;
+            --jp-smooth: 520ms;
+            --jp-ease: cubic-bezier(.2, .8, .2, 1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--jp-bg); }
+        ::-webkit-scrollbar-thumb { background: rgba(216, 180, 93, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--jp-gold); }
+
+        body {
+            background-color: var(--jp-bg);
+            background-image: 
+                radial-gradient(circle at 18% 10%, rgba(216, 180, 93, 0.10) 0%, transparent 30%),
+                radial-gradient(circle at 80% 0%, rgba(90, 66, 28, 0.08) 0%, transparent 30%),
+                radial-gradient(circle at 50% 100%, rgba(216, 180, 93, 0.05) 0%, transparent 40%);
+            color: var(--jp-ink);
+            overflow-x: hidden;
+        }
+
+        /* Premium Text Effects */
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #f7e4a7, #b78a31);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .title-gold-shimmer {
+            background: linear-gradient(to right, #D8B45D 20%, #F4DC9A 40%, #F4DC9A 60%, #D8B45D 80%);
+            background-size: 200% auto;
+            color: #000;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGoldShimmer 3s linear infinite;
+        }
+
+        /* Premium Glass Card from app-shell & premium-ui */
+        .glass-card {
+            background: var(--jp-panel);
+            border: 1px solid var(--jp-line);
+            border-radius: var(--jp-radius);
+            box-shadow: var(--jp-shadow);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all var(--jp-smooth) var(--jp-ease);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(216, 180, 93, 0.35);
+            box-shadow: var(--jp-glow);
+        }
+
+        /* Motion System (Ported from animations.css & premium-ui-motion.css) */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes breath { 50% { transform: scale(1.06); box-shadow: var(--jp-glow); } }
+        @keyframes drift { to { transform: translate(55px, 35px); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } }
+        @keyframes chatIn { from { opacity: 0; transform: translateY(14px); } }
+        @keyframes sandAvatarFloat { 50% { transform: translateY(-11px) scale(1.025); } }
+        @keyframes ringPulse { 50% { transform: scale(1.08); opacity: 0.34; } }
+        @keyframes typingDot { 50% { transform: translateY(-4px); opacity: 0.45; } }
+        @keyframes titleGoldShimmer { to { background-position: 240% center; } }
+        @keyframes jpPageEnter {
+            from { opacity: 0; transform: translateY(16px) scale(.992); filter: blur(3px); }
+            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        .jp-page-enter { animation: jpPageEnter 0.6s var(--jp-ease) both; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+
+        /* Premium Components */
+        .jp-empty-state {
+            border: 1px dashed rgba(216, 180, 93, 0.28);
+            border-radius: var(--jp-radius);
+            padding: 28px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.035);
+            color: var(--jp-muted);
+            transition: all var(--jp-fast);
+        }
+        
+        .jp-empty-state:hover {
+            border-color: var(--jp-gold);
+            background: rgba(216, 180, 93, 0.05);
+        }
+
+        /* Avatar Stage - Upgraded */
+        .avatar-stage {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 380px;
+        }
+        .avatar-img {
+            position: relative;
+            z-index: 10;
+            filter: drop-shadow(0 30px 18px rgba(0,0,0,0.62)) drop-shadow(0 0 24px rgba(212,175,55,0.18));
+            animation: sandAvatarFloat 6s ease-in-out infinite;
+        }
+        .avatar-ring-1 {
+            position: absolute;
+            bottom: 30px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            border: 1px solid var(--jp-line);
+            animation: ringPulse 8s ease-in-out infinite;
+        }
+        .avatar-ring-2 {
+            position: absolute;
+            bottom: 50px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 1px dashed rgba(216, 180, 93, 0.4);
+            animation: spin 30s linear infinite;
+        }
+
+        /* Message Bubbles - Premium */
+        .msg-assistant {
+            background: linear-gradient(135deg, rgba(216, 180, 93, 0.12), rgba(216, 180, 93, 0.02));
+            border-right: 3px solid var(--jp-gold);
+            border-top: 1px solid var(--jp-line);
+            border-left: 1px solid var(--jp-line);
+            border-bottom: 1px solid var(--jp-line);
+            animation: chatIn 0.4s var(--jp-ease) both;
+        }
+        .msg-user {
+            background: var(--jp-panel-2);
+            border-left: 3px solid #64748B;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-left-width: 3px;
+            animation: chatIn 0.4s var(--jp-ease) both;
+        }
+
+        /* Fancy Input - Upgraded */
+        .luxury-input {
+            background: rgba(5, 5, 7, 0.8);
+            border: 1px solid var(--jp-line);
+            transition: all var(--jp-fast) var(--jp-ease);
+            color: var(--jp-ink);
+        }
+        .luxury-input:focus {
+            outline: none;
+            border-color: var(--jp-gold);
+            box-shadow: var(--jp-glow);
+            background: rgba(18, 18, 22, 0.95);
+        }
+
+        /* Checkbox */
+        .lux-checkbox input:checked + div {
+            background-color: var(--jp-gold);
+            border-color: var(--jp-gold);
+        }
+        .lux-checkbox input:checked + div svg {
+            display: block;
+        }
