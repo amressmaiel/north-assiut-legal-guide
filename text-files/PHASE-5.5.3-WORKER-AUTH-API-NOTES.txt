@@ -1,0 +1,43 @@
+# PHASE 5.5.3 — Worker Auth API + Login حقيقي + جلسات وصلاحيات
+
+هذه المرحلة تضيف طبقة مصادقة إنتاجية أولية على Cloudflare Worker + D1، وتبدأ فصل الأمن الحقيقي عن localStorage.
+
+## الملفات المضافة
+
+- `backend/cloudflare-worker-auth-api.js`
+- `assets/js/auth-api-client.js`
+- `docs/backend/AUTH-WORKER-API-5.5.3.md`
+- `docs/security/AUTH-DEPLOYMENT-CHECKLIST-5.5.3.md`
+
+## ما تم تنفيذه
+
+- تسجيل طلب عضوية على السيرفر `/api/auth/register`.
+- فحص اسم المستخدم `/api/auth/check-username`.
+- تسجيل دخول حقيقي `/api/auth/login`.
+- إنشاء جلسة Session Token مخزنة Hash داخل D1.
+- ربط أولي للجهاز Device Binding مع حد أقصى للأجهزة.
+- منع دخول الحساب غير المفعل أو المنتهي.
+- Endpoints لإدارة طلبات العضوية والمستخدمين.
+- Endpoints للأدوار والصلاحيات والأجهزة وسجل العمليات.
+- استمرار Secure Bootstrap و Digital License من 5.5.2 داخل نفس Worker.
+
+## المهم
+
+هذه النسخة لا تستبدل Worker الذكاء الاصطناعي الحالي مباشرة. لديك خياران:
+
+1. نشر `cloudflare-worker-auth-api.js` كـWorker منفصل للمصادقة.
+2. دمجه لاحقًا مع Worker الحالي في مرحلة 5.5.4.
+
+ينصح مبدئيًا بنشره كـWorker منفصل باسم مثل:
+
+`north-assiut-legal-auth-api`
+
+ثم وضع رابطه في إعدادات المنصة أو localStorage:
+
+`SAND_AUTH_API_BASE=https://...workers.dev`
+
+## حدود المرحلة
+
+- لا تزال واجهة الإدارة تحتاج ربطًا كاملًا بهذا الـAPI في 5.5.4.
+- تغيير كلمة المرور وإعادة التعيين و2FA لم تُنفذ بعد.
+- Rate limiting المتقدم وقفل المحاولات الفاشلة سيكون في مرحلة Hardening لاحقة.

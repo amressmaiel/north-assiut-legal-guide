@@ -1,0 +1,12 @@
+المرحلة 5.5.0 — تحليل ومواءمة نظام العضويات والترخيص المرفق
+
+تمت إضافة وثائق تصميم مؤسسية لنظام العضويات والصلاحيات والترخيص:
+
+1) docs/security/AUTH-LICENSE-DESIGN-5.5.0.md
+2) backend/d1/schema-auth-5.5.0.sql
+3) docs/backend/AUTH-WORKER-ENDPOINTS-5.5.0.md
+4) reference/auth-import-review/UPLOADED-AUTH-FILES-REVIEW.md
+5) docs/security/PHASE-5.5.0-IMPLEMENTATION-ROADMAP.md
+
+هذه المرحلة لا تغيّر تشغيل المنصة ولا تعدّل cloudflare-worker.js.
+الهدف هو تثبيت التصميم قبل تنفيذ واجهة المستخدمين والصلاحيات في 5.5.1 ثم Backend حقيقي في 5.5.2 وما بعدها.

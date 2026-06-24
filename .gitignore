@@ -13,6 +13,8 @@ out/
 ios/App/Pods/
 ios/App/build/
 ios/App/DerivedData/
+ios/App/Pods
+ios/App/build
 
 # Android
 android/.gradle/

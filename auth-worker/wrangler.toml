@@ -1,0 +1,11 @@
+name = "north-assiut-legal-auth-api"
+main = "cloudflare-worker-auth-api.js"
+compatibility_date = "2026-06-14"
+
+[[d1_databases]]
+binding = "AUTH_DB"
+database_name = "north_assiut_auth_db"
+database_id = "3b9c5c92-6f15-4207-a51b-ff97fff87bda"
+
+[vars]
+ALLOWED_ORIGINS = "https://amressmaiel.github.io"
