@@ -1,178 +1,81 @@
-     /* =========================================================
-           Phase 5.26.1.1 — Premium UI & Motion Layer
-           Judicial Premium Design System / App Shell Visual Upgrade
-           ========================================================= */
-        :root {
-            --jp-bg: #050507;
-            --jp-panel: rgba(18, 18, 22, 0.84);
-            --jp-panel-2: rgba(30, 26, 18, 0.74);
-            --jp-gold: #d8b45d;
-            --jp-gold-2: #f4dc9a;
-            --jp-ink: #f8f3e6;
-            --jp-muted: rgba(248, 243, 230, 0.68);
-            --jp-line: rgba(216, 180, 93, 0.22);
-            --jp-glow: 0 0 42px rgba(216, 180, 93, 0.24);
-            --jp-radius: 24px;
-            --jp-shadow: 0 22px 80px rgba(0, 0, 0, 0.42);
-            --jp-fast: 180ms;
-            --jp-smooth: 520ms;
-            --jp-ease: cubic-bezier(.2, .8, .2, 1);
-        }
+/* =========================================================
+   Premium UI & Motion Layer - Global App Shell
+   ========================================================= */
+:root {
+    --jp-bg: #050507;
+    --jp-panel: rgba(18, 18, 22, 0.84);
+    --jp-panel-2: rgba(30, 26, 18, 0.74);
+    --jp-gold: #d8b45d;
+    --jp-gold-2: #f4dc9a;
+    --jp-ink: #f8f3e6;
+    --jp-muted: rgba(248, 243, 230, 0.68);
+    --jp-line: rgba(216, 180, 93, 0.22);
+    --jp-glow: 0 0 42px rgba(216, 180, 93, 0.24);
+    --jp-radius: 24px;
+    --jp-shadow: 0 22px 80px rgba(0, 0, 0, 0.42);
+    --jp-fast: 180ms;
+    --jp-smooth: 520ms;
+    --jp-ease: cubic-bezier(.2, .8, .2, 1);
+}
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--jp-bg); }
-        ::-webkit-scrollbar-thumb { background: rgba(216, 180, 93, 0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--jp-gold); }
+/* Custom Scrollbar الفخم */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--jp-bg); }
+::-webkit-scrollbar-thumb { background: rgba(216, 180, 93, 0.2); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--jp-gold); }
 
-        body {
-            background-color: var(--jp-bg);
-            background-image: 
-                radial-gradient(circle at 18% 10%, rgba(216, 180, 93, 0.10) 0%, transparent 30%),
-                radial-gradient(circle at 80% 0%, rgba(90, 66, 28, 0.08) 0%, transparent 30%),
-                radial-gradient(circle at 50% 100%, rgba(216, 180, 93, 0.05) 0%, transparent 40%);
-            color: var(--jp-ink);
-            overflow-x: hidden;
-        }
+/* تأثير الخلفية للتطبيق بالكامل */
+body.premium-ui-ready {
+    background-color: var(--jp-bg);
+    background-image: 
+        radial-gradient(circle at 18% 10%, rgba(216, 180, 93, 0.10) 0%, transparent 30%),
+        radial-gradient(circle at 80% 0%, rgba(90, 66, 28, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(216, 180, 93, 0.05) 0%, transparent 40%);
+    color: var(--jp-ink);
+}
 
-        /* Premium Text Effects */
-        .text-gradient-gold {
-            background: linear-gradient(135deg, #f7e4a7, #b78a31);
-            -webkit-background-clip: text;
-            color: transparent;
-        }
+/* Premium Text Effects */
+.text-gradient-gold {
+    background: linear-gradient(135deg, #f7e4a7, #b78a31);
+    -webkit-background-clip: text;
+    color: transparent;
+}
 
-        .title-gold-shimmer {
-            background: linear-gradient(to right, #D8B45D 20%, #F4DC9A 40%, #F4DC9A 60%, #D8B45D 80%);
-            background-size: 200% auto;
-            color: #000;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: titleGoldShimmer 3s linear infinite;
-        }
+.title-gold-shimmer {
+    background: linear-gradient(to right, #D8B45D 20%, #F4DC9A 40%, #F4DC9A 60%, #D8B45D 80%);
+    background-size: 200% auto;
+    color: #000;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: titleGoldShimmer 3s linear infinite;
+}
 
-        /* Premium Glass Card from app-shell & premium-ui */
-        .glass-card {
-            background: var(--jp-panel);
-            border: 1px solid var(--jp-line);
-            border-radius: var(--jp-radius);
-            box-shadow: var(--jp-shadow);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            transition: all var(--jp-smooth) var(--jp-ease);
-        }
+/* Premium Glass Card (للكروت والشريط الجانبي) */
+.glass-card {
+    background: var(--jp-panel);
+    border: 1px solid var(--jp-line);
+    border-radius: var(--jp-radius);
+    box-shadow: var(--jp-shadow);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: all var(--jp-smooth) var(--jp-ease);
+}
 
-        .glass-card:hover {
-            border-color: rgba(216, 180, 93, 0.35);
-            box-shadow: var(--jp-glow);
-        }
+.glass-card:hover {
+    border-color: rgba(216, 180, 93, 0.35);
+    box-shadow: var(--jp-glow);
+}
 
-        /* Motion System (Ported from animations.css & premium-ui-motion.css) */
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes breath { 50% { transform: scale(1.06); box-shadow: var(--jp-glow); } }
-        @keyframes drift { to { transform: translate(55px, 35px); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } }
-        @keyframes chatIn { from { opacity: 0; transform: translateY(14px); } }
-        @keyframes sandAvatarFloat { 50% { transform: translateY(-11px) scale(1.025); } }
-        @keyframes ringPulse { 50% { transform: scale(1.08); opacity: 0.34; } }
-        @keyframes typingDot { 50% { transform: translateY(-4px); opacity: 0.45; } }
-        @keyframes titleGoldShimmer { to { background-position: 240% center; } }
-        @keyframes jpPageEnter {
-            from { opacity: 0; transform: translateY(16px) scale(.992); filter: blur(3px); }
-            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-        }
+/* Animations */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes breath { 50% { transform: scale(1.06); box-shadow: var(--jp-glow); } }
+@keyframes titleGoldShimmer { to { background-position: 240% center; } }
+@keyframes jpPageEnter {
+    from { opacity: 0; transform: translateY(16px) scale(.992); filter: blur(3px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
 
-        .jp-page-enter { animation: jpPageEnter 0.6s var(--jp-ease) both; }
-        .delay-100 { animation-delay: 100ms; }
-        .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
-
-        /* Premium Components */
-        .jp-empty-state {
-            border: 1px dashed rgba(216, 180, 93, 0.28);
-            border-radius: var(--jp-radius);
-            padding: 28px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.035);
-            color: var(--jp-muted);
-            transition: all var(--jp-fast);
-        }
-        
-        .jp-empty-state:hover {
-            border-color: var(--jp-gold);
-            background: rgba(216, 180, 93, 0.05);
-        }
-
-        /* Avatar Stage - Upgraded */
-        .avatar-stage {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 380px;
-        }
-        .avatar-img {
-            position: relative;
-            z-index: 10;
-            filter: drop-shadow(0 30px 18px rgba(0,0,0,0.62)) drop-shadow(0 0 24px rgba(212,175,55,0.18));
-            animation: sandAvatarFloat 6s ease-in-out infinite;
-        }
-        .avatar-ring-1 {
-            position: absolute;
-            bottom: 30px;
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
-            border: 1px solid var(--jp-line);
-            animation: ringPulse 8s ease-in-out infinite;
-        }
-        .avatar-ring-2 {
-            position: absolute;
-            bottom: 50px;
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            border: 1px dashed rgba(216, 180, 93, 0.4);
-            animation: spin 30s linear infinite;
-        }
-
-        /* Message Bubbles - Premium */
-        .msg-assistant {
-            background: linear-gradient(135deg, rgba(216, 180, 93, 0.12), rgba(216, 180, 93, 0.02));
-            border-right: 3px solid var(--jp-gold);
-            border-top: 1px solid var(--jp-line);
-            border-left: 1px solid var(--jp-line);
-            border-bottom: 1px solid var(--jp-line);
-            animation: chatIn 0.4s var(--jp-ease) both;
-        }
-        .msg-user {
-            background: var(--jp-panel-2);
-            border-left: 3px solid #64748B;
-            border: 1px solid rgba(100, 116, 139, 0.2);
-            border-left-width: 3px;
-            animation: chatIn 0.4s var(--jp-ease) both;
-        }
-
-        /* Fancy Input - Upgraded */
-        .luxury-input {
-            background: rgba(5, 5, 7, 0.8);
-            border: 1px solid var(--jp-line);
-            transition: all var(--jp-fast) var(--jp-ease);
-            color: var(--jp-ink);
-        }
-        .luxury-input:focus {
-            outline: none;
-            border-color: var(--jp-gold);
-            box-shadow: var(--jp-glow);
-            background: rgba(18, 18, 22, 0.95);
-        }
-
-        /* Checkbox */
-        .lux-checkbox input:checked + div {
-            background-color: var(--jp-gold);
-            border-color: var(--jp-gold);
-        }
-        .lux-checkbox input:checked + div svg {
-            display: block;
-        }
+.jp-page-enter { animation: jpPageEnter 0.6s var(--jp-ease) both; }
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
