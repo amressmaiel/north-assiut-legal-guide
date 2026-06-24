@@ -1,0 +1,29 @@
+﻿node_modules/
+dist/
+build/
+out/
+.cache/
+.vite/
+.DS_Store
+.env
+.env.*
+*.log
+
+# iOS / Capacitor
+ios/App/Pods/
+ios/App/build/
+ios/App/DerivedData/
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+
+# Electron
+release/
+dist_electron/
+
+# Backup/temp
+*.tmp
+*.bak
+*.zip

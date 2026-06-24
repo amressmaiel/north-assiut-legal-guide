@@ -1,0 +1,166 @@
+/**
+ * app-config.js — Phase 5.2
+ * ملف إعدادات مركزي قابل للقراءة من كل وحدات المنصة.
+ * لا يحتوي على مفاتيح سرية. أي Secret يظل داخل Cloudflare فقط.
+ */
+(function(){
+  const DEFAULT_CONFIG = {
+    version: "5.24-advanced-general-settings",
+    app: {
+      name: "الدليل القضائي الذكي لأعضاء النيابة العامة",
+      shortName: "الدليل القضائي الذكي",
+      assistantName: "سَنَد",
+      direction: "rtl",
+      language: "ar-EG",
+      defaultFont: "Cairo",
+      splashDurationMs: 7000,
+      presentationMode: false,
+      demoMode: false,
+      maintenanceBanner: ""
+    },
+    institutionalIdentity: {
+      guidance: "بتوجيه من معالي السيد الأستاذ المستشار / أحمد فاروق المحامي العام لنيابة شمال أسيوط الكلية",
+      supervision: "بإشراف الأستاذ أحمد علي عبد العال رئيس النيابة",
+      development: "Programming and Development: Amr essmaiel — Manfalut Partial Prosecution 2026",
+      preparation: "إعداد الأستاذ / أحمد علي عبد العال رئيس النيابة بنيابة شمال أسيوط الكلية",
+      footerCredit: "Programming and Development: Amr Ismaiel — Manfalut Partial Prosecution 2026",
+      office: "نيابة شمال أسيوط الكلية"
+    },
+    assets: {
+      logo: "assets/images/logo.png",
+      sandAvatar: "assets/images/avatar-3d.png",
+      attorneyGeneral: "assets/images/attorney-general.PNG",
+      platformIcon: "assets/images/logo.png"
+    },
+    backend: {
+      provider: "cloudflare-worker",
+      proxyUrl: "https://north-assiut-legal-ai-proxy.amressmaiel.workers.dev",
+      liveTokenPath: "/live-token",
+      authApiUrl: "https://north-assiut-legal-auth-api.amressmaiel.workers.dev",
+      authApiMode: "worker-d1",
+      communicationApiUrl: "",
+      caseFilesApiUrl: "",
+      caseSharingApiUrl: "",
+      legalContentApiUrl: "",
+      reportsApiUrl: "",
+      backupApiUrl: "",
+      maintenanceSecurityApiUrl: "",
+      requestTimeoutMs: 25000,
+      retryCount: 1,
+      secretsPolicy: "no-secrets-in-frontend"
+    },
+    sand: {
+      defaultAnswerMode: "executive",
+      maxHistoryMessages: 6,
+      liveVoiceModel: "gemini-3.1-flash-live-preview",
+      defaultVoice: "Charon",
+      voiceOptions: ["Charon","Orus","Gacrux","Alnilam","Iapetus"],
+      defaultInteractionMode: "ptt",
+      style: "legal-egyptian-professional",
+      safetyNote: "مخرجات سَنَد للمراجعة المهنية وليست قرارًا قضائيًا ملزمًا.",
+      autoSuggestQuestions: true,
+      professionalDisclaimerVisible: true
+    },
+    features: {
+      lawsLibrary: true,
+      sandAssistant: true,
+      liveVoice: true,
+      caseAnalysisRoom: true,
+      professionalReport: true,
+      draftCenter: true,
+      exportWordHtmlPrintPdf: true,
+      institutionalSettingsPanel: true,
+      caseFilesCenter: true,
+      caseFileSharing: true,
+      visualTrainingCenter: true,
+      trainingAdmin: true,
+      notificationsCenter: true,
+      secureCommunicationCenter: true,
+      legalContentManager: true,
+      institutionalReports: true,
+      backupRestore: true,
+      maintenanceCenter: true,
+      securityAudit: true,
+      adminWorkspace: true,
+      institutionalScaffold: true
+    },
+    storage: {
+      mode: "local-first",
+      localSettingsKey: "northAssiutLegalGuide.settings.v1",
+      sensitiveDataPolicy: "avoid-or-anonymize",
+      plannedBackendStorage: "Cloudflare D1/KV or Node API",
+      syncPolicy: "manual",
+      smartCleanupDays: 60,
+      maxLocalCaseFiles: 500,
+      attachmentsPolicy: "metadata_only",
+      backupReminderDays: 7
+    },
+    ui: {
+      theme: "judicial-dark-gold",
+      density: "comfortable",
+      animationLevel: "balanced",
+      showCommandCenterAfterLogin: true,
+      sidebarAutoHide: true,
+      guestPrestigeMode: true
+    },
+    training: {
+      allowGuestLinks: true,
+      defaultMeetingProvider: "jitsi",
+      guestLinkExpiryHours: 24,
+      requireAttendanceName: true,
+      recordAttendance: true
+    },
+    communication: {
+      realtimeMode: "local-first",
+      autoSyncMinutes: 5,
+      requireTrustedColleague: true,
+      allowOfficialAnnouncements: true,
+      allowAttachmentsMetadata: true
+    },
+    notifications: {
+      enabled: true,
+      soundEnabled: false,
+      showTopbarBadge: true,
+      seedOperationalAlerts: true
+    },
+    security: {
+      guestIsolation: true,
+      hideAdminForUnauthorized: true,
+      auditImportantActions: true,
+      requireReviewForLegalContent: true,
+      safeMode: true,
+      preventSecretsInFrontend: true
+    }
+  };
+
+  function deepMerge(base, extra){
+    if(!extra || typeof extra !== 'object') return base;
+    const out = Array.isArray(base) ? [...base] : {...base};
+    Object.keys(extra).forEach(k=>{
+      const bv = out[k], ev = extra[k];
+      if(ev && typeof ev === 'object' && !Array.isArray(ev) && bv && typeof bv === 'object' && !Array.isArray(bv)) out[k]=deepMerge(bv, ev);
+      else out[k]=ev;
+    });
+    return out;
+  }
+  function readLocal(){
+    try{return JSON.parse(localStorage.getItem(DEFAULT_CONFIG.storage.localSettingsKey)||'{}')||{};}catch(_){return {};}
+  }
+  function saveLocal(patch){
+    const current = readLocal();
+    const next = deepMerge(current, patch||{});
+    localStorage.setItem(DEFAULT_CONFIG.storage.localSettingsKey, JSON.stringify(next));
+    window.SAND_APP_CONFIG = deepMerge(DEFAULT_CONFIG, next);
+    window.dispatchEvent(new CustomEvent('sand:config-updated',{detail:{config:window.SAND_APP_CONFIG}}));
+    return window.SAND_APP_CONFIG;
+  }
+  function resetLocal(){
+    localStorage.removeItem(DEFAULT_CONFIG.storage.localSettingsKey);
+    window.SAND_APP_CONFIG = deepMerge(DEFAULT_CONFIG, {});
+    window.dispatchEvent(new CustomEvent('sand:config-updated',{detail:{config:window.SAND_APP_CONFIG}}));
+    return window.SAND_APP_CONFIG;
+  }
+  window.SAND_DEFAULT_APP_CONFIG = DEFAULT_CONFIG;
+  window.SAND_APP_CONFIG = deepMerge(DEFAULT_CONFIG, readLocal());
+  window.SandConfig = { defaultConfig: DEFAULT_CONFIG, readLocal, saveLocal, resetLocal, deepMerge };
+})();

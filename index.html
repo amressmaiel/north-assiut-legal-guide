@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الدليل القضائي الذكي لأعضاء النيابة العامة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/main.css">
+<link rel="stylesheet" href="./assets/css/animations.css">
+<link rel="stylesheet" href="./assets/css/mobile.css">
+<link rel="stylesheet" href="./assets/css/premium-ui-motion.css">
+<link rel="stylesheet" href="./assets/css/app-shell.css">
+<link rel="stylesheet" href="./assets/css/ios-app-shell.css">
+<link rel="stylesheet" href="./assets/css/iphone-first-ui-pass.css">
+<link rel="stylesheet" href="./assets/css/android-app-shell.css">
+</head>
+<body>
+<div id="appSplashScreen" class="app-splash-screen">
+  <div class="splash-glow"></div>
+  <div class="splash-orbit orbit-a"></div>
+  <div class="splash-orbit orbit-b"></div>
+  <img src="./assets/images/logo.png" alt="شعار النيابة العامة" class="splash-logo">
+  <div class="splash-title">المنصة القضائية الذكية</div>
+  <div class="splash-subtitle">نيابة شمال أسيوط الكلية</div>
+  <div class="splash-ai-name">سَنَد — المساعد القضائي الذكي</div>
+  <div class="splash-supervision-line">تحت توجيه وإشراف معالي السيد الأستاذ المستشار / أحمد فاروق    المحامي العام لنيابة شمال أسيوط الكلية</div>
+  <div class="splash-opening-card" aria-label="كلمة افتتاحية تحت توجيه وإشراف السيد المستشار المحامي العام">
+    <div class="splash-supervisor-photo-wrap">
+      <img src="./assets/images/attorney-general.PNG" alt="صورة السيد المستشار المحامي العام لنيابة شمال أسيوط الكلية" class="splash-supervisor-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <span class="splash-supervisor-fallback" aria-label="ميزان العدل">⚖</span>
+    </div>
+    <p class="splash-opening-text">حرصًا على إرساء عملٍ قضائي أكثر دقةً وفاعلية، وامتدادًا لنهج التطوير المؤسسي داخل النيابة العامة، تأتي هذه المنظومة لتضع بين أيدي أعضاء النيابة أداةً معرفيةً وتنفيذيةً متكاملة، تُعين على سرعة الوصول إلى صحيح القانون وحُسن تطبيقه.</p>
+  </div>
+  <div class="splash-loading-line"><span></span></div>
+</div>
+<div class="app-shell">
+  <aside class="sidebar" id="appSidebar" onmouseleave="handleSidebarMouseLeave()">
+    <div class="brand">
+      <div class="brand-mark"><img src="./assets/images/logo.png" alt="شعار النيابة العامة" onerror="this.style.display='none'; this.parentElement.classList.add('logo-fallback');"></div>
+      <h1>المنصة القضائية الذكية</h1>
+      <p>نيابة شمال أسيوط الكلية</p>
+      <div class="sidebar-credits">
+        <span class="credit-mini-label"> بتوجيه وإشراف معالي السيد الأستاذ المستشار/ أحمد فاروق   </span>
+        <span class="credit-mini-name">أحمد فاروق المحامى العام لنيابة شمال أسيوط الكلية/  </span>
+        <span class="credit-mini-label" style="margin-top:7px">إعداد</span>
+        <span class="credit-mini-name">أحمد علي عبد العال</span>
+        <span class="credit-mini-role">رئيس النيابة بنيابة شمال أسيوط الكلية</span>
+        <span class="credit-mini-label" style="margin-top:7px">تصميم وبرمجة المنصة</span>
+        <span class="credit-mini-name">عمرو إسماعيل</span>
+      </div>
+    </div>
+    <div class="active-law-sidebar" id="activeLawSidebarBadge"></div>
+    <div class="nav-title">التصفح الرئيسي</div>
+    <button class="nav-btn active" data-nav="home" onclick="goHome()">🏠 الشاشة الرئيسية</button>
+    <button class="nav-btn" data-nav="library" onclick="openLawLibrary()">🏛️ مكتبة القوانين</button>
+    <button class="nav-btn" data-nav="all" onclick="openArticleList('all')">📚 جميع المواد</button>
+    <button class="nav-btn" data-nav="modified" data-executive-only="true" onclick="openArticleList('modified')">📝 المواد المعدلة</button>
+    <button class="nav-btn" data-nav="introduced" data-executive-only="true" onclick="openArticleList('introduced')">✨ المواد المستحدثة بالكامل</button>
+    <div class="nav-title">الأدوات المعرفية</div>
+    <button class="nav-btn" data-nav="topics" onclick="openTopics()">🗂️ المحاور الموضوعية</button>
+    <button class="nav-btn" data-nav="search" onclick="openUnifiedSearch()">🔎 البحث الموحّد</button>
+    <button class="nav-btn" data-nav="guide" onclick="openGuide()">🛡️ الدليل الإجرائي المختصر</button>
+    <div class="nav-title">أدوات التنفيذ القضائي</div>
+    <button class="nav-btn case-analysis-nav" data-nav="case-analysis" onclick="openCaseAnalysisRoom()">⚖️ سَنَد — غرفة تحليل الواقعة</button>
+    <button class="nav-btn" data-nav="case-files-center" onclick="openCaseFilesCenter && openCaseFilesCenter()">📁 ملفات الوقائع والتحليلات</button>
+    <button class="nav-btn" data-nav="training-center" onclick="openTrainingCenter && openTrainingCenter()">🎥 مركز التدريب المرئي</button>
+    <button class="nav-btn" data-nav="notifications-center" onclick="openNotificationsCenter && openNotificationsCenter()">🔔 مركز الإشعارات والتنبيهات</button>
+    <button class="nav-btn" data-nav="secure-communication-center" onclick="openSecureCommunicationCenter && openSecureCommunicationCenter()">💬 مركز التواصل القضائي</button>
+    <button class="nav-btn" data-nav="tools" onclick="openToolsHub()">🧰 مركز الأدوات التنفيذية</button>
+    <button class="nav-btn" data-nav="procedural-shield" onclick="openProceduralShield()">🛡️ درع المراجعة الوقائية</button>
+    <button class="nav-btn" data-nav="deadlines" onclick="openDeadlineCalculator()">⏱️ حاسبة المواعيد</button>
+    <button class="nav-btn" data-nav="investigation-builder" onclick="openInvestigationChecklistBuilder()">🧾 قوائم الاستيفاء</button>
+    <button class="nav-btn" data-nav="jurisdiction" onclick="openJurisdictionNavigator()">🧭 مراجعة الاختصاص</button>
+    <div class="nav-title">مساحة العمل الشخصية</div>
+    <button class="nav-btn" data-nav="favorites" onclick="openFavoritesCenter()">⭐ المفضلة والمجموعات</button>
+    <button class="nav-btn" data-nav="recent" onclick="openRecentArticles()">🕘 آخر المواد المفتوحة</button>
+    <button class="nav-btn" data-nav="compare" onclick="openCompareCenter()">⚖️ مقارنة مادتين</button>
+    <button class="nav-btn" onclick="toggleChat(true)">🤖 اسأل سَنَد</button>
+
+    <div class="nav-title">الإدارة المؤسسية</div>
+    <button class="nav-btn" data-nav="institutional-settings" onclick="openInstitutionalSettings()">⚙️ الإعدادات العامة المتقدمة</button>
+    <button class="nav-btn" data-nav="official-presentation-mode" onclick="openOfficialPresentationMode && openOfficialPresentationMode()">🎖️ وضع العرض الرسمي</button>
+    <button class="nav-btn" data-nav="content-admin" onclick="openInstitutionalContentAdmin()">🧩 إدارة المحتوى المؤسسي</button>
+    <button class="nav-btn" data-nav="legal-content-manager" onclick="openLegalContentManager && openLegalContentManager()">📚 إدارة المحتوى القانوني</button>
+    <button class="nav-btn" data-nav="institutional-reports-center" onclick="openInstitutionalReportsCenter && openInstitutionalReportsCenter()">📊 التقارير والتحليلات المؤسسية</button>
+    <button class="nav-btn" data-nav="backup-restore-center" onclick="openBackupRestoreCenter && openBackupRestoreCenter()">💾 النسخ الاحتياطي والاستعادة</button>
+    <button class="nav-btn" data-nav="performance-maintenance-center" onclick="openPerformanceMaintenanceCenter && openPerformanceMaintenanceCenter()">🚀 تحسين الأداء والصيانة</button>
+    <button class="nav-btn" data-nav="security-audit-center" onclick="openSecurityAuditCenter && openSecurityAuditCenter()">🛡️ المراجعة الأمنية الشاملة</button>
+    <button class="nav-btn" data-nav="auth-login" onclick="openSandAuthLogin()">🔐 تسجيل الدخول</button>
+    <button class="nav-btn" data-nav="auth-register" onclick="openSandRegister()">📝 طلب عضوية جديدة</button>
+    <button class="nav-btn auth-sidebar-logout" onclick="logoutFromAuthApi && logoutFromAuthApi()" style="display:none">🚪 تسجيل خروج</button>
+    <button class="nav-btn" data-nav="membership-admin" onclick="openMembershipAdmin()">👥 إدارة العضويات والصلاحيات</button>
+    <button class="nav-btn" data-nav="license-device-admin" onclick="openLicenseDeviceAdmin()">🎫 التراخيص والأجهزة</button>
+    <button class="nav-btn" data-nav="access-control-center" onclick="openAccessControlCenter()">🛡️ إنفاذ الصلاحيات</button>
+    <button class="nav-btn" data-nav="my-account" onclick="openMyAccountCenter && openMyAccountCenter()">👤 حسابي</button>
+    <div class="sidebar-note">تصنيف المواد إلى معدلة أو مستحدثة بالكامل تصنيف تحريري أولي قابل للمراجعة قبل الاعتماد النهائي.</div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" onmouseenter="openSidebarFromHover()" aria-label="فتح أو إغلاق القائمة الجانبية" title="القائمة الجانبية">☰</button>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="globalSearch" placeholder="ابحث في جميع القوانين برقم المادة أو عنوانها أو مضمونها..." oninput="handleGlobalSearch(this.value)">
+      </div>
+      <div class="toolbar top-navigation-actions institutional-top-actions">
+        <button class="icon-btn" onclick="goHome()">🏠 الرئيسية</button>
+        <button class="icon-btn top-action-start" onclick="openArticleList('all')">📚 تصفح المواد</button>
+        <button class="icon-btn top-action-sand" onclick="toggleChat(true)">🤖 اسأل سَنَد</button>
+        <button class="icon-btn auth-login-action" onclick="openSandAuthLogin && openSandAuthLogin()">🔐 دخول</button>
+        <button class="icon-btn auth-register-action" onclick="openSandRegister && openSandRegister()">📝 عضوية</button>
+        <button class="icon-btn auth-logout-action" onclick="logoutFromAuthApi && logoutFromAuthApi()" style="display:none">خروج</button>
+      </div>
+      <div class="topbar-user-chip" id="topbarUserChip">زائر</div>
+    </header>
+
+    <div id="appView"></div>
+
+    <footer class="footer">Programming and Development: Amr Ismaiel — Manfalut Partial Prosecution 2026</footer>
+  </main>
+</div>
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+<nav class="mobile-shortcuts" aria-label="اختصارات الهاتف">
+  <button onclick="goHome()"><span>🏠</span>الرئيسية</button>
+  <button onclick="openOfficialPresentationMode && openOfficialPresentationMode()"><span>🎖️</span>العرض</button>
+  <button onclick="openLawLibrary()"><span>🏛️</span>القوانين</button>
+  <button onclick="openFavoritesCenter()"><span>⭐</span>المفضلة</button>
+  <button onclick="openCaseAnalysisRoom()"><span>⚖️</span>حلّل واقعة</button>
+  <button onclick="openCaseFilesCenter && openCaseFilesCenter()"><span>📁</span>ملفاتي</button>
+  <button onclick="toggleChat(true)"><span>🤖</span>سَنَد</button>
+</nav>
+
+<div id="chatBotContainer">
+  <div class="bot-trigger" onclick="toggleChat()" title="اسأل سَنَد — المساعد القضائي الذكي">
+    <img src="./assets/images/avatar-3d.png" alt="سَنَد — المساعد القضائي الذكي" onerror="this.style.display='none'; this.parentElement.classList.add('avatar-fallback');">
+  </div>
+  <section class="chat-window" id="chatWindow">
+    <div class="chat-head">
+      <div class="chat-head-brand">
+        <img src="./assets/images/avatar-3d.png" alt="صورة سَنَد" class="chat-head-avatar" onerror="this.style.display='none';">
+        <div>
+          <h4>سَنَد — المساعد القضائي الذكي</h4>
+          <small>ربط فوري بمواد الدليل التنفيذي</small>
+        </div>
+      </div>
+      <button class="close-chat" onclick="toggleChat(false)">✕</button>
+    </div>
+    <div class="sand-chat-controls">
+      <div class="sand-mode-switch" aria-label="اختيار نمط الإجابة">
+        <button class="sand-mode-btn" data-mode="brief" onclick="setSandAnswerMode('brief')">⚡ مختصر</button>
+        <button class="sand-mode-btn active" data-mode="executive" onclick="setSandAnswerMode('executive')">🛡️ تنفيذي</button>
+        <button class="sand-mode-btn" data-mode="detailed" onclick="setSandAnswerMode('detailed')">📚 تفصيلي</button>
+        <button class="sand-mode-btn" data-mode="educational" onclick="setSandAnswerMode('educational')">🎓 تعليمي</button>
+      </div>
+      <div class="sand-context-badge" id="sandContextBadge"></div>
+    </div>
+    <div class="chat-box" id="chatBox">
+      <div class="bubble ai">أهلًا بحضرتك، أنا <b>سَنَد</b> — المساعد القضائي الذكي. ⚖️<br><br>تم إنشائي وبرمجتي بواسطة <b>عمرو إسماعيل</b>، تحت إشراف <b>الأستاذ أحمد علي عبد العال، رئيس النيابة</b>، وبتوجيه من <b>معالي السيد الأستاذ المستشار المحامي العام لنيابة شمال أسيوط الكلية</b>.<br><br>اتفضل اسألني، وأنا معاك.</div>
+    </div>
+    <div class="quick-prompts">
+      <button onclick="useQuickPrompt('ما هي بدائل الحبس الاحتياطي؟')">بدائل الحبس</button>
+      <button onclick="useQuickPrompt('ما ضوابط الإعلان الإلكتروني؟')">الإعلان الإلكتروني</button>
+      <button onclick="useQuickPrompt('اشرح إجراءات التحقيق عن بعد')">التحقيق عن بعد</button>
+    </div>
+    <div class="chat-input">
+      <input id="chatInput" placeholder="اكتب استفسارك الإجرائي..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+      <button onclick="sendChatMessage()">إرسال</button>
+    </div>
+  </section>
+</div>
+
+<script src="./config/app-shell-config.js"></script>
+<script src="./config/app-config.js"></script>
+<script src="./config/feature-flags.js"></script>
+<script src="./config/sand-profile.js"></script>
+<script src="./core/module-registry.js"></script>
+<script src="./core/runtime/platform-boot.js"></script>
+<script src="./data/laws/criminal-procedure-174-2025.js"></script>
+<script src="./data/laws/penal-code-58-1937.js"></script>
+<script src="./data/laws-index.js"></script>
+<script src="./assets/js/utilities.js"></script>
+<script src="./assets/js/personal-tools.js"></script>
+<script src="./assets/js/sidebar.js"></script>
+<script src="./assets/js/app.js"></script>
+<script src="./data/tools/legal-deadlines-current.js"></script>
+<script src="./data/tools/legal-deadlines-174-2025.js"></script>
+<script src="./data/tools/legal-deadlines.js"></script>
+<script src="./assets/js/judicial-tools.js"></script>
+<script src="./assets/js/assistant-ui.js"></script>
+<script src="./assets/js/ai-brain.js"></script>
+<script src="./assets/js/live-voice.js"></script>
+<script src="./assets/js/document-intake.js"></script>
+<script src="./assets/js/case-classification-engine.js"></script>
+<script src="./assets/js/case-analysis.js"></script>
+<script src="./assets/js/case-files-center.js"></script>
+<script src="./assets/js/bootstrap.js"></script>
+<script src="./assets/js/admin-settings.js"></script>
+<script src="./assets/js/admin-content-manager.js"></script>
+<script src="./assets/js/auth-api-client.js"></script>
+<script src="./assets/js/admin-auth-manager.js"></script>
+<script src="./assets/js/admin-license-devices.js"></script>
+<script src="./assets/js/avatar-editor.js"></script>
+<script src="./assets/js/auth-api-bridge.js"></script>
+<script src="./assets/js/access-control-guard.js"></script>
+<script src="./assets/js/admin-security-audit.js"></script>
+<script src="./assets/js/auth-ui.js"></script>
+<script src="./assets/js/auth-account-center.js"></script>
+<script src="./assets/js/training-center.js"></script>
+<script src="./assets/js/command-center-dashboard.js"></script>
+<script src="./assets/js/notifications-center.js"></script>
+<script src="./assets/js/secure-communication-center.js"></script>
+<script src="./assets/js/secure-communication-realtime.js"></script>
+<script src="./assets/js/institutional-reports-center.js"></script>
+<script src="./assets/js/legal-content-manager.js"></script>
+<script src="./assets/js/backup-restore-center.js"></script>
+<script src="./assets/js/performance-maintenance-center.js"></script>
+<script src="./assets/js/security-hardening-center.js"></script>
+<script src="./assets/js/official-presentation-mode.js"></script>
+<script src="./assets/js/app-shell-adapter.js"></script>
+<script src="./assets/js/ios-app-shell-adapter.js"></script>
+<script src="./assets/js/iphone-first-ui-pass.js"></script>
+<script src="./assets/js/android-app-shell-adapter.js"></script>
+<script src="./assets/js/premium-ui-motion.js"></script>
+</body>
+</html>

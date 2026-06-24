@@ -1,0 +1,15 @@
+Phase 5.26.6 — Android App Shell Preparation
+================================================
+
+تم تجهيز المنصة لمسار Android باستخدام Capacitor دون المساس بنسخة الويب أو Windows أو iOS.
+
+الإضافات:
+- أوامر Android داخل package.json.
+- اعتماد @capacitor/android.
+- إعداد Android داخل capacitor.config.ts.
+- طبقة CSS لتحسين اللمس والعرض على Android.
+- Adapter JavaScript لاكتشاف بيئة Android/Capacitor.
+- أدلة بناء Android وChecklist.
+- أداة فحص جاهزية Android.
+
+هذه المرحلة لا تنتج APK جاهز من داخل المحادثة؛ البناء يتم عبر Android Studio.

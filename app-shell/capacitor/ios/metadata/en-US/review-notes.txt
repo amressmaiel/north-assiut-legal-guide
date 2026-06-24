@@ -1,0 +1,1 @@
+Some features require configured institutional backend URLs from the platform settings, including AI proxy, authentication, realtime sync, and meetings.

@@ -1,0 +1,15 @@
+المرحلة 5.26.7 — دليل التنفيذ والتجميع متعدد المنصات
+
+تمت إضافة دليل مركزي يجمع خطوات إخراج المنصة إلى:
+- Web / GitHub Pages
+- Windows Desktop EXE
+- iPhone / iPad عبر TestFlight
+- Android APK / AAB
+
+الملفات الجديدة:
+- MULTI-PLATFORM-BUILD-GUIDE.md
+- BUILD-COMMANDS-CHEATSHEET.md
+- RELEASE-CHECKLIST.md
+
+الغرض من المرحلة:
+توحيد خطوات التنفيذ بعد تجهيز Windows وiOS وAndroid حتى لا تتوزع التعليمات على ملفات كثيرة، مع وضع Checklists قبل وبعد البناء.

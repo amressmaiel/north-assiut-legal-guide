@@ -1,0 +1,603 @@
+{
+  "name": "north-assiut-legal-guide",
+  "version": "5.26.7",
+  "phase": "5.26.7",
+  "architecture": "modular-institutional-front-end",
+  "settings": "config/app-config.js",
+  "adminPanel": "assets/js/admin-settings.js",
+  "secretsPolicy": "no-secrets-in-frontend",
+  "institutionalModules": [
+    "content-admin",
+    "visual-training-center",
+    "command-center-dashboard",
+    "notifications-center",
+    "secure-communication-center",
+    "trusted-colleagues-privacy-layer",
+    "secure-communication-realtime",
+    "communication-worker-sync",
+    "message-pinning",
+    "read-confirmations",
+    "communication-attachments",
+    "professional-case-analysis-command-room",
+    "case-analysis-redesign",
+    "case-analysis-executive-dashboard",
+    "case-files-center",
+    "case-files-smart-storage",
+    "case-analysis-to-file-save",
+    "case-files-d1-schema",
+    "legal-content-manager",
+    "legal-laws-admin",
+    "legal-articles-admin",
+    "content-review-workflow",
+    "legal-content-worker",
+    "legal-content-d1-schema",
+    "institutional-reports-center",
+    "institutional-analytics-dashboard",
+    "platform-health-score",
+    "reports-export-json",
+    "reports-print-view",
+    "institutional-reports-worker",
+    "institutional-reports-d1-schema",
+    "performance-maintenance-center",
+    "local-storage-maintenance",
+    "smart-data-cleanup",
+    "lightweight-search-index",
+    "comprehensive-security-hardening",
+    "pre-presentation-security-audit",
+    "security-readiness-score",
+    "advanced-general-settings-center",
+    "platform-identity-manager",
+    "workers-links-manager",
+    "platform-policy-center",
+    "presentation-mode-settings",
+    "guest-training-settings",
+    "settings-audit-log",
+    "platform-settings-worker",
+    "platform-settings-d1-schema",
+    "official-presentation-mode",
+    "executive-demo-route",
+    "presentation-storyboard",
+    "presentation-demo-data",
+    "presentation-outline-export",
+    "presentation-polish-layer",
+    "cinematic-presentation-tour",
+    "screen-zoom-highlight",
+    "presentation-callout-cards",
+    "auto-demo-walkthrough",
+    "executive-video-style-showcase",
+    "app-shell-preparation",
+    "desktop-app-readiness",
+    "mobile-app-readiness",
+    "electron-shell-template",
+    "capacitor-shell-template",
+    "safe-external-link-policy",
+    "standalone-web-manifest",
+    "presentation-fullscreen-bridge",
+    "windows-desktop-electron-app",
+    "electron-main-process",
+    "electron-preload-secure-bridge",
+    "windows-nsis-installer",
+    "desktop-build-scripts",
+    "safe-native-printing",
+    "native-save-dialog",
+    "desktop-icon-assets",
+    "iphone-first-ui-pass",
+    "ios-safe-area-refinement",
+    "mobile-touch-targets",
+    "iphone-quick-dock",
+    "ios-readiness-panel",
+    "android-app-shell",
+    "capacitor-android-preparation",
+    "android-touch-optimization",
+    "android-build-readiness",
+    "multi-platform-build-guide",
+    "release-checklist",
+    "windows-ios-android-execution-guide",
+    "build-commands-cheatsheet"
+  ],
+  "phaseName": "Windows Desktop EXE Build with Electron",
+  "updatedModules": [
+    "admin",
+    "drafts",
+    "sand",
+    "live-voice",
+    "training-center",
+    "home-dashboard",
+    "sidebar-navigation",
+    "command-center-dashboard",
+    "account-session-center",
+    "admin-shortcuts",
+    "notifications-center",
+    "topbar-notification-badge",
+    "secure-communication-center",
+    "trusted-colleagues",
+    "member-search",
+    "connection-requests",
+    "privacy-settings",
+    "official-announcements",
+    "communication-audit-log",
+    "secure-communication-realtime",
+    "communication-worker-api",
+    "cloudflare-worker-comm-realtime",
+    "d1-communication-schema",
+    "message-read-confirmations",
+    "pinned-messages",
+    "message-attachment-metadata",
+    "cross-device-sync-settings",
+    "case-analysis-room",
+    "case-analysis-command-layout",
+    "case-analysis-metrics",
+    "case-analysis-quick-actions",
+    "case-analysis-professional-ui",
+    "case-analysis",
+    "mobile-shortcuts",
+    "case-files-center",
+    "smart-storage",
+    "d1-migrations",
+    "legal-content-manager",
+    "legal-laws-admin",
+    "legal-articles-admin",
+    "content-review-workflow",
+    "legal-content-worker",
+    "legal-content-d1-schema",
+    "institutional-admin",
+    "reports-center",
+    "analytics-center",
+    "security-audit",
+    "performance-maintenance-center",
+    "security-hardening-center",
+    "admin-security-audit",
+    "local-storage-cleanup",
+    "index-rebuild",
+    "security-checklist",
+    "platform-manifest",
+    "advanced-settings",
+    "admin-settings",
+    "app-config",
+    "cloudflare-worker-platform-settings",
+    "d1-platform-settings-schema",
+    "visual-identity",
+    "worker-links",
+    "storage-policies",
+    "security-policies",
+    "training-settings",
+    "communication-settings",
+    "notification-settings",
+    "presentation-mode",
+    "official-demo-flow",
+    "main-css",
+    "official-presentation-mode",
+    "presentation-settings",
+    "index.html",
+    "app-shell-adapter",
+    "app-shell-config",
+    "webmanifest",
+    "electron-template",
+    "capacitor-template",
+    "app-shell",
+    "electron-desktop",
+    "desktop-installer",
+    "native-bridge",
+    "package-json",
+    "windows-build-batch"
+  ],
+  "phase_name": "Premium UI & Motion Layer",
+  "updated_at": "2026-06-15T15:30:00+02:00",
+  "notes": [
+    "Added institutional auth/license design based on uploaded reference files.",
+    "Added Phase 5.13 Judicial Visual Training Center with courses, lessons, meetings, local progress, quizzes and training record.",
+    "Added Phase 5.14 visual training admin panel: course CRUD, lesson management, attachments, quizzes, meeting administration, local reports and settings.",
+    "Added Phase 5.14.2: auto Jitsi room generation, instant live meeting, public guest attendance links for non-members, guest-only attendance page, and local guest attendance record.",
+    "Added Phase 5.14.3: redesigned public guest attendance page with institutional black/gold visual identity, platform branding, prestige layout, limited-access notice, meeting details card, and supervision/development footer.",
+    "Added Phase 5.15: smart institutional command center after login with account/session status, training progress, upcoming meetings, workspace resume cards, role-aware admin shortcuts and preliminary operational alerts.",
+    "Added Phase 5.16: world-class institutional notifications center with categories, priorities, read/archive lifecycle, search/filtering, action buttons, topbar badge, settings, and integration with command center dashboard.",
+    "Added Phase 5.16.1: secure judicial communication center with trusted colleagues, mutual connection requests, member search, privacy settings, official announcement channel, safe groups, block controls, local communication audit, and notifications integration.",
+    "Added Phase 5.16.2: realtime-ready secure communication layer with Worker sync endpoint, cross-device configuration, manual/automatic sync, message pinning, read confirmations, attachment metadata, and D1 schema for real multi-device communication.",
+    "Added Phase 5.16.3: professional redesign of the case analysis room into a judicial command room with executive hero, session metrics, result preview, quick actions side panel, enhanced black/gold institutional styling, and better integration with drafts, deadlines, secure communication, document intake and voice input.",
+    "Fixed law library open button to navigate directly to selected law articles instead of home/dashboard.",
+    "Added Phase 5.22 performance maintenance center for local storage scan, cleanup, compaction, log trimming and lightweight search index rebuild.",
+    "Added Phase 5.23 comprehensive security hardening center for admin-only pre-presentation security checks, readiness score, review approvals and exportable audit report.",
+    "Added Phase 5.24: advanced general platform settings center for identity, assets, Worker links, storage/training/communication/notification/security policies, module toggles, presentation mode, import/export, connection tests, and local settings audit without frontend secrets."
+  ],
+  "authFoundation": "secure-bootstrap-digital-license-d1",
+  "backend": {
+    "authWorker": "backend/cloudflare-worker-auth-api.js"
+  },
+  "assets": {
+    "authApiClient": "assets/js/auth-api-client.js"
+  },
+  "authFrontendIntegration": true,
+  "authBackend": "Cloudflare Worker + D1",
+  "lastUpgrade": "Phase 5.16.3 Professional Case Analysis Command Room Redesign",
+  "modules": {
+    "accessControl": {
+      "phase": "5.10",
+      "files": [
+        "assets/js/access-control-guard.js"
+      ]
+    },
+    "securityAudit": {
+      "phase": "5.11",
+      "files": [
+        "assets/js/admin-security-audit.js"
+      ]
+    },
+    "accountCenter": {
+      "phase": "5.12",
+      "files": [
+        "assets/js/auth-account-center.js",
+        "backend/cloudflare-worker-auth-api.js"
+      ]
+    },
+    "visualTrainingCenter": {
+      "phase": "5.13",
+      "files": [
+        "assets/js/training-center.js",
+        "assets/css/main.css",
+        "PHASE-5.13-VISUAL-TRAINING-CENTER-NOTES.txt"
+      ],
+      "capabilities": [
+        "training courses",
+        "external meeting links",
+        "local progress record",
+        "training quizzes",
+        "training attendance"
+      ]
+    },
+    "visualTrainingAdmin": {
+      "phase": "5.14",
+      "files": [
+        "assets/js/training-center.js",
+        "assets/css/main.css",
+        "PHASE-5.14-VISUAL-TRAINING-ADMIN-NOTES.txt"
+      ],
+      "capabilities": [
+        "create/edit/delete training courses",
+        "publish/draft courses",
+        "manage lessons and video links",
+        "manage training attachments",
+        "manage quiz questions",
+        "manage meeting links",
+        "local training reports and settings"
+      ]
+    },
+    "visualTrainingLiveMeetingLinks": {
+      "phase": "5.14.2",
+      "files": [
+        "assets/js/training-center.js",
+        "assets/css/main.css",
+        "PHASE-5.14.2-LIVE-MEETING-CREATION-GUEST-LINKS-NOTES.txt"
+      ],
+      "capabilities": [
+        "auto-create Jitsi meeting link",
+        "create instant live meeting",
+        "copy public guest attendance link",
+        "share guest invitation text",
+        "guest-only attendance landing page",
+        "local guest attendance tracking"
+      ]
+    },
+    "secureCaseFileSharingCollaboration": {
+      "phase": "5.18",
+      "files": [
+        "assets/js/case-files-center.js",
+        "assets/css/main.css",
+        "backend/cloudflare-worker-case-files-sharing.js",
+        "backend/d1/migration-5.18-case-file-sharing.sql",
+        "PHASE-5.18-CASE-FILES-SHARING-COLLABORATION-NOTES.txt"
+      ],
+      "capabilities": [
+        "secure case-file sharing with trusted colleagues",
+        "permission levels for read/comment/review/edit",
+        "share expiry and revocation",
+        "internal communication message for shared files",
+        "notifications integration",
+        "case review notes with accept/reject workflow",
+        "share activity log per case file",
+        "guest exclusion and local-first design",
+        "D1 migration and Worker skeleton for future sync"
+      ]
+    },
+    "backupRestoreCenter": {
+      "phase": "5.21",
+      "files": [
+        "assets/js/backup-restore-center.js",
+        "backend/cloudflare-worker-backup-restore.js",
+        "backend/d1/migration-5.21-backup-restore.sql",
+        "PHASE-5.21-BACKUP-RESTORE-CENTER-NOTES.txt",
+        "index.html",
+        "assets/css/main.css"
+      ],
+      "capabilities": [
+        "full and partial JSON backup export",
+        "module selection",
+        "backup metadata and checksum",
+        "restore preview",
+        "merge restore",
+        "replace restore",
+        "local backup audit history",
+        "admin-only access",
+        "cloud backup placeholder worker",
+        "D1 audit migration"
+      ]
+    }
+  },
+  "status": "secure-communication-center-ready",
+  "features": [
+    "live meeting room via external links",
+    "meeting provider detection",
+    "copy meeting link",
+    "download meeting calendar file",
+    "meeting attendance join/exit tracking",
+    "auto Jitsi meeting creation",
+    "instant meeting now",
+    "public guest attendance link",
+    "guest-only attendance screen",
+    "prestige guest attendance portal",
+    "platform-branded external invitation experience",
+    "limited-access guest notice",
+    "black/gold judicial guest interface",
+    "smart command center after login",
+    "role-aware dashboard cards",
+    "training progress summary",
+    "upcoming live meetings summary",
+    "recent legal articles and workspace resume",
+    "admin shortcuts by permission",
+    "preliminary operational alerts",
+    "full notifications center",
+    "notification categories and priorities",
+    "unread/read/archive/delete notification states",
+    "notification search filters and bulk actions",
+    "topbar notification bell with unread badge",
+    "actionable notifications linked to platform modules",
+    "notification settings and muted categories",
+    "local operational notification seeding",
+    "admin demo alerts for testing",
+    "secure internal communication center",
+    "trusted colleagues list with mutual approval",
+    "member search with privacy controls",
+    "incoming and outgoing connection requests",
+    "direct chat only after accepted connection",
+    "official announcement channel",
+    "training and support communication groups",
+    "member block and unblock controls",
+    "privacy settings for discoverability and messaging",
+    "communication audit trail",
+    "notifications integration for communication events",
+    "guest exclusion from communication features",
+    "Judicial Premium Design System",
+    "Premium Toasts",
+    "Confirm Dialogs",
+    "Tooltips",
+    "Skeleton Loading",
+    "Empty States",
+    "Premium App Splash",
+    "Reduced Motion Support",
+    "ios-ipados-app-shell",
+    "capacitor-ios-preparation",
+    "safe-area-aware-ui",
+    "ios-build-guides",
+    "iOS TestFlight readiness kit",
+    "iOS privacy manifest template",
+    "App Store metadata templates",
+    "Mac build execution guide",
+    "iOS readiness checker"
+  ],
+  "phaseModules": {
+    "visualTrainingGuestPrestigePortal": {
+      "phase": "5.14.3",
+      "files": [
+        "assets/js/training-center.js",
+        "assets/css/main.css",
+        "PHASE-5.14.3-GUEST-PRESTIGE-PORTAL-NOTES.txt"
+      ],
+      "capabilities": [
+        "prestige guest attendance landing page",
+        "platform-branded external invitation experience",
+        "limited access legal notice",
+        "meeting details card",
+        "black/gold judicial visual identity"
+      ]
+    },
+    "institutionalCommandCenter": {
+      "phase": "5.15",
+      "files": [
+        "assets/js/command-center-dashboard.js",
+        "assets/css/main.css",
+        "assets/js/bootstrap.js",
+        "index.html",
+        "PHASE-5.15-INSTITUTIONAL-COMMAND-CENTER-NOTES.txt"
+      ],
+      "capabilities": [
+        "logged-in command center dashboard",
+        "account/session status",
+        "training progress and meeting summary",
+        "recent workspace cards",
+        "role-aware admin shortcuts",
+        "initial alert center"
+      ]
+    },
+    "institutionalNotificationsCenter": {
+      "phase": "5.16",
+      "files": [
+        "assets/js/notifications-center.js",
+        "assets/js/command-center-dashboard.js",
+        "assets/css/main.css",
+        "index.html",
+        "PHASE-5.16-NOTIFICATIONS-CENTER-NOTES.txt"
+      ],
+      "capabilities": [
+        "notification categories",
+        "priority levels",
+        "read/unread/archive/delete",
+        "search and filters",
+        "bulk actions",
+        "topbar unread badge",
+        "actionable module links",
+        "settings and muted categories",
+        "local operational seed alerts",
+        "admin test notifications"
+      ]
+    },
+    "secureJudicialCommunicationCenter": {
+      "phase": "5.16.1",
+      "files": [
+        "assets/js/secure-communication-center.js",
+        "assets/js/command-center-dashboard.js",
+        "index.html",
+        "PHASE-5.16.1-SECURE-COMMUNICATION-CENTER-NOTES.txt"
+      ],
+      "capabilities": [
+        "secure internal communication center",
+        "trusted colleagues list with mutual approval",
+        "member search with privacy controls",
+        "incoming and outgoing connection requests",
+        "direct chat only after accepted connection",
+        "official announcement channel",
+        "training and support communication groups",
+        "member block and unblock controls",
+        "privacy settings for discoverability and messaging",
+        "communication audit trail",
+        "notifications integration for communication events",
+        "guest exclusion from communication features"
+      ]
+    }
+  },
+  "lastUpdate": "2026-06-15",
+  "lastPhaseNotes": "PHASE-5.26.4-IPHONE-FIRST-UI-PASS-NOTES.txt",
+  "phaseDetails": {
+    "advancedGeneralSettingsCenter": {
+      "phase": "5.24",
+      "files": [
+        "assets/js/admin-settings.js",
+        "config/app-config.js",
+        "assets/css/main.css",
+        "index.html",
+        "backend/cloudflare-worker-platform-settings.js",
+        "backend/d1/migration-5.24-platform-settings.sql",
+        "PHASE-5.24-ADVANCED-GENERAL-SETTINGS-NOTES.txt"
+      ],
+      "capabilities": [
+        "advanced platform identity settings",
+        "platform assets paths",
+        "Worker links management",
+        "connection tests",
+        "storage policies",
+        "training and guest policies",
+        "communication and notification policies",
+        "module feature toggles",
+        "security policies",
+        "presentation mode settings",
+        "settings import/export",
+        "settings audit log",
+        "D1-backed settings scaffold"
+      ]
+    },
+    "officialPresentationMode": {
+      "phase": "5.25",
+      "files": [
+        "assets/js/official-presentation-mode.js",
+        "assets/css/main.css",
+        "index.html",
+        "platform.manifest.json",
+        "PHASE-5.25-OFFICIAL-PRESENTATION-MODE-NOTES.txt"
+      ],
+      "capabilities": [
+        "cinematic official presentation landing",
+        "guided executive demo route",
+        "step-by-step presenter script",
+        "module launch actions from each slide",
+        "safe demo data toggle",
+        "presentation outline JSON export",
+        "mobile presentation shortcut",
+        "presentation visual polish layer",
+        "exit to normal platform mode"
+      ]
+    },
+    "iphoneFirstUiPass": {
+      "phase": "5.26.4",
+      "files": [
+        "assets/css/iphone-first-ui-pass.css",
+        "assets/js/iphone-first-ui-pass.js",
+        "IPHONE-FIRST-UI-CHECKLIST.md",
+        "PHASE-5.26.4-IPHONE-FIRST-UI-PASS-NOTES.txt",
+        "index.html",
+        "platform.manifest.json"
+      ],
+      "capabilities": [
+        "iPhone/iPad safe area refinement",
+        "touch-friendly buttons and inputs",
+        "iOS input zoom prevention",
+        "bottom quick dock for one-hand use",
+        "chat and modal mobile containment",
+        "iOS readiness panel",
+        "no build tools required",
+        "compatible with Web, Electron, and Capacitor"
+      ]
+    }
+  },
+  "appShellPreparation": {
+    "phase": "5.26.1",
+    "desktop": "Electron-ready template only; EXE build in 5.26.2",
+    "android": "Capacitor-ready template only; APK build in 5.26.3",
+    "ios": "Capacitor-ready template only; iOS build later",
+    "secretsPolicy": "No secrets in frontend or app shell templates",
+    "linkPolicy": "External meeting/cloud links open safely outside the app shell",
+    "offlinePolicy": "Local-first features remain available when offline"
+  },
+  "desktopApp": {
+    "enabled": true,
+    "framework": "Electron",
+    "target": "Windows x64 NSIS Installer",
+    "entry": "app-shell/electron/main.js",
+    "package": "package.json",
+    "output": "dist-desktop",
+    "devCommand": "npm run desktop",
+    "buildCommand": "npm run build:win"
+  },
+  "files": [
+    "capacitor.config.ts",
+    "assets/css/ios-app-shell.css",
+    "assets/js/ios-app-shell-adapter.js",
+    "IOS-CAPACITOR-BUILD-INSTRUCTIONS.md",
+    "PHASE-5.26.3-IOS-IPADOS-APP-SHELL-NOTES.txt",
+    "assets/css/iphone-first-ui-pass.css",
+    "assets/js/iphone-first-ui-pass.js",
+    "IPHONE-FIRST-UI-CHECKLIST.md",
+    "PHASE-5.26.4-IPHONE-FIRST-UI-PASS-NOTES.txt",
+    "MULTI-PLATFORM-BUILD-GUIDE.md",
+    "BUILD-COMMANDS-CHEATSHEET.md",
+    "RELEASE-CHECKLIST.md",
+    "PHASE-5.26.7-MULTI-PLATFORM-BUILD-GUIDE-NOTES.txt"
+  ],
+  "iosAppShell": {
+    "enabled": true,
+    "framework": "Capacitor",
+    "uiPriority": "iPhone-first",
+    "safeArea": "enabled",
+    "touchTargets": "48px minimum on mobile",
+    "readinessCommand": "openIOSReadinessPanel()"
+  },
+  "phase_title": "Multi-Platform Build and Execution Guide",
+  "androidAppShell": {
+    "platform": "Capacitor Android",
+    "packageId": "eg.prosecution.northassiut.sand",
+    "status": "prepared-for-Android-Studio-build",
+    "readinessCheck": "npm run android:doctor",
+    "buildGuide": "ANDROID-CAPACITOR-BUILD-INSTRUCTIONS.md"
+  },
+  "multiPlatformBuildGuide": {
+    "phase": "5.26.7",
+    "status": "ready",
+    "centralGuide": "MULTI-PLATFORM-BUILD-GUIDE.md",
+    "commandsCheatsheet": "BUILD-COMMANDS-CHEATSHEET.md",
+    "releaseChecklist": "RELEASE-CHECKLIST.md",
+    "targets": [
+      "Web/GitHub Pages",
+      "Windows Desktop EXE",
+      "iPhone/iPad TestFlight",
+      "Android APK/AAB"
+    ],
+    "principle": "Single Web Core with platform-specific shells"
+  }
+}

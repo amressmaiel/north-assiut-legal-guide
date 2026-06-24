@@ -1,0 +1,69 @@
+/* Phase 5.26.3 — iOS / iPadOS App Shell refinements */
+:root{
+  --sand-ios-safe-top: env(safe-area-inset-top, 0px);
+  --sand-ios-safe-right: env(safe-area-inset-right, 0px);
+  --sand-ios-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --sand-ios-safe-left: env(safe-area-inset-left, 0px);
+  --sand-ios-touch: 46px;
+}
+html.sand-ios-shell, html.sand-capacitor-shell{
+  background:#050506;
+  min-height:100%;
+}
+html.sand-ios-shell body, html.sand-capacitor-shell body{
+  padding-top:var(--sand-ios-safe-top);
+  padding-bottom:var(--sand-ios-safe-bottom);
+  overscroll-behavior-y:none;
+  -webkit-tap-highlight-color:rgba(215,184,106,.18);
+  touch-action:manipulation;
+}
+html.sand-ios-shell .app-shell,
+html.sand-capacitor-shell .app-shell{
+  min-height:calc(100vh - var(--sand-ios-safe-top) - var(--sand-ios-safe-bottom));
+}
+html.sand-ios-shell .topbar,
+html.sand-ios-shell .mobile-bottom-nav,
+html.sand-capacitor-shell .topbar,
+html.sand-capacitor-shell .mobile-bottom-nav{
+  padding-left:max(12px,var(--sand-ios-safe-left));
+  padding-right:max(12px,var(--sand-ios-safe-right));
+}
+html.sand-ios-shell .mobile-bottom-nav,
+html.sand-capacitor-shell .mobile-bottom-nav{
+  padding-bottom:max(10px,var(--sand-ios-safe-bottom));
+}
+html.sand-ios-shell button,
+html.sand-ios-shell .btn,
+html.sand-ios-shell input,
+html.sand-ios-shell select,
+html.sand-ios-shell textarea,
+html.sand-capacitor-shell button,
+html.sand-capacitor-shell .btn,
+html.sand-capacitor-shell input,
+html.sand-capacitor-shell select,
+html.sand-capacitor-shell textarea{
+  min-height:var(--sand-ios-touch);
+}
+.sand-ios-readiness-card{
+  position:fixed;
+  right:max(18px,var(--sand-ios-safe-right));
+  bottom:calc(132px + var(--sand-ios-safe-bottom));
+  z-index:99979;
+  width:min(360px,calc(100vw - 36px));
+  border:1px solid rgba(215,184,106,.42);
+  background:linear-gradient(145deg,rgba(10,10,12,.94),rgba(52,38,12,.88));
+  border-radius:24px;
+  padding:16px;
+  color:#fff8dc;
+  box-shadow:0 28px 80px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.04);
+  backdrop-filter:blur(18px);
+  font-family:Cairo,sans-serif;
+  display:none;
+}
+.sand-ios-readiness-card.show{display:block;animation:sandIosFloatIn .34s ease both}
+.sand-ios-readiness-card h3{margin:0 0 8px;color:#f4d37b;font-size:16px}
+.sand-ios-readiness-card p{margin:0 0 10px;color:#d8cfb2;font-size:12px;line-height:1.8}
+.sand-ios-readiness-card ul{margin:0;padding:0 18px 0 0;color:#f7ecd1;font-size:12px;line-height:1.9}
+@keyframes sandIosFloatIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:720px){.sand-ios-readiness-card{right:12px;left:12px;width:auto;bottom:calc(112px + var(--sand-ios-safe-bottom));}}
+@media print{.sand-ios-readiness-card{display:none!important}}

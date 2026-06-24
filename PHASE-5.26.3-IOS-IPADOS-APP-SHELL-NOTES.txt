@@ -1,0 +1,21 @@
+المرحلة 5.26.3 — تجهيز نسخة iPhone / iPad باستخدام Capacitor
+===============================================================
+
+تم تنفيذ تجهيزات iOS/iPadOS كمسار رئيسي للمنصة نظرًا لأن الفئة المستهدفة تعتمد بشكل كبير على أجهزة iPhone.
+
+المنجز:
+- إضافة capacitor.config.ts.
+- تحديث package.json بأوامر Capacitor iOS.
+- إضافة CSS خاص بـ Safe Area و Notch و Dynamic Island.
+- إضافة Adapter خاص ببيئة iOS/Capacitor.
+- تجهيز فتح الروابط الخارجية بشكل مناسب داخل iOS.
+- تجهيز أزرار اللمس والمساحات الآمنة.
+- إضافة أدلة بناء iOS على Mac/Xcode.
+- إضافة Checklist جاهزية iOS.
+- تحديث App Shell Config إلى 5.26.3.
+- تحديث platform.manifest.json.
+
+مهم:
+- لا يمكن بناء IPA نهائي من Windows فقط.
+- البناء الفعلي يحتاج Mac + Xcode + Apple Developer Account عند استخدام TestFlight أو App Store.
+- هذه المرحلة لا تحتوي أسرار ولا مفاتيح داخل الواجهة.

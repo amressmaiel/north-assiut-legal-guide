@@ -1,0 +1,5 @@
+{
+  "note": "Phase 5.26.2: تم إنشاء package.json فعلي في جذر المشروع. هذا الملف أصبح مرجعًا فقط.",
+  "start": "npm install ثم npm run desktop",
+  "build": "npm run build:win"
+}

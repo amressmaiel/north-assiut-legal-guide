@@ -1,0 +1,37 @@
+المرحلة 5.12 — مركز حسابي والجلسات وكلمة المرور
+=================================================
+
+الهدف:
+إضافة مركز حساب شخصي للمستخدم بعد تسجيل الدخول، بحيث يراجع بيانات عضويته وصلاحياته وجلساته وأجهزته، ويستطيع تغيير كلمة المرور من داخل المنصة.
+
+ما تم تنفيذه:
+1. إضافة ملف assets/js/auth-account-center.js
+2. إضافة زر حسابي في الواجهة والقائمة الجانبية.
+3. عرض بيانات العضوية: الحالة، الدور، بداية ونهاية العضوية، الأيام المتبقية، الجهاز الحالي.
+4. عرض الصلاحيات الحالية كمؤشرات.
+5. عرض جلسات المستخدم الحالية من Auth Worker.
+6. عرض الأجهزة المسجلة للمستخدم الحالي.
+7. إضافة نموذج تغيير كلمة المرور مع خيار إنهاء الجلسات الأخرى.
+8. إضافة Endpoints في Auth Worker:
+   - POST /api/auth/change-password
+   - GET  /api/auth/my-sessions
+   - GET  /api/auth/my-devices
+9. إضافة دوال في assets/js/auth-api-client.js:
+   - changePassword
+   - mySessions
+   - myDevices
+
+ملفات الواجهة المعدلة أو المضافة:
+- index.html
+- assets/js/app.js
+- assets/js/auth-api-client.js
+- assets/js/auth-account-center.js
+- assets/css/main.css
+
+ملف Worker المعدل:
+- backend/cloudflare-worker-auth-api.js
+
+ملاحظات نشر:
+- يجب رفع ملفات الواجهة إلى GitHub Pages.
+- يجب نسخ backend/cloudflare-worker-auth-api.js إلى مجلد auth-worker ثم تنفيذ wrangler deploy.
+- لا توجد Migration جديدة مطلوبة على D1 في هذه المرحلة.
